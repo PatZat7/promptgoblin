@@ -5,11 +5,11 @@ const { useState, useEffect, useRef } = React;
 const WEB3FORMS_KEY = "ee75925c-9368-4791-9f1c-522ead6fe7f1"; // free static-site form backend — web3forms.com
 const STRIPE_LINKS = {
   // Stripe Payment Links (one hosted URL per tier — zero backend).
-  // NOTE: these are TEST-mode links (buy.stripe.com/test_…). Regenerate with a
-  // live sk_live_ key before taking real payments.
-  scout: "https://buy.stripe.com/test_5kQ3cx8ZL72abWk6MWaVa00",
-  warband: "https://buy.stripe.com/test_8x27sNek54U20dC8V4aVa01",
-  warlord: "https://buy.stripe.com/test_4gMaEZ1xj5Y6e4sc7gaVa02",
+  // LIVE mode (livemode=true, verified 2026-06-01): Scout $2,950 one-time,
+  // Warband $4,800/mo, Warlord $12,500/mo. These charge real cards.
+  scout: "https://buy.stripe.com/5kQeVeabQ1tg0IH7rN2go03",
+  warband: "https://buy.stripe.com/dRmcN6bfU5JwezxeUf2go04",
+  warlord: "https://buy.stripe.com/14A5kE97MdbY3UT3bx2go05",
 };
 const STRIPE_SCOUT_LINK = STRIPE_LINKS.scout; // back-compat alias used by the Summon form
 
