@@ -16,7 +16,7 @@ const ALLOWED_ORIGIN = "https://promptgoblin.zatgeist.com";
  */
 function corsHeaders(origin) {
   const allow =
-    origin && /^https?:\/\/localhost(?::\d+)?$/.test(origin)
+    origin && /^https?:\/\/(localhost|127\.0\.0\.1)(?::\d+)?$/.test(origin)
       ? origin
       : ALLOWED_ORIGIN;
   return {

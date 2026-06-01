@@ -13,6 +13,72 @@ const STRIPE_LINKS = {
 };
 const STRIPE_SCOUT_LINK = STRIPE_LINKS.scout; // back-compat alias used by the Summon form
 
+// Prompt Goblin scan backend (DigitalOcean Functions web actions). Tier-1 is the
+// free no-key hygiene scan; Tier-2 is the email-gated Perplexity citation teaser
+// (dormant until PERPLEXITY_API_KEY is set on the tier2 function). Helpers below
+// degrade silently to the scripted demo if these are unreachable.
+const SCAN_API = {
+  tier1: "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier1",
+  tier2: "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier2",
+};
+
+// Live Tier-1 hygiene scan. Returns the parsed report, or null to fall back to
+// the scripted demo (network error, non-200, or unconfigured endpoint).
+async function runHygieneScan(url) {
+  if (!SCAN_API.tier1 || SCAN_API.tier1.includes("<your-namespace>")) return null;
+  try {
+    const r = await fetch(SCAN_API.tier1, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    return r.ok ? await r.json() : null;
+  } catch {
+    return null;
+  }
+}
+
+// Email-gated Tier-2 citation teaser. 200 even on the honest no-key path; 429 when
+// the per-IP+email cap is hit. Returns null on network failure / unconfigured.
+async function runCitationTeaser({ email, domain, competitor }) {
+  if (!SCAN_API.tier2 || SCAN_API.tier2.includes("<your-namespace>")) return null;
+  try {
+    const r = await fetch(SCAN_API.tier2, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, domain, competitor }),
+    });
+    return await r.json();
+  } catch {
+    return null;
+  }
+}
+
+// Map a Tier-1 report into the LiveScan terminal's line shape ({ t, text, k, v, sev }).
+// The `summary` line carries the honest "hygiene ≠ citation guarantee" language verbatim.
+function reportToTerminal(resp) {
+  const r = resp.report || {};
+  const schema = r.schema || {};
+  const out = [
+    { t: "cmd", text: "goblin scan --surface hygiene --url " + (r.url || "") },
+    { t: "kv", k: "hygiene", v: (r.hygieneScore != null ? r.hygieneScore : "?") + "/100" },
+    { t: "info", text: "schema found: " + ((schema.found || []).join(", ") || "none") },
+  ];
+  if ((schema.missing || []).length) {
+    out.push({ t: "warn", text: "missing schema: " + schema.missing.join(", ") });
+  }
+  (r.findings || []).slice(0, 6).forEach((f) =>
+    out.push({
+      t: "issue",
+      sev: f.severity >= 4 ? "HIGH" : f.severity === 3 ? "MED" : "LOW",
+      text: f.detail || f.title || "",
+    }),
+  );
+  out.push({ t: "sep" });
+  out.push({ t: "ok", text: resp.summary || "scan complete" });
+  return out;
+}
+
 // Fire-and-forget lead capture: PostHog event + Web3Forms (no-op until the key is set).
 function captureLead(event, data) {
   try {
@@ -1115,12 +1181,14 @@ function LiveScan() {
   const [target, setTarget] = useState(""); // "" = idle demo loop; set on submit
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
+  const [reportLines, setReportLines] = useState(null); // real Tier-1 lines; null = use scripted demo
   const bodyRef = useRef(null);
 
-  // (Re)run whenever `target` changes. Idle loops the demo; a submitted domain
-  // runs once, then reveals the "full audit emailed" confirmation.
+  // (Re)run whenever `target`/`reportLines` change. Idle loops the demo; a submitted
+  // domain plays the REAL Tier-1 report when available, else the scripted demo,
+  // then reveals the "full audit emailed" confirmation.
   useEffect(() => {
-    const script = scanScript(target);
+    const script = target && reportLines ? reportLines : scanScript(target);
     let i = 0,
       cancelled = false,
       timer;
@@ -1154,19 +1222,26 @@ function LiveScan() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [target]);
+  }, [target, reportLines]);
 
-  const onScan = (e) => {
+  const onScan = async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
     if (data.botcheck) return; // honeypot
-    captureLead("free_scan_requested", {
-      domain: data.domain,
-      email: data.email,
-    });
+    const domain = (data.domain || "").trim();
+    captureLead("free_scan_requested", { domain, email: data.email });
     setEmail(data.email || "");
     setDone(false);
-    setTarget((data.domain || "").trim()); // triggers a fresh scan for their domain
+    setReportLines(null); // reset; scripted demo shows until the real report lands
+
+    // Real Tier-1 hygiene scan. If the backend answers, drive the terminal from
+    // the actual report; otherwise the scripted demo plays as a graceful fallback.
+    const report = await runHygieneScan(domain);
+    if (report && report.ok) setReportLines(reportToTerminal(report));
+    setTarget(domain); // triggers the run (real lines if set, else scripted)
+
+    // Fire the email-gated Tier-2 citation teaser (honest no-op until a key is set).
+    runCitationTeaser({ email: data.email, domain, competitor: data.competitor || "" });
   };
 
   useEffect(() => {
@@ -1274,6 +1349,11 @@ function LiveScan() {
                 required
                 placeholder="you@brand.com"
                 autoComplete="email"
+              />
+              <input
+                name="competitor"
+                placeholder="a competitor (optional)"
+                autoComplete="off"
               />
               <input
                 type="text"
