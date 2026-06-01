@@ -135,6 +135,21 @@
     var PH_KEY = "phc_wEFRJvqR2u6Y2a9TmtHkTZvpAeSjjnMuFSCAYyaru5Sy"; // US Cloud (verified via /decide)
     if (PH_KEY.indexOf("REPLACE") === -1) {
       posthog.init(PH_KEY, { api_host: "https://us.i.posthog.com", person_profiles: "identified_only", defaults: "2025-05-24" });
+      // Owner opt-out (analytics hygiene): visit the site once with ?ph_optout=1 on
+      // each of your own browsers/devices to stop your dev/QA traffic polluting the
+      // sales funnel. PostHog persists the opt-out in localStorage, so it sticks on
+      // future visits (survives IP changes). Re-enable with ?ph_optin=1. No personal
+      // data (e.g. your IP) is stored in this file.
+      try {
+        var _phParams = new URLSearchParams(window.location.search);
+        if (_phParams.get("ph_optout") === "1") {
+          posthog.opt_out_capturing();
+          console.info("[posthog] opted OUT on this browser — your visits won't be tracked.");
+        } else if (_phParams.get("ph_optin") === "1") {
+          posthog.opt_in_capturing();
+          console.info("[posthog] opted back IN on this browser.");
+        }
+      } catch (e) {}
     }
   </script>
 </head>
