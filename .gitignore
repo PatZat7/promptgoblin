@@ -1,0 +1,19 @@
+# Source bundles / handoffs — not part of the deployed site
+_extracted/
+*.zip
+
+# Local env / secrets — never commit
+.env
+.env.*
+!.env.example
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+
+# Local verification artifacts (Playwright)
+_verify*.png
+_verify.mjs
+package-lock.json

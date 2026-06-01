@@ -1,0 +1,23 @@
+# DigitalOcean App Platform spec — Prompt Goblin marketing site
+# Static site, zero build step (React + Babel-standalone load from CDN at runtime).
+# Mirrors the Zatgeist pipeline: static_site, source_dir "/", deploy-on-push to main.
+#
+# Apply with:  doctl apps create --spec .do/app.yaml
+# or update :  doctl apps update <APP_ID> --spec .do/app.yaml
+# (or paste into the DigitalOcean dashboard, or use the DigitalOcean MCP server.)
+#
+# NOTE: set `github.repo` to the real repo once it exists (placeholder below).
+name: promptgoblin
+region: nyc
+static_sites:
+  - name: promptgoblin-site
+    github:
+      repo: PatZat7/promptgoblin      # TODO: confirm/replace with the real GitHub repo
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    build_command: ""                  # no build — Babel transpiles .jsx in-browser
+    output_dir: /
+    index_document: index.html
+    catchall_document: index.html      # SPA-style fallback
+    error_document: index.html
