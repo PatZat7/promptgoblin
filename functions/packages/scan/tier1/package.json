@@ -1,0 +1,8 @@
+{
+  "name": "pg-scan-tier1",
+  "version": "1.0.0",
+  "description": "Prompt Goblin Tier-1 free hygiene scan (no keys).",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {}
+}

@@ -19,9 +19,12 @@
   nothing auto-ships.
 
 ## Packages
-- Goblin Scout — one-time visibility audit (~$1,450): full LLM citation audit, schema/entity gap report, competitor citation diff, ranked fix queue.
+- Goblin Scout — one-time visibility audit (~$2,950): full 5-surface LLM citation audit, competitor citation-graph diff, schema/entity gap report, ranked fix queue that ships reviewed fixes.
 - Goblin Warband — monthly retainer (~$4,800/mo): weekly agentic re-runs, citation acquisition, schema/content PRs, live dashboard.
 - Goblin Warlord — multi-brand retainer (~$12,500/mo): up to 8 domains, custom LangGraph workflows, dedicated retrieval mesh.
+
+## Honest broker
+- Schema and llms.txt are hygiene, not citation magic. The real levers are brand mentions and Bing / Bing-overlap ranking — we work all of it, and every change is human-reviewed.
 
 ## Contact
 - Email: hi@promptgoblin.io

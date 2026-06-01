@@ -10,14 +10,14 @@
   <!-- Open Graph / social -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prompt Goblin — Get found by robots. Stay usable by humans." />
-  <meta property="og:description" content="Agentic AI-search visibility &amp; technical SEO. We make ChatGPT, Claude, Gemini &amp; Perplexity cite you." />
+  <meta property="og:description" content="Agentic AI-search visibility &amp; technical SEO. We measure who AI answers cite for your category and ship human-reviewed fixes to close the gap." />
   <meta property="og:url" content="https://promptgoblin.zatgeist.com/" />
   <meta property="og:site_name" content="Prompt Goblin" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Prompt Goblin — Visible AF" />
   <meta name="twitter:description" content="Agentic AI-search visibility &amp; technical SEO." />
 
-  <!-- Dogfood: structured data so LLMs + crawlers can cite us -->
+  <!-- Dogfood: structured data so LLMs + crawlers can parse us cleanly -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -26,14 +26,90 @@
     "alternateName": "Prompt_Goblin",
     "url": "https://promptgoblin.zatgeist.com",
     "email": "hi@promptgoblin.io",
-    "description": "Agentic AI-search visibility and technical SEO. Prompt Goblin makes ChatGPT, Claude, Gemini, and Perplexity cite your brand via schema, citation acquisition, and answer-engine optimization.",
+    "description": "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene — every change human-reviewed.",
     "areaServed": "Worldwide",
     "knowsAbout": ["Generative Engine Optimization","Answer Engine Optimization","Technical SEO","Schema.org structured data","llms.txt","Core Web Vitals","Entity SEO"],
     "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" },
     "makesOffer": [
-      { "@type": "Offer", "name": "Goblin Scout — visibility audit", "priceCurrency": "USD", "price": "1450" },
+      { "@type": "Offer", "name": "Goblin Scout — visibility audit", "priceCurrency": "USD", "price": "2950" },
       { "@type": "Offer", "name": "Goblin Warband — monthly agentic retainer", "priceCurrency": "USD", "price": "4800" },
       { "@type": "Offer", "name": "Goblin Warlord — multi-brand retainer", "priceCurrency": "USD", "price": "12500" }
+    ]
+  }
+  </script>
+
+  <!-- Dogfood self-fixes: the 5 entity types our own 2026-06-01 scan flagged as missing. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Prompt Goblin",
+    "alternateName": "Prompt_Goblin",
+    "url": "https://promptgoblin.zatgeist.com",
+    "email": "hi@promptgoblin.io",
+    "slogan": "Get found by robots. Stay usable by humans. Visible AF.",
+    "description": "A one-goblin AI-search-visibility (AEO/GEO) and technical-SEO shop in Chicago.",
+    "areaServed": "Worldwide",
+    "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Prompt Goblin",
+    "url": "https://promptgoblin.zatgeist.com"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://promptgoblin.zatgeist.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://promptgoblin.zatgeist.com/#services" },
+      { "@type": "ListItem", "position": 3, "name": "Pricing", "item": "https://promptgoblin.zatgeist.com/#pricing" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "AI search visibility (AEO/GEO) & technical SEO",
+    "provider": { "@type": "Organization", "name": "Prompt Goblin", "url": "https://promptgoblin.zatgeist.com" },
+    "areaServed": "Worldwide",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Goblin tiers",
+      "itemListElement": [
+        { "@type": "Offer", "name": "Goblin Scout — one-time visibility audit", "priceCurrency": "USD", "price": "2950" },
+        { "@type": "Offer", "name": "Goblin Warband — monthly retainer", "priceCurrency": "USD", "price": "4800" },
+        { "@type": "Offer", "name": "Goblin Warlord — multi-brand retainer", "priceCurrency": "USD", "price": "12500" }
+      ]
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is AI search visibility (AEO/GEO)?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Answer Engine Optimization (AEO) / Generative Engine Optimization (GEO) is getting your brand cited inside AI answers — ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — rather than only ranking in blue links." }
+      },
+      {
+        "@type": "Question",
+        "name": "Does schema markup get me cited by AI?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Schema and llms.txt are hygiene — necessary so engines can parse you, but not a citation lever on their own. The real levers are brand mentions and Bing ranking; we work all of it, and every change is human-reviewed." }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does a Prompt Goblin audit cost?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Goblin Scout is a one-time visibility audit at $2,950. Ongoing retainers are Goblin Warband ($4,800/mo) and Goblin Warlord ($12,500/mo). Flat fee — no credits, no meter." }
+      }
     ]
   }
   </script>

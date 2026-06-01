@@ -1,0 +1,12 @@
+{
+  "name": "promptgoblin-scan-functions",
+  "version": "1.0.0",
+  "description": "Prompt Goblin tiered free-scan backend (DigitalOcean Functions).",
+  "private": true,
+  "scripts": {
+    "sync": "bash packages/scan/tier1/build.sh && bash packages/scan/tier2/build.sh",
+    "test": "npm run sync && node test/scan.test.js",
+    "invoke:tier1": "npm run sync && node test/invoke-local.js tier1",
+    "invoke:tier2": "npm run sync && node test/invoke-local.js tier2"
+  }
+}

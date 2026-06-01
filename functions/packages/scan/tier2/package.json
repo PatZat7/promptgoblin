@@ -1,0 +1,8 @@
+{
+  "name": "pg-scan-tier2",
+  "version": "1.0.0",
+  "description": "Prompt Goblin Tier-2 email-gated Perplexity citation teaser.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {}
+}

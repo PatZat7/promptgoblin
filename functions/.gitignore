@@ -1,0 +1,11 @@
+# Secrets — never commit
+.env
+
+# Synced lib copies inside each action (canonical source lives in /lib).
+# build.sh regenerates these at deploy; the local mock test syncs them too.
+packages/*/*/lib/
+
+# DO Functions deploy bookkeeping
+.deployed/
+.nimbella/
+node_modules/

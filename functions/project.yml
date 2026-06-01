@@ -1,0 +1,26 @@
+parameters: {}
+environment: {}
+packages:
+  - name: scan
+    actions:
+      # Tier 1 — free hygiene scan, no keys, runs for everyone.
+      - name: tier1
+        binary: false
+        main: main
+        runtime: 'nodejs:24'
+        web: true
+        limits:
+          timeout: 20000
+          memory: 256
+      # Tier 2 — email-gated, rate-limited, single live engine (Perplexity).
+      - name: tier2
+        binary: false
+        main: main
+        runtime: 'nodejs:24'
+        web: true
+        limits:
+          timeout: 25000
+          memory: 256
+        environment:
+          # Pulled from the namespace/project env at deploy; NEVER commit the value.
+          PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY}
