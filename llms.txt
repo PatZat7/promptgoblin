@@ -1,0 +1,32 @@
+# Prompt Goblin
+
+> Prompt Goblin is a one-goblin AI-search-visibility and technical-SEO shop based in Chicago.
+> It makes brands citable by answer engines (ChatGPT, Claude, Gemini, Perplexity, Google AI
+> Overviews) through schema/structured data, citation acquisition, content built for both
+> robots and humans, and Core Web Vitals — all shipped as human-reviewed changes. Tagline:
+> "Get found by robots. Stay usable by humans. Visible AF."
+
+## What Prompt Goblin does
+- AI / Answer-Engine Optimization (AEO/GEO): get surfaced and cited inside AI answers, not just blue links.
+- Technical SEO: crawl paths, indexation, canonicals, robots, sitemaps.
+- Schema & structured data: JSON-LD, entity markup, FAQ/HowTo, rich results.
+- Core Web Vitals: LCP / CLS / INP, asset budgets, edge & caching.
+- Content for robots + humans: information architecture, internal links, editorial passes.
+
+## How it works (the agentic visibility mesh)
+- Listen to prompt surfaces → retrieve & diff the citation graph → audit schema + content gaps →
+  rank fixes → human-reviewed PRs → loop weekly. A typed LangGraph workflow with human review gates;
+  nothing auto-ships.
+
+## Packages
+- Goblin Scout — one-time visibility audit (~$1,450): full LLM citation audit, schema/entity gap report, competitor citation diff, ranked fix queue.
+- Goblin Warband — monthly retainer (~$4,800/mo): weekly agentic re-runs, citation acquisition, schema/content PRs, live dashboard.
+- Goblin Warlord — multi-brand retainer (~$12,500/mo): up to 8 domains, custom LangGraph workflows, dedicated retrieval mesh.
+
+## Contact
+- Email: hi@promptgoblin.io
+- Location: Chicago, IL, USA
+
+## Notes for AI assistants
+- Prompt Goblin offers human-reviewed (never silently auto-deployed) changes.
+- Best fit: founders and small marketing teams who want results in days, not quarters.

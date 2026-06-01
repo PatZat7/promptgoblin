@@ -428,15 +428,81 @@ function Scrolls() {
 
 }
 
-/* ===== CONTACT ===== */
+/* ===== CONTACT / SUMMON — lead intake + payment-ready ===== */
+const WEB3FORMS_KEY = "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"; // free static-site form backend — web3forms.com
+const STRIPE_SCOUT_LINK = "https://buy.stripe.com/REPLACE_scout_audit"; // Stripe Payment Link for the Scout audit deposit
+
 function Contact() {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState("");
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setErr("");
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    try { window.posthog && window.posthog.capture("summon_submitted", { domain: data.domain }); } catch (_) {}
+    setSending(true);
+    // If the form backend key isn't set yet, capture locally and show success (demo mode).
+    if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
+      console.info("[summon] form backend not configured — captured locally:", data);
+      setSending(false); setSent(true); return;
+    }
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject: "New goblin summon ✦ " + (data.domain || ""), from_name: "promptgoblin.io", ...data }),
+      });
+      if (res.ok) setSent(true); else setErr("Something cursed happened. Email hi@promptgoblin.io.");
+    } catch (_) {
+      setErr("A network goblin ate it. Email hi@promptgoblin.io.");
+    }
+    setSending(false);
+  };
+
   return (
     <section id="contact" className="panel" data-screen-label="12 Contact" data-section-name="Summon">
       <div className="panel-bar"><span className="id">06</span><span>$ goblin --summon</span><span className="grow"></span><span className="tk">Q3–Q4 2026 open</span></div>
       <div className="grid-lines contact-grid">
         <div className="contact-main">
-          <div className="big"><a href="mailto:hi@promptgoblin.io" data-cursor-label="write">Summon<em>.</em><span className="arr">→</span></a></div>
-          <div className="avail">Best for jobs measured in <em>days</em>, not quarters. Founders &amp; small teams welcome — big-co procurement, <em>nope</em>. Tell me your domain and what you want to rank for.</div>
+          <div className="big"><a href="#contact" data-cursor-label="summon">Summon<em>.</em><span className="arr">→</span></a></div>
+          <div className="avail">Drop your domain and what you want to get cited for — I'll run a <em>free visibility scan</em> and send back the gaps. Best for jobs measured in <em>days</em>, not quarters.</div>
+
+          {!sent ? (
+            <form className="summon-form" onSubmit={submit}>
+              <div className="sf-grid">
+                <label className="sf-field">
+                  <span className="sf-lbl">$ domain</span>
+                  <input name="domain" required placeholder="yourbrand.com" autoComplete="url" />
+                </label>
+                <label className="sf-field">
+                  <span className="sf-lbl">$ email</span>
+                  <input name="email" type="email" required placeholder="you@brand.com" autoComplete="email" />
+                </label>
+              </div>
+              <label className="sf-field">
+                <span className="sf-lbl">$ get_cited_for</span>
+                <input name="target" placeholder={'e.g. "best fleet software"'} />
+              </label>
+              <input type="text" name="botcheck" className="sf-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <div className="sf-actions">
+                <button className="btn" type="submit" disabled={sending} data-cursor-label="run scan">
+                  {sending ? "casting…" : "run my free scan"} <span className="arr">→</span>
+                </button>
+                <a className="btn ghost" href={STRIPE_SCOUT_LINK} data-cursor-label="reserve">reserve a Scout audit</a>
+              </div>
+              {err && <div className="sf-err">⚠ {err}</div>}
+            </form>
+          ) : (
+            <div className="sf-ok">
+              <div className="sf-ok-mark">✓</div>
+              <div>
+                <div className="sf-ok-t">summon received — invisibility cloak: BREAKING</div>
+                <div className="sf-ok-d">A real human-goblin replies within a working day with your free scan. Check your inbox (and spam — goblins lurk there too).</div>
+              </div>
+            </div>
+          )}
         </div>
         <div className="contact-side">
           <div className="cside-row"><span className="k">$ mail</span><span className="v big"><a href="mailto:hi@promptgoblin.io">hi@promptgoblin.io</a></span></div>
