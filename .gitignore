@@ -28,3 +28,11 @@ out/
 _do_token.txt
 _do_app.json
 _do_resp.json
+
+# session temp / local artifacts
+_codex_consult.md
+_check-*.png
+_last_report.json
+_scan_e2e.mjs
+_stripe_*.py
+_stripe_*.json

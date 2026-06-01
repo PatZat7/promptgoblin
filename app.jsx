@@ -382,6 +382,10 @@ function Hero() {
               ./see_work
             </a>
           </div>
+          <div className="hero-note" style={{ marginTop: 14 }}>
+            <b>✓ Free scan, no card.</b> Paid work backed by a 100% money-back
+            guarantee.
+          </div>
         </div>
         <div className="hero-side">
           <div className="ascii-noise ascii-tr">{`schema fragments: [
@@ -407,11 +411,11 @@ function Hero() {
   );
 }
 
-/* ===== SPELLBOOK ===== */
+/* ===== SPELLBOOK — the three disciplines (AEO · SEO · Accessibility) ===== */
 const SPELLS = [
-  { ico: "fire", nm: "FIRE", lv: "LV.7 BURN" },
-  { ico: "ice", nm: "ICE", lv: "LV.5 FREEZE" },
-  { ico: "bolt", nm: "BOLT", lv: "LV.9 SURGE" },
+  { ico: "fire", nm: "AEO", lv: "answer-engine visibility", sub: "Get cited inside ChatGPT, Claude, Gemini, Perplexity & AI Overviews." },
+  { ico: "bolt", nm: "SEO", lv: "technical foundation", sub: "Crawl, index, schema, Core Web Vitals — the base AEO stands on." },
+  { ico: "ice", nm: "A11Y", lv: "WCAG 2.1 AA + Section 508", sub: "Accessible to people and parseable by machines. Required for gov." },
 ];
 function Spellbook() {
   const ref = useReveal();
@@ -429,7 +433,7 @@ function Spellbook() {
             </span>{" "}
             Visibility Spellbook
           </span>
-          <span className="sb-count">4 of 6 cast</span>
+          <span className="sb-count">3 schools · 1 goblin</span>
         </div>
         <div className="sb-cards">
           {SPELLS.map((s) => (
@@ -442,13 +446,14 @@ function Spellbook() {
               <div className="sb-meta">
                 <div className="nm">{s.nm}</div>
                 <div className="lv">{s.lv}</div>
+                <div className="sb-sub">{s.sub}</div>
               </div>
             </div>
           ))}
         </div>
         <div className="sb-foot">
-          <span className="path">&gt; schema.entity_graph</span>
-          <span className="pct">92%</span>
+          <span className="path">&gt; one stack: get found, stay legible, stay compliant</span>
+          <span className="pct">v2</span>
         </div>
       </div>
     </section>
@@ -799,6 +804,17 @@ const SVCS = [
       "Editorial passes",
     ],
   },
+  {
+    num: "(vi)",
+    title: "Accessibility (WCAG + 508)",
+    lead: "Usable by people on assistive tech and legible to crawlers — the same fixes serve both. Automated axe-core audit across real component states (collapsed, open, error) plus a human pass, since tooling alone catches ~57%. Required for government (Section 508 / ADA Title II); never sold as compliance-by-tool.",
+    items: [
+      "WCAG 2.1 AA + Section 508",
+      "Stateful axe-core audit",
+      "Human-reviewed remediation",
+      "Reviewed fix PRs",
+    ],
+  },
 ];
 
 function Services() {
@@ -814,7 +830,7 @@ function Services() {
         <span className="id">03</span>
         <span>$ man goblin</span>
         <span className="grow"></span>
-        <span className="tk">five services · one goblin</span>
+        <span className="tk">six services · one goblin</span>
       </div>
       <div className="panel-body" style={{ padding: 0 }}>
         {SVCS.map((s, i) => (
@@ -984,9 +1000,14 @@ function Contact() {
         }),
       });
       if (res.ok) setSent(true);
-      else setErr("Something cursed happened. Email hi@promptgoblin.io.");
+      else
+        setErr(
+          "A goblin fumbled that send. Try again, or email hi@promptgoblin.io and we'll run it by hand.",
+        );
     } catch (_) {
-      setErr("A network goblin ate it. Email hi@promptgoblin.io.");
+      setErr(
+        "Couldn't reach the server — check your connection and retry, or email hi@promptgoblin.io.",
+      );
     }
     setSending(false);
   };
@@ -1016,6 +1037,10 @@ function Contact() {
             Drop your domain and what you want to get cited for — I'll run a{" "}
             <em>free visibility scan</em> and send back the gaps. Best for jobs
             measured in <em>days</em>, not quarters.
+            <br />
+            <em>No card, no sales call.</em> Paid work carries a{" "}
+            <em>100% money-back guarantee</em> — full refund if we don't deliver
+            or you're not happy within 14 days.
           </div>
 
           {!sent ? (
@@ -1237,7 +1262,19 @@ function LiveScan() {
     // Real Tier-1 hygiene scan. If the backend answers, drive the terminal from
     // the actual report; otherwise the scripted demo plays as a graceful fallback.
     const report = await runHygieneScan(domain);
-    if (report && report.ok) setReportLines(reportToTerminal(report));
+    if (report && report.ok) {
+      setReportLines(reportToTerminal(report));
+      // The "aha" moment — a real result rendered. Strongest conversion predictor;
+      // PostHog uses it as the mid-funnel step between scan-request and checkout.
+      try {
+        window.posthog &&
+          window.posthog.capture("scan_result_shown", {
+            domain,
+            hygiene_score: report.report && report.report.hygieneScore,
+            findings: report.report && (report.report.findings || []).length,
+          });
+      } catch (_) {}
+    }
     setTarget(domain); // triggers the run (real lines if set, else scripted)
 
     // Fire the email-gated Tier-2 citation teaser (honest no-op until a key is set).
@@ -1364,7 +1401,7 @@ function LiveScan() {
                 aria-hidden="true"
               />
               <button className="btn" type="submit" data-cursor-label="scan">
-                run free scan <span className="arr">→</span>
+                run my free scan <span className="arr">→</span>
               </button>
               <div className="scan-disclaimer">
                 Instant teaser. Your full multi-surface audit (ChatGPT · Claude
@@ -1419,7 +1456,7 @@ const MESH_NODES = [
   { id: "llm", x: 30, y: 4, t: "llm.query.expand", v: "GPT · Claude · Gemini" },
   { id: "rag", x: 28, y: 56, t: "rag.retrieve", v: "k=24 sources" },
   { id: "cite", x: 54, y: 34, t: "citation.weave", v: "graph(82 edges)" },
-  { id: "schema", x: 52, y: 74, t: "schema.diff", v: "missing: Org+Svc" },
+  { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 1 a11y" },
   { id: "fix", x: 72, y: 16, t: "goblin.recommend", v: "12 ranked fixes" },
   { id: "ship", x: 72, y: 62, t: "human.review → PR", v: "queued · 3 pending" },
 ];
@@ -1437,32 +1474,32 @@ const MESH_STEPS = [
   [
     "01",
     "Listen to prompt surfaces",
-    "We sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — not just keyword tools.",
+    "Agents sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — not just keyword tools.",
   ],
   [
     "02",
     "Retrieve & diff citation graph",
-    "Map who LLMs actually cite for your category, then diff against your domain to expose missing sources.",
+    "Map who LLMs actually cite for your category, then diff against your domain to expose exactly which sources you're losing to.",
   ],
   [
     "03",
-    "Schema + content gap audit",
-    "Detect missing entities, weak structured data, thin comparison content, and unindexable proof pages.",
+    "Audit: schema · SEO · accessibility",
+    "One pass flags missing entities & structured data, technical-SEO leaks, thin content, AND WCAG 2.1 AA / Section 508 gaps — across real rendered component states, not a single snapshot.",
   ],
   [
     "04",
     "Goblin recommendation engine",
-    "Each gap becomes a ranked, scoped task with impact, effort, and exact paste-ready snippets.",
+    "Each gap becomes a ranked, scoped task with impact, effort, and a paste-ready fix prompt a coding agent can act on.",
   ],
   [
     "05",
     "Human-reviewed PRs",
-    "A human goblin reviews every change before it hits your CMS, schema, or content repo. No silent autonomous ops.",
+    "A human goblin approves every change before it hits your CMS, schema, or repo. Agentic, but accountable — nothing auto-ships.",
   ],
   [
     "06",
-    "Loop on cadence",
-    "The graph re-runs weekly. Visibility, citations, and entity coverage become a tracked KPI, not a vibe.",
+    "Loop on cadence — automatically",
+    "The graph re-runs on a schedule and reports the measured before/after delta. Visibility, citations, SEO, and a11y coverage become a tracked KPI, not a vibe.",
   ],
 ];
 
@@ -1642,10 +1679,17 @@ const TIERS = [
 ];
 
 function Pricing() {
-  const click = (key) => {
+  const click = (t) => {
+    // Rich checkout-intent event so PostHog can build a revenue-weighted funnel
+    // (free_scan -> scan_result_shown -> summon -> checkout_clicked -> $).
     try {
       window.posthog &&
-        window.posthog.capture("pricing_cta_clicked", { tier: key });
+        window.posthog.capture("checkout_clicked", {
+          tier: t.key,
+          tier_name: t.name,
+          price_usd: Number(String(t.price).replace(/[^0-9.]/g, "")) || 0,
+          interval: t.interval,
+        });
     } catch (_) {}
   };
   return (
@@ -1686,12 +1730,21 @@ function Pricing() {
               className={"btn" + (t.featured ? "" : " ghost")}
               href={t.link}
               data-cursor-label="checkout"
-              onClick={() => click(t.key)}
+              onClick={() => click(t)}
             >
               {t.cta} <span className="arr">→</span>
             </a>
           </div>
         ))}
+      </div>
+      <div className="penterprise">
+        <span>
+          <b style={{ color: "var(--lime)" }}>✓ 100% money-back guarantee</b>{" "}
+          — on the work, not the algorithm. If we don't deliver your audit, or
+          you're not happy with it within 14 days, you get every dollar back. We
+          won't promise a citation number (nobody honestly can) — we guarantee
+          the work and measure the rest straight.
+        </span>
       </div>
       <div className="penterprise">
         <span>
