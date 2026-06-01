@@ -597,6 +597,40 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
 .sf-ok-t { font-family: var(--pixel-tiny); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--lime); }
 .sf-ok-d { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
 
+/* Free-scan tool form (inside the Live Scan section) */
+.scan-form { display: flex; flex-direction: column; gap: 10px; }
+.scan-form input { font-family: var(--mono); font-size: 14px; color: var(--fg); background: rgba(0,0,0,.25); border: 1px solid var(--line-2); padding: 11px 12px; outline: none; transition: border-color .15s, background .15s; }
+body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
+.scan-form input::placeholder { color: var(--faint); }
+.scan-form input:focus { border-color: var(--lime); background: rgba(163,230,53,.05); }
+.scan-form .btn { justify-content: center; }
+.scan-disclaimer { font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--muted); }
+
+/* ============================================
+   PRICING  — Scout / Warband / Warlord
+   ============================================ */
+.pricing-grid { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+.ptier { padding: 34px var(--pad) 30px; display: flex; flex-direction: column; position: relative; transition: background .2s; }
+.ptier:hover { background: var(--panel); }
+.ptier.featured { background: rgba(163,230,53,0.06); box-shadow: inset 0 0 0 1px var(--lime); }
+.ptag { position: absolute; top: 0; right: var(--pad); transform: translateY(-50%); background: var(--lime); color: var(--bg); font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; }
+.pname { font-family: var(--pixel-tiny); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg); }
+.pwho { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 5px; }
+.pprice { font-family: var(--pixel); font-size: calc(34px * var(--display-mult)); color: var(--fg); margin-top: 22px; line-height: 1; }
+.pprice small { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-left: 7px; letter-spacing: 0; }
+.pdesc { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.5; min-height: 3.1em; }
+.pfeat { list-style: none; display: flex; flex-direction: column; gap: 9px; margin: 22px 0 26px; }
+.pfeat li { font-family: var(--mono); font-size: 12.5px; color: var(--fg); display: grid; grid-template-columns: 16px 1fr; gap: 6px; line-height: 1.4; }
+.pfeat li .c { color: var(--lime); }
+.ptier .btn { margin-top: auto; }
+.ptier.featured .btn { background: var(--lime); color: var(--bg); border-color: var(--lime); }
+.ptier.featured .btn:hover { background: transparent; color: var(--fg); }
+.ptier.featured .btn .arr { color: var(--bg); }
+.ptier.featured .btn:hover .arr { color: var(--lime); }
+.penterprise { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; padding: 20px var(--pad); border-top: 1px solid var(--line); font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.penterprise .btn { flex: 0 0 auto; }
+
 /* ============================================
    Responsive
    ============================================ */

@@ -1,6 +1,30 @@
 /* global React, ReactDOM, TweaksPanel, useTweaks, TweakSection, TweakRadio, TweakToggle, GoblinHead */
 const { useState, useEffect, useRef } = React;
 
+/* ===== external integration config (replace placeholders to go live) ===== */
+const WEB3FORMS_KEY = "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"; // free static-site form backend — web3forms.com
+const STRIPE_LINKS = {
+  // Stripe Payment Links (one hosted URL per tier — zero backend). Replace each.
+  scout:   "https://buy.stripe.com/REPLACE_scout_audit",
+  warband: "https://buy.stripe.com/REPLACE_warband_retainer",
+  warlord: "https://buy.stripe.com/REPLACE_warlord_retainer",
+};
+const STRIPE_SCOUT_LINK = STRIPE_LINKS.scout; // back-compat alias used by the Summon form
+
+// Fire-and-forget lead capture: PostHog event + Web3Forms (no-op until the key is set).
+function captureLead(event, data) {
+  try { window.posthog && window.posthog.capture(event, { domain: data.domain }); } catch (_) {}
+  if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
+    console.info("[" + event + "] form backend not configured — captured locally:", data);
+    return Promise.resolve(false);
+  }
+  return fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject: event + " ✦ " + (data.domain || ""), from_name: "promptgoblin.io", ...data }),
+  }).then((r) => r.ok).catch(() => false);
+}
+
 /* ===== hooks ===== */
 function useLocalTime() {
   const [t, setT] = useState(() => new Date());
@@ -88,9 +112,10 @@ function HUDTop({ theme, setTheme }) {
         <span className="muted">AI&nbsp;SEO / Chicago</span>
       </div>
       <div className="hud-center hud-menu">
+        <a href="#scan">./scan</a>
         <a href="#work">./work</a>
         <a href="#services">./services</a>
-        <a href="#scrolls">./scrolls</a>
+        <a href="#pricing">./pricing</a>
         <a href="#contact">./summon</a>
       </div>
       <div className="hud-right">
@@ -390,7 +415,7 @@ const QUOTES = [
 
 function Quotes() {
   return (
-    <section className="panel" data-screen-label="10 Quotes" data-section-name="Word on the street">
+    <section className="panel" data-screen-label="11 Quotes" data-section-name="Word on the street">
       <div className="panel-bar"><span className="id">04</span><span>word on the street</span><span className="grow"></span><span className="tk">grep ./reviews</span></div>
       <div className="grid-lines quotes">
         {QUOTES.map((x, i) =>
@@ -413,7 +438,7 @@ const SCROLLS = [
 
 function Scrolls() {
   return (
-    <section id="scrolls" className="panel" data-screen-label="11 Scrolls" data-section-name="Scrolls">
+    <section id="scrolls" className="panel" data-screen-label="12 Scrolls" data-section-name="Scrolls">
       <div className="panel-bar"><span className="id">05</span><span>$ cat ./scrolls/*.md</span><span className="grow"></span><span className="tk">field notes</span></div>
       <div className="grid-lines scrolls">
         {SCROLLS.map((s) =>
@@ -428,10 +453,7 @@ function Scrolls() {
 
 }
 
-/* ===== CONTACT / SUMMON — lead intake + payment-ready ===== */
-const WEB3FORMS_KEY = "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"; // free static-site form backend — web3forms.com
-const STRIPE_SCOUT_LINK = "https://buy.stripe.com/REPLACE_scout_audit"; // Stripe Payment Link for the Scout audit deposit
-
+/* ===== CONTACT / SUMMON — lead intake + payment-ready (config at top of file) ===== */
 function Contact() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -462,7 +484,7 @@ function Contact() {
   };
 
   return (
-    <section id="contact" className="panel" data-screen-label="12 Contact" data-section-name="Summon">
+    <section id="contact" className="panel" data-screen-label="13 Contact" data-section-name="Summon">
       <div className="panel-bar"><span className="id">06</span><span>$ goblin --summon</span><span className="grow"></span><span className="tk">Q3–Q4 2026 open</span></div>
       <div className="grid-lines contact-grid">
         <div className="contact-main">
@@ -521,22 +543,26 @@ function Contact() {
 
 /* ===== LIVE SCAN — goblin@visibility-mesh terminal (ported from handoff, dark+lime) ===== */
 let __scanUid = 0; /* monotonic key source — unique across re-runs of the scan loop */
-const SCAN_SCRIPT = [
-  { t: "cmd",  text: "goblin scan --surface llm" },
-  { t: "kv",   k: "query", v: '"best enterprise fleet software"' },
-  { t: "info", text: "checking ChatGPT / Claude / Gemini / Perplexity" },
-  { t: "info", text: "↳ retrieving citation graph (n=2,481 sources)" },
-  { t: "warn", text: "competitor detected: 4 mentions · avg position 2.3" },
-  { t: "err",  text: "your brand: 0 mentions · invisibility cloak ACTIVE" },
-  { t: "sep" },
-  { t: "issue", sev: "HIGH", text: "missing Organization + Service schema" },
-  { t: "issue", sev: "HIGH", text: "weak off-site citation graph" },
-  { t: "issue", sev: "MED",  text: "thin comparison content (vs. 6 competitors)" },
-  { t: "issue", sev: "MED",  text: "no LLM-readable proof pages or trust assets" },
-  { t: "sep" },
-  { t: "ok",   text: "goblin.recommend → schema + citation assets + intent pages" },
-  { t: "ok",   text: "invisibility cloak: BREAKABLE" },
-];
+function scanScript(domain) {
+  const clean = (domain || "").replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+  const brand = clean || "your brand";
+  return [
+    { t: "cmd",  text: "goblin scan --surface llm" + (clean ? " --domain " + clean : "") },
+    { t: "kv",   k: "query", v: clean ? '"best ' + clean + ' alternative"' : '"best enterprise fleet software"' },
+    { t: "info", text: "checking ChatGPT / Claude / Gemini / Perplexity" },
+    { t: "info", text: "↳ retrieving citation graph (n=2,481 sources)" },
+    { t: "warn", text: "competitor detected: 4 mentions · avg position 2.3" },
+    { t: "err",  text: brand + ": 0 mentions · invisibility cloak ACTIVE" },
+    { t: "sep" },
+    { t: "issue", sev: "HIGH", text: "missing Organization + Service schema" },
+    { t: "issue", sev: "HIGH", text: "weak off-site citation graph" },
+    { t: "issue", sev: "MED",  text: "thin comparison content (vs. 6 competitors)" },
+    { t: "issue", sev: "MED",  text: "no LLM-readable proof pages or trust assets" },
+    { t: "sep" },
+    { t: "ok",   text: "goblin.recommend → schema + citation assets + intent pages" },
+    { t: "ok",   text: "invisibility cloak: BREAKABLE" },
+  ];
+}
 
 const SPELLBARS = [
   { name: "schema.entity_graph",  pct: 92 },
@@ -549,28 +575,46 @@ function LiveScan() {
   const [lines, setLines] = useState([]);
   const [status, setStatus] = useState("cursed");
   const [pct, setPct] = useState(0);
+  const [target, setTarget] = useState("");   // "" = idle demo loop; set on submit
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
   const bodyRef = useRef(null);
 
+  // (Re)run whenever `target` changes. Idle loops the demo; a submitted domain
+  // runs once, then reveals the "full audit emailed" confirmation.
   useEffect(() => {
+    const script = scanScript(target);
     let i = 0, cancelled = false, timer;
     const tick = () => {
       if (cancelled) return;
-      if (i >= SCAN_SCRIPT.length) {
+      if (i >= script.length) {
         setStatus("fixable");
+        if (target) { setDone(true); return; }
         timer = setTimeout(() => {
           setLines([]); setStatus("cursed"); setPct(0); i = 0;
           timer = setTimeout(tick, 1400);
         }, 4200);
         return;
       }
-      setLines((p) => [...p, { ...SCAN_SCRIPT[i], id: __scanUid++ }]);
-      setPct(Math.round(((i + 1) / SCAN_SCRIPT.length) * 100));
+      setLines((p) => [...p, { ...script[i], id: __scanUid++ }]);
+      setPct(Math.round(((i + 1) / script.length) * 100));
       i++;
       timer = setTimeout(tick, 300 + Math.random() * 220);
     };
+    setLines([]); setStatus("cursed"); setPct(0);
     timer = setTimeout(tick, 500);
     return () => { cancelled = true; clearTimeout(timer); };
-  }, []);
+  }, [target]);
+
+  const onScan = (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    if (data.botcheck) return;            // honeypot
+    captureLead("free_scan_requested", { domain: data.domain, email: data.email });
+    setEmail(data.email || "");
+    setDone(false);
+    setTarget((data.domain || "").trim());  // triggers a fresh scan for their domain
+  };
 
   useEffect(() => {
     const el = bodyRef.current;
@@ -604,6 +648,24 @@ function LiveScan() {
           </div>
         </div>
         <div className="scan-side">
+          {!done ? (
+            <form className="scan-form" onSubmit={onScan}>
+              <div className="sf-lbl">$ run a free scan</div>
+              <input name="domain" required placeholder="yourbrand.com" autoComplete="url" />
+              <input name="email" type="email" required placeholder="you@brand.com" autoComplete="email" />
+              <input type="text" name="botcheck" className="sf-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+              <button className="btn" type="submit" data-cursor-label="scan">run free scan <span className="arr">→</span></button>
+              <div className="scan-disclaimer">Instant teaser. Your full multi-surface audit (ChatGPT · Claude · Gemini · Perplexity · AI Overviews) is emailed within a working day.</div>
+            </form>
+          ) : (
+            <div className="sf-ok">
+              <div className="sf-ok-mark">✓</div>
+              <div>
+                <div className="sf-ok-t">scan queued for {target}</div>
+                <div className="sf-ok-d">Your full multi-surface audit is on its way to {email || "your inbox"} within a working day. The teaser above is illustrative — the real run hits all five answer engines.</div>
+              </div>
+            </div>
+          )}
           <div className="scan-status-row">
             <span className="k">visibility status</span>
             <span className={"scan-pill " + status}>{status === "cursed" ? "✕ cursed" : "⚡ fixable"}</span>
@@ -617,7 +679,6 @@ function LiveScan() {
               </div>
             ))}
           </div>
-          <div className="scan-note">A free scan of your real prompt surface. The full <b>Scout</b> audit ships 30+ ranked, paste-ready fixes.</div>
         </div>
       </div>
     </section>);
@@ -718,6 +779,79 @@ function VisibilityMesh() {
 
 }
 
+/* ===== PRICING — Scout / Warband / Warlord (Stripe Payment Links) ===== */
+const TIERS = [
+  {
+    key: "scout", name: "Goblin Scout", who: "founders & solo operators",
+    price: "2,950", interval: "one-time", link: STRIPE_LINKS.scout, cta: "Hire a Scout",
+    desc: "A deep multi-surface visibility audit that ships fixes — not a PDF.",
+    bullets: [
+      "Full LLM citation audit · 5 surfaces",
+      "Schema + entity gap report",
+      "Competitor citation diff (top 6)",
+      "Ranked fix queue · 30+ tasks (impact × effort)",
+      "60-min goblin office hour",
+    ],
+  },
+  {
+    key: "warband", name: "Goblin Warband", who: "scaleups w/ a marketing team",
+    price: "4,800", interval: "/ mo", link: STRIPE_LINKS.warband, cta: "Summon Warband",
+    featured: true, tag: "most chosen",
+    desc: "The recurring agentic loop. We run the graph, you ship the fixes.",
+    bullets: [
+      "Everything in Scout",
+      "Weekly agentic re-runs",
+      "Citation-acquisition campaigns",
+      "Schema + content PRs to your repo / CMS",
+      "Slack w/ a real goblin · <24h SLA",
+      "Live visibility dashboard",
+    ],
+  },
+  {
+    key: "warlord", name: "Goblin Warlord", who: "agencies, ecomm, multi-brand",
+    price: "12,500", interval: "/ mo", link: STRIPE_LINKS.warlord, cta: "Forge Warlord",
+    desc: "White-label the goblin. Multi-domain, custom graph, dedicated strategist.",
+    bullets: [
+      "Everything in Warband",
+      "Up to 8 domains / brands",
+      "Custom LangGraph workflows",
+      "Dedicated retrieval mesh",
+      "Quarterly strategy summit",
+      "White-label deliverables",
+    ],
+  },
+];
+
+function Pricing() {
+  const click = (key) => { try { window.posthog && window.posthog.capture("pricing_cta_clicked", { tier: key }); } catch (_) {} };
+  return (
+    <section id="pricing" className="panel" data-screen-label="10 Pricing" data-section-name="Pricing">
+      <div className="panel-bar"><span className="id">07</span><span>$ goblin --pricing</span><span className="grow"></span><span className="tk">flat fee · no credits · no sales call</span></div>
+      <div className="grid-lines pricing-grid">
+        {TIERS.map((t) => (
+          <div key={t.key} className={"ptier" + (t.featured ? " featured" : "")}>
+            {t.tag && <span className="ptag">{t.tag}</span>}
+            <div className="pname">{t.name}</div>
+            <div className="pwho">// {t.who}</div>
+            <div className="pprice">${t.price}<small>{t.interval}</small></div>
+            <div className="pdesc">{t.desc}</div>
+            <ul className="pfeat">
+              {t.bullets.map((b) => (<li key={b}><span className="c">▸</span> {b}</li>))}
+            </ul>
+            <a className={"btn" + (t.featured ? "" : " ghost")} href={t.link} data-cursor-label="checkout" onClick={() => click(t.key)}>
+              {t.cta} <span className="arr">→</span>
+            </a>
+          </div>
+        ))}
+      </div>
+      <div className="penterprise">
+        <span>◆ enterprise · multi-region · regulated — on-prem retrieval, custom auth, a goblin embedded in your team.</span>
+        <a className="btn ghost" href="mailto:hi@promptgoblin.io" data-cursor-label="talk">talk to a goblin <span className="arr">→</span></a>
+      </div>
+    </section>);
+
+}
+
 /* ===== section spy ===== */
 function useSectionSpy(ids) {
   const [active, setActive] = useState(0);
@@ -775,9 +909,10 @@ const SECTIONS = [
 { id: "07 Index", name: "Index / Now" },
 { id: "08 Work", name: "./work" },
 { id: "09 Services", name: "./services" },
-{ id: "10 Quotes", name: "Word on street" },
-{ id: "11 Scrolls", name: "./scrolls" },
-{ id: "12 Contact", name: "Summon" }];
+{ id: "10 Pricing", name: "Pricing" },
+{ id: "11 Quotes", name: "Word on street" },
+{ id: "12 Scrolls", name: "./scrolls" },
+{ id: "13 Contact", name: "Summon" }];
 
 function App() {
   const ids = SECTIONS.map((s) => s.id);
@@ -800,6 +935,7 @@ function App() {
           <IndexNow />
           <Work />
           <Services />
+          <Pricing />
           <Quotes />
           <Scrolls />
           <Contact />
