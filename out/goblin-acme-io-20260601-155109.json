@@ -1,0 +1,162 @@
+{
+  "domain": "acme.io",
+  "competitors": [
+    "rival1.com",
+    "rival2.com"
+  ],
+  "generated_at": "2026-06-01 15:51:09Z",
+  "mode": "mock",
+  "visibility": {
+    "acme.io": 0.0857,
+    "rival1.com": 0.1857,
+    "rival2.com": 0.2
+  },
+  "approved_fixes": [
+    {
+      "id": "FIX-006",
+      "title": "Missing FAQPage JSON-LD on acme",
+      "kind": "schema",
+      "rationale": "Missing FAQPage JSON-LD on acme.io. Engines can't extract this entity.",
+      "impact": 4,
+      "effort": 1,
+      "score": 12.8,
+      "snippet": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"name\": \"acme.io\",\n  \"url\": \"https://acme.io\"\n}\n</script>",
+      "approved": true
+    },
+    {
+      "id": "FIX-007",
+      "title": "Missing Product JSON-LD on acme",
+      "kind": "schema",
+      "rationale": "Missing Product JSON-LD on acme.io. Engines can't extract this entity.",
+      "impact": 4,
+      "effort": 1,
+      "score": 12.8,
+      "snippet": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Product\",\n  \"name\": \"acme.io\",\n  \"url\": \"https://acme.io\"\n}\n</script>",
+      "approved": true
+    },
+    {
+      "id": "FIX-001",
+      "title": "Win citations for: What is the best acme.io tool in 2026?",
+      "kind": "citation",
+      "rationale": "Client not cited for 'What is the best acme.io tool in 2026?'. Cited instead: capterra.com, competitor-a.com, competitor-b.com, en.wikipedia.org, g2.com, gartner.com, reddit.com, rival1.com, rival2.com.",
+      "impact": 5,
+      "effort": 3,
+      "score": 8.333,
+      "snippet": "Pitch acme.io as a citable source for 'What is the best acme.io tool in 2026?'.\n- Publish an answer-first explainer; earn mentions on G2/Reddit/Wikipedia\n- Target the same sources currently citing rival1.com, rival2.com\n- Add an llms.txt entry pointing engines at the canonical answer page",
+      "approved": true
+    },
+    {
+      "id": "FIX-002",
+      "title": "Win citations for: Best acme.io software for B2B SaaS teams",
+      "kind": "citation",
+      "rationale": "Client not cited for 'Best acme.io software for B2B SaaS teams'. Cited instead: competitor-a.com, competitor-b.com, en.wikipedia.org, g2.com, gartner.com, reddit.com, rival1.com, rival2.com.",
+      "impact": 5,
+      "effort": 3,
+      "score": 8.333,
+      "snippet": "Pitch acme.io as a citable source for 'Best acme.io software for B2B SaaS teams'.\n- Publish an answer-first explainer; earn mentions on G2/Reddit/Wikipedia\n- Target the same sources currently citing rival1.com, rival2.com\n- Add an llms.txt entry pointing engines at the canonical answer page",
+      "approved": true
+    },
+    {
+      "id": "FIX-003",
+      "title": "Win citations for: acme.io vs rival1.com: which is better for acme.io?",
+      "kind": "citation",
+      "rationale": "Client not cited for 'acme.io vs rival1.com: which is better for acme.io?'. Cited instead: competitor-a.com, competitor-b.com, en.wikipedia.org, g2.com, gartner.com, reddit.com, rival1.com, rival2.com.",
+      "impact": 5,
+      "effort": 3,
+      "score": 8.333,
+      "snippet": "Pitch acme.io as a citable source for 'acme.io vs rival1.com: which is better for acme.io?'.\n- Publish an answer-first explainer; earn mentions on G2/Reddit/Wikipedia\n- Target the same sources currently citing rival1.com, rival2.com\n- Add an llms.txt entry pointing engines at the canonical answer page",
+      "approved": true
+    },
+    {
+      "id": "FIX-004",
+      "title": "Win citations for: Top alternatives to rival1.com for acme.io",
+      "kind": "citation",
+      "rationale": "Client not cited for 'Top alternatives to rival1.com for acme.io'. Cited instead: capterra.com, competitor-a.com, competitor-b.com, en.wikipedia.org, g2.com, gartner.com, reddit.com, rival1.com, rival2.com.",
+      "impact": 5,
+      "effort": 3,
+      "score": 8.333,
+      "snippet": "Pitch acme.io as a citable source for 'Top alternatives to rival1.com for acme.io'.\n- Publish an answer-first explainer; earn mentions on G2/Reddit/Wikipedia\n- Target the same sources currently citing rival1.com, rival2.com\n- Add an llms.txt entry pointing engines at the canonical answer page",
+      "approved": true
+    },
+    {
+      "id": "FIX-005",
+      "title": "Win citations for: Is acme.io secure and SOC 2 compliant?",
+      "kind": "citation",
+      "rationale": "Client not cited for 'Is acme.io secure and SOC 2 compliant?'. Cited instead: capterra.com, competitor-a.com, competitor-b.com, en.wikipedia.org, gartner.com, rival1.com, rival2.com.",
+      "impact": 5,
+      "effort": 3,
+      "score": 8.333,
+      "snippet": "Pitch acme.io as a citable source for 'Is acme.io secure and SOC 2 compliant?'.\n- Publish an answer-first explainer; earn mentions on G2/Reddit/Wikipedia\n- Target the same sources currently citing rival1.com, rival2.com\n- Add an llms.txt entry pointing engines at the canonical answer page",
+      "approved": true
+    },
+    {
+      "id": "FIX-010",
+      "title": "Create head-to-head comparison page",
+      "kind": "content",
+      "rationale": "No head-to-head comparison page answering 'acme.io vs rival1.com: which is better for acme.io?'. Client is uncited here \u2014 high leverage.",
+      "impact": 5,
+      "effort": 4,
+      "score": 6.25,
+      "snippet": "# acme.io vs rival1.com: which is better for acme.io?\n\n## TL;DR (answer-first, 2-3 sentences)\n## Comparison table: us vs. alternatives\n## FAQ (mark up as FAQPage JSON-LD)\n## Sources & methodology\n",
+      "approved": true
+    },
+    {
+      "id": "FIX-008",
+      "title": "Missing BreadcrumbList JSON-LD on acme",
+      "kind": "schema",
+      "rationale": "Missing BreadcrumbList JSON-LD on acme.io. Engines can't extract this entity.",
+      "impact": 3,
+      "effort": 1,
+      "score": 5.4,
+      "snippet": "<script type=\"application/ld+json\">\n{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"name\": \"acme.io\",\n  \"url\": \"https://acme.io\"\n}\n</script>",
+      "approved": true
+    },
+    {
+      "id": "FIX-009",
+      "title": "Create category cornerstone / buyer's guide",
+      "kind": "content",
+      "rationale": "No category cornerstone / buyer's guide answering 'What is the best acme.io tool in 2026?'. Client is uncited here \u2014 high leverage.",
+      "impact": 5,
+      "effort": 4,
+      "score": 5.0,
+      "snippet": "# What is the best acme.io tool in 2026?\n\n## TL;DR (answer-first, 2-3 sentences)\n## Comparison table: us vs. alternatives\n## FAQ (mark up as FAQPage JSON-LD)\n## Sources & methodology\n",
+      "approved": true
+    },
+    {
+      "id": "FIX-013",
+      "title": "Create security & compliance / trust page",
+      "kind": "content",
+      "rationale": "No security & compliance / trust page answering 'Is acme.io secure and SOC 2 compliant?'. Client is uncited here \u2014 high leverage.",
+      "impact": 5,
+      "effort": 4,
+      "score": 5.0,
+      "snippet": "# Is acme.io secure and SOC 2 compliant?\n\n## TL;DR (answer-first, 2-3 sentences)\n## Comparison table: us vs. alternatives\n## FAQ (mark up as FAQPage JSON-LD)\n## Sources & methodology\n",
+      "approved": true
+    },
+    {
+      "id": "FIX-011",
+      "title": "Create transparent pricing / cost explainer",
+      "kind": "content",
+      "rationale": "No transparent pricing / cost explainer answering 'How much does acme.io software cost?'. Strengthen to defend this surface.",
+      "impact": 4,
+      "effort": 4,
+      "score": 2.4,
+      "snippet": "# How much does acme.io software cost?\n\n## TL;DR (answer-first, 2-3 sentences)\n## Comparison table: us vs. alternatives\n## FAQ (mark up as FAQPage JSON-LD)\n## Sources & methodology\n",
+      "approved": true
+    },
+    {
+      "id": "FIX-012",
+      "title": "Create integrations directory page",
+      "kind": "content",
+      "rationale": "No integrations directory page answering 'Does acme.io integrate with my existing stack?'. Strengthen to defend this surface.",
+      "impact": 4,
+      "effort": 4,
+      "score": 2.4,
+      "snippet": "# Does acme.io integrate with my existing stack?\n\n## TL;DR (answer-first, 2-3 sentences)\n## Comparison table: us vs. alternatives\n## FAQ (mark up as FAQPage JSON-LD)\n## Sources & methodology\n",
+      "approved": true
+    }
+  ],
+  "dropped_fix_ids": [],
+  "pr_title": "AEO/GEO fixes for acme.io (13 approved)",
+  "pr_branch": "goblin/acme-io-20260601-155109"
+}

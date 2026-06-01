@@ -2,6 +2,9 @@
 _extracted/
 *.zip
 
+# The agentic AEO pipeline is a separate deployable (its own repo) — never serve it as static
+pipeline/
+
 # Local env / secrets — never commit
 .env
 .env.*
