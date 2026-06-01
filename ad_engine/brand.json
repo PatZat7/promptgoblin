@@ -1,0 +1,270 @@
+{
+  "$comment": "Prompt Goblin brand source-of-truth for the ad engine. Every value here is EXTRACTED from the live site — styles.css (palette, fonts), app.jsx (voice, taglines, tiers, prices, positioning), goblin-logo.jsx + sprites.jsx (the mark). Do not invent values; if the site changes, re-extract. This doubles as the brand-guidelines.md payload for Claude Design and the brand-conditioning block for image models.",
+  "brand": {
+    "name": "Prompt Goblin",
+    "wordmark": "Prompt_Goblin™",
+    "domain": "promptgoblin.zatgeist.com",
+    "email": "hi@promptgoblin.io",
+    "location": "Chicago, IL (Logan Square) — 41.88°N, 87.63°W",
+    "oneLiner": "AI search visibility & technical SEO — plus accessibility — from a one-goblin shop.",
+    "positioning": "A solo, honest-broker shop for AI-search visibility (AEO/GEO), technical SEO, and WCAG 2.1 AA / Section 508 accessibility. Gov-forward ICP (accessibility is legally mandated for government); commercial kept. Measures who answer engines actually cite, then ships human-reviewed schema/crawl/content/a11y fixes. Days, not quarters.",
+    "archetype": "The Trickster-Craftsman — an irreverent goblin who does rigorous, accountable work. Outsider energy, insider competence."
+  },
+  "palette": {
+    "$note": "Hex/RGBA pulled verbatim from styles.css :root and the body[data-palette] themes. 'dark' is the default brand skin; 'bone' is the light theme; 'noir' and 'rust' are alternate skins. Use dark+lime as the primary ad look unless a campaign calls for light.",
+    "core": {
+      "bg": "#0A0B0A",
+      "panel": "#0E0F0D",
+      "fg": "#E9E7DC",
+      "ink": "#E9E7DC",
+      "bone": "#E9E7DC",
+      "muted": "rgba(233, 231, 220, 0.66)",
+      "faint": "rgba(233, 231, 220, 0.6)",
+      "line": "rgba(233, 231, 220, 0.16)",
+      "line2": "rgba(233, 231, 220, 0.30)"
+    },
+    "accents": {
+      "lime": "#A3E635",
+      "limeDark": "#6E9E1E",
+      "accent": "#A3E635",
+      "glow": "rgba(163, 230, 53, 0.38)",
+      "fire": "#E33B14",
+      "fire2": "#F7A41D",
+      "ice": "#4FC3F7",
+      "ice2": "#B8E8FF",
+      "bolt": "#FFD60A",
+      "lightning": "#FFD60A"
+    },
+    "themes": {
+      "dark": {
+        "label": "Dark + Lime (default / primary)",
+        "bg": "#0A0B0A",
+        "panel": "#0E0F0D",
+        "fg": "#E9E7DC",
+        "accent": "#A3E635"
+      },
+      "bone": {
+        "label": "Bone (light)",
+        "bg": "#F4F2EC",
+        "panel": "#FBFAF6",
+        "fg": "#0A0B0A",
+        "accent": "#4D7C0F",
+        "$note": "On the light theme the lime DARKENS to #4d7c0f / #3f6212 to keep AA contrast. Never put #A3E635 text on a light background."
+      },
+      "noir": {
+        "label": "Noir (mono black/white)",
+        "bg": "#000000",
+        "panel": "#080808",
+        "fg": "#FFFFFF",
+        "accent": "#FFFFFF"
+      },
+      "rust": {
+        "label": "Rust (warm alt skin)",
+        "bg": "#120D0A",
+        "panel": "#16100C",
+        "fg": "#E9E7DC",
+        "accent": "#E8804A",
+        "accentDark": "#B83A14"
+      }
+    },
+    "usage": {
+      "primaryDuo": ["#0A0B0A", "#A3E635"],
+      "rules": [
+        "Lime #A3E635 is the single hero accent on dark — one screaming color, used sparingly: the CTA, one keyword, the goblin glow.",
+        "Body and headlines on dark are bone #E9E7DC, never pure white.",
+        "On the bone/light theme, demote lime to #4d7c0f for any text or fine lines (AA contrast).",
+        "fire/ice/bolt are SPELL accents (AEO=fire, A11Y=ice, SEO=bolt) — use only for the three-discipline motif, not as general brand color.",
+        "Backgrounds carry a faint scanline texture and ~5% film grain overlay."
+      ]
+    }
+  },
+  "typography": {
+    "$note": "Four faces pulled from styles.css custom props (--pixel, --pixel-soft, --pixel-tiny, --mono) and confirmed in the colophon ('Set in Press Start 2P · VT323 · JetBrains Mono').",
+    "display": {
+      "family": "Press Start 2P",
+      "role": "Headlines, hero, prices, big numbers. Chunky 8-bit pixel face. Tight leading, set BIG, sentence case (not all-caps) for hero lines.",
+      "cssVar": "--pixel"
+    },
+    "numerals": {
+      "family": "VT323",
+      "role": "Marquee, large quote text, big secondary numerals. Softer pixel terminal face.",
+      "cssVar": "--pixel-soft"
+    },
+    "labels": {
+      "family": "Silkscreen",
+      "role": "Tiny UPPERCASE labels, kickers, button text, tags. letter-spacing ~0.06em, text-transform uppercase, ~9–12px.",
+      "cssVar": "--pixel-tiny"
+    },
+    "body": {
+      "family": "JetBrains Mono",
+      "role": "All body copy, terminal lines, form fields. The workhorse monospace. font-feature-settings calt, ss01.",
+      "cssVar": "--mono",
+      "fallback": "ui-monospace, 'SF Mono', monospace"
+    },
+    "rules": [
+      "Everything is monospace or pixel — there is NO proportional sans/serif anywhere. This is load-bearing to the brand.",
+      "Hero headlines: Press Start 2P, sentence case, one keyword in lime.",
+      "Labels/CTAs/tags: Silkscreen, UPPERCASE, tracked out.",
+      "Body: JetBrains Mono, sentence case, comfortable measure (~30–56ch)."
+    ]
+  },
+  "logo": {
+    "name": "Goblin head mark",
+    "description": "A line-art goblin head: a wide horned/eared crown with two upright ears, two glowing eyes, a fanged grin, framed by mirrored bracket strokes. Rendered as a single-color vector that inherits currentColor — lime #A3E635 on dark, with a double drop-shadow lime glow in the hero.",
+    "vectorSource": "goblin-logo.jsx (GoblinHead) — inline SVG, viewBox 0 0 502.3 360.6, fill: currentColor",
+    "pixelVariants": {
+      "source": "sprites.jsx",
+      "big": "SPRITE_GOBLIN (16×16 pixel head)",
+      "mark": "SPRITE_GOBLIN_MARK (8×8 logo mark)",
+      "blink": "SPRITE_GOBLIN_BLINK (closed-eye idle frame)"
+    },
+    "placement": "Top-left lockup with the wordmark 'Prompt_Goblin™' in Silkscreen. In ads: mark + wordmark bottom-left or top-left, never centered, never on a busy area. Keep clear space ≈ one ear-height around the mark.",
+    "color": {
+      "onDark": "#A3E635",
+      "onLight": "#0A0B0A or #4D7C0F",
+      "glow": "drop-shadow lime, dark theme only"
+    },
+    "referenceImageNote": "For image models that accept reference images (Nano Banana / gpt-image-1) and for Claude Design: export the GoblinHead SVG to PNG at 1024px on transparent bg and pass it as the logo reference. Models cannot reliably DRAW this mark from text alone — always composite the real asset (see prompts.md 'Logo handling')."
+  },
+  "voice": {
+    "personality": "Terminal / 8-bit, irreverent, plainspoken. Talks like a competent dev in a CLI, not a marketer in a deck. Confident, a little gremlin-mischievous, allergic to fluff.",
+    "taglines": [
+      "Get found by robots. Stay usable by humans.",
+      "Visible AF",
+      "Get found by robots. Stay usable by humans. Visible AF."
+    ],
+    "lexicon": {
+      "summon": "the CTA verb — use 'summon', never 'contact us' or 'get in touch'",
+      "cast/spell/spellbook": "the three disciplines are 'spells' in a 'Visibility Spellbook'",
+      "cursed → fixable": "an un-found site is 'cursed' / wears an 'invisibility cloak'; the fix makes it 'fixable' / 'BREAKABLE'",
+      "goblin": "the operator is 'a goblin' / 'a real human-goblin'",
+      "Visible AF": "the rallying cry / outcome state",
+      "days not quarters": "the speed promise"
+    },
+    "motifs": [
+      "Command-line framing ($ goblin scan ...).",
+      "Answer engines named explicitly: ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews.",
+      "Scanlines, terminal windows, hairline grids, pixel cursor."
+    ],
+    "do": [
+      "Open on the pain ('Invisible to ChatGPT?').",
+      "Be concrete and measured ('we measure the delta, not promise a number').",
+      "Use one screaming lime accent and otherwise restraint.",
+      "Name the honest mechanism (brand mentions + Bing rank), not magic."
+    ],
+    "dont": [
+      "Don't promise a citation count or ranking guarantee — nobody honestly can.",
+      "Don't call schema or llms.txt a 'citation lever' — they're hygiene that clears the way.",
+      "Don't imply anything auto-deploys — a human goblin reviews every change.",
+      "Don't use corporate filler ('cutting-edge', 'synergy', 'revolutionary').",
+      "Don't sell accessibility as compliance-by-tool — automation catches ~57%, the rest needs a human pass.",
+      "Don't fabricate clients, testimonials, or outcomes."
+    ],
+    "honestyGuardrails": [
+      "Schema / llms.txt = hygiene, not a citation lever. Real levers = brand mentions + Bing rank.",
+      "A11y automation (axe-core) catches ~57%; remainder needs a human pass.",
+      "Nothing auto-deploys / auto-sends — human-in-the-loop.",
+      "Gov outreach is FAR/FOIA-compliant, no gifts.",
+      "100% money-back guarantee is on the WORK, not the algorithm."
+    ]
+  },
+  "offer": {
+    "disciplines": [
+      { "code": "AEO", "spell": "fire", "label": "answer-engine visibility", "blurb": "Get cited inside ChatGPT, Claude, Gemini, Perplexity & AI Overviews." },
+      { "code": "SEO", "spell": "bolt", "label": "technical foundation", "blurb": "Crawl, index, schema, Core Web Vitals — the base AEO stands on." },
+      { "code": "A11Y", "spell": "ice", "label": "WCAG 2.1 AA + Section 508", "blurb": "Accessible to people and parseable by machines. Required for gov." }
+    ],
+    "tiers": [
+      {
+        "key": "scout",
+        "name": "Goblin Scout",
+        "who": "founders & solo operators",
+        "price": "2,950",
+        "interval": "one-time",
+        "summary": "A 5-surface visibility audit that ships reviewed fixes — not a PDF. Headlined by your citation-graph diff vs a named competitor."
+      },
+      {
+        "key": "warband",
+        "name": "Goblin Warband",
+        "who": "scaleups w/ a marketing team",
+        "price": "4,800",
+        "interval": "/ mo",
+        "featured": true,
+        "tag": "most chosen",
+        "summary": "The recurring agentic loop. We run the graph and ship the reviewed PRs — you approve."
+      },
+      {
+        "key": "warlord",
+        "name": "Goblin Warlord",
+        "who": "agencies, ecomm, multi-brand",
+        "price": "12,500",
+        "interval": "/ mo",
+        "summary": "White-label the goblin. Multi-domain, custom graph, dedicated strategist."
+      }
+    ],
+    "guarantee": "100% money-back guarantee — on the work, not the algorithm. Full refund if we don't deliver the audit, or you're not happy within 14 days.",
+    "proof": [
+      "Free scan, no card, no sales call.",
+      "Nothing auto-deploys — human-reviewed PRs/drafts.",
+      "Dogfooded: we scanned ourselves first (baseline 0% cited, fixes shipping)."
+    ]
+  },
+  "icp": {
+    "$note": "Gov-forward primary, commercial secondary — per shop positioning.",
+    "government": {
+      "label": "Government & public sector (PRIMARY)",
+      "painPoints": [
+        "Section 508 / ADA Title II accessibility is legally mandated and audited.",
+        "April 2026+ ADA Title II deadlines for state/local government web & apps.",
+        "Citizens can't find services inside AI answer engines.",
+        "Procurement needs documented, human-verified remediation — not a tool's PDF."
+      ],
+      "angle": "508/ADA deadline pressure + honest, human-verified remediation + agentic-but-accountable workflow. FAR/FOIA-compliant outreach, no gifts.",
+      "complianceNote": "Never claim compliance-by-tool. Frame as: automated stateful axe-core pass + a human goblin pass, delivered as reviewed fix PRs."
+    },
+    "commercial": {
+      "label": "Commercial B2B (SECONDARY)",
+      "painPoints": [
+        "Invisible inside ChatGPT/Perplexity/AI Overviews while competitors get cited.",
+        "Agencies scope a quick fix into a quarter.",
+        "Vanity 'AI SEO' vendors promise citation counts they can't deliver."
+      ],
+      "angle": "Citation-graph diff vs a named rival + days-not-quarters speed + flat fee, no meter."
+    }
+  },
+  "channels": {
+    "$note": "2026 character limits / sweet spots per platform research — used by generate.mjs and prompts.md to constrain copy. 'sweet' = the recommended length even when 'max' is higher.",
+    "linkedin": {
+      "label": "LinkedIn Single Image / Sponsored Content",
+      "introText": { "sweet": 150, "max": 600, "note": "Only ~150 chars show above the 'see more' fold." },
+      "headline": { "sweet": 70, "max": 200, "note": "Punchy benefit/pain beats long. Sub-70 outperforms." },
+      "description": { "sweet": 70, "max": 100 },
+      "cta": ["Learn more", "Sign up", "Download", "Request demo"],
+      "bestFor": "gov + B2B decision-makers; lead-gen, gated audits, thought-leadership.",
+      "guidance": "Open with the pain the audience feels daily. Native, tactical, non-corporate. Captions on any video."
+    },
+    "google": {
+      "label": "Google Responsive Search Ads",
+      "headline": { "max": 30, "count": 15, "note": "Up to 15 headlines, 30 chars each, spaces count." },
+      "description": { "max": 90, "count": 4, "note": "Up to 4 descriptions, 90 chars each." },
+      "path": { "max": 15, "count": 2 },
+      "bestFor": "high-intent search ('Section 508 remediation', 'AI SEO audit').",
+      "guidance": "Match headline to the query intent. Front-load keywords. Include one number/proof and one CTA headline."
+    },
+    "meta": {
+      "label": "Meta (Facebook / Instagram) Single Image",
+      "primaryText": { "sweet": 125, "max": 2200, "note": "~125 chars before 'See More'." },
+      "headline": { "sweet": 27, "max": 40, "note": "Feed shows ~27." },
+      "description": { "max": 25 },
+      "cta": ["Learn More", "Sign Up", "Download", "Contact Us"],
+      "bestFor": "broader awareness/retargeting; less B2B-native than LinkedIn.",
+      "guidance": "Hook in the first line, sound-off by default, mobile-first crop."
+    }
+  },
+  "imageSpecs": {
+    "$note": "Recommended output specs per channel for the image-generation prompts.",
+    "linkedin": { "ratio": "1.91:1", "px": "1200x627", "alt": "1:1 1080x1080 for feed-square" },
+    "google": { "ratio": "1.91:1 + 1:1 + 4:5", "px": "1200x628 / 1200x1200 / 960x1200", "note": "Responsive display needs landscape, square, and portrait." },
+    "meta": { "ratio": "1:1 or 4:5", "px": "1080x1080 / 1080x1350", "alt": "9:16 1080x1920 for Stories/Reels" }
+  }
+}
