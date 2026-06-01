@@ -20,3 +20,6 @@ node_modules/
 _verify*.png
 _verify.mjs
 package-lock.json
+
+# Stray pipeline run artifacts if the CLI is ever run from the site root
+out/
