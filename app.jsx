@@ -4,10 +4,12 @@ const { useState, useEffect, useRef } = React;
 /* ===== external integration config (replace placeholders to go live) ===== */
 const WEB3FORMS_KEY = "ee75925c-9368-4791-9f1c-522ead6fe7f1"; // free static-site form backend — web3forms.com
 const STRIPE_LINKS = {
-  // Stripe Payment Links (one hosted URL per tier — zero backend). Replace each.
-  scout: "https://buy.stripe.com/REPLACE_scout_audit",
-  warband: "https://buy.stripe.com/REPLACE_warband_retainer",
-  warlord: "https://buy.stripe.com/REPLACE_warlord_retainer",
+  // Stripe Payment Links (one hosted URL per tier — zero backend).
+  // NOTE: these are TEST-mode links (buy.stripe.com/test_…). Regenerate with a
+  // live sk_live_ key before taking real payments.
+  scout: "https://buy.stripe.com/test_5kQ3cx8ZL72abWk6MWaVa00",
+  warband: "https://buy.stripe.com/test_8x27sNek54U20dC8V4aVa01",
+  warlord: "https://buy.stripe.com/test_4gMaEZ1xj5Y6e4sc7gaVa02",
 };
 const STRIPE_SCOUT_LINK = STRIPE_LINKS.scout; // back-compat alias used by the Summon form
 
