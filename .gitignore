@@ -23,3 +23,8 @@ package-lock.json
 
 # Stray pipeline run artifacts if the CLI is ever run from the site root
 out/
+
+# Transient DO deploy scratch (never commit tokens/specs)
+_do_token.txt
+_do_app.json
+_do_resp.json
