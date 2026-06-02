@@ -21,8 +21,7 @@ packages:
         limits:
           timeout: 25000
           memory: 256
-        # PERPLEXITY_API_KEY is NOT bound here (never committed). Set it on the
-        # deployed function when a key exists, e.g.:
-        #   doctl serverless deploy . (this file) then in the DO console set the
-        #   tier2 function env var PERPLEXITY_API_KEY, or redeploy with the env
-        #   exported and the binding re-added. Until set, Tier-2 degrades honestly.
+        environment:
+          # Injected at deploy from the gitignored functions/.env (doctl auto-loads it).
+          # The literal value is NEVER committed — only this reference name is.
+          PERPLEXITY_API_KEY: ${PERPLEXITY_API_KEY}
