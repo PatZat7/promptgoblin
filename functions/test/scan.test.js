@@ -17,7 +17,7 @@ const path = require("path");
 const libDir = path.join(__dirname, "..", "lib");
 const { buildHygieneReport } = require(path.join(libDir, "hygiene"));
 const { tier1Summary, tier2Summary } = require(path.join(libDir, "voice"));
-const { askOne, runTeaser, buildQueries } = require(path.join(libDir, "perplexity"));
+const { askOne, runTeaser, buildQueries, extractCitations } = require(path.join(libDir, "perplexity"));
 const ratelimit = require(path.join(libDir, "ratelimit"));
 const { toUrl, normalizeDomain, isEmail } = require(path.join(libDir, "util"));
 
@@ -127,6 +127,30 @@ const one = await askOne({
 ok("askOne parses native citations", one.sources.length === 2);
 ok("askOne detects client cited", one.clientCited === true);
 ok("askOne detects competitor cited", one.competitorCited === true);
+
+const nestedSources = extractCitations({
+  citations: ["https://rival.com/compare"],
+  search_results: [{ url: "https://acme.com/blog" }, { link: "https://third.com/post" }],
+  choices: [{ message: { citations: ["https://nested.example/source", "https://rival.com/compare"] } }],
+});
+ok("extractCitations supports nested/message citations", nestedSources.includes("https://nested.example/source"));
+ok("extractCitations dedupes while preserving sources", nestedSources.length === 4);
+
+let sentBody = null;
+await askOne({
+  apiKey: "stub",
+  query: "token cap check",
+  clientDomain: "acme.com",
+  competitorDomain: "rival.com",
+  fetchImpl: async (_url, opts) => {
+    sentBody = JSON.parse(opts.body);
+    return {
+      ok: true,
+      json: async () => ({ choices: [{ message: { content: "ok" } }], citations: [] }),
+    };
+  },
+});
+ok("askOne sends capped max_tokens", sentBody && sentBody.max_tokens === 512);
 
 const teaser = await runTeaser({
   apiKey: "stub",
