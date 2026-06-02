@@ -466,7 +466,12 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 .scard .read { font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.06em; text-transform: uppercase; display:flex; gap: 8px; align-items:center; }
 .scard .read::after { content:"→"; transition: transform .25s; }
 .scard:hover .read::after { transform: translateX(4px); }
-.scard-soon { opacity: 0.55; cursor: default; }
+/* WCAG 1.4.3 fix: blanket opacity:0.55 multiplied --muted's effective alpha to
+   ~0.44, compositing to ~4.3:1 on --bg (AA small-text requires 4.5:1). Fix:
+   remove the ancestor opacity; signal "inactive" via muted headline color and
+   dashed border instead. All text nodes now pass at full token ratios (≥10:1). */
+.scard-soon { opacity: 1; cursor: default; border-style: dashed; border-color: var(--line-2); }
+.scard-soon h3 { color: var(--muted); }
 .scard-soon:hover { background: transparent; }
 .scard-soon .read::after { display: none; }
 @media (max-width: 900px) { .scrolls { grid-template-columns: 1fr; } }
