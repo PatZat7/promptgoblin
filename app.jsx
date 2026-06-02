@@ -281,7 +281,7 @@ function Loader() {
     step();
   }, []);
   return (
-    <div className={"loader" + (hide ? " hide" : "")}>
+    <div className={"loader" + (hide ? " hide" : "")} role="status" aria-label="Loading Prompt Goblin" aria-live="polite">
       <div>
         <div style={{ marginBottom: 12, color: "var(--muted)" }}>
           $ goblin crawl --self
@@ -313,63 +313,64 @@ function HUDTop({ theme, setTheme }) {
     timeZone: "America/Chicago",
   });
   return (
-    <div className="hud hud-top">
+    <header className="hud hud-top" role="banner">
       <div className="hud-left">
         <a className="logo" href="#top" data-cursor-label="home">
           <span className="logo-mark">
             <GoblinHead size={24} />
           </span>
-          <span>Prompt_Goblin™</span>
+          <span>Prompt_Goblin&#x2122;</span>
         </a>
-        <span className="hud-divider"></span>
-        <span className="muted">AI&nbsp;SEO / Chicago</span>
+        <span className="hud-divider" aria-hidden="true"></span>
+        <span className="muted" aria-hidden="true">AI&nbsp;SEO / Chicago</span>
       </div>
-      <div className="hud-center hud-menu">
+      <nav className="hud-center hud-menu" aria-label="Site navigation">
         <a href="#scan">./scan</a>
         <a href="#work">./work</a>
         <a href="#services">./services</a>
         <a href="#pricing">./pricing</a>
         <a href="#contact">./summon</a>
-      </div>
+      </nav>
       <div className="hud-right">
         <button
           className="theme-tog"
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           data-cursor-label="theme"
           title="Toggle light / dark"
+          aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
         >
-          <span className="sw"></span>
+          <span className="sw" aria-hidden="true"></span>
           <span className="lbl">{theme === "light" ? "LIGHT" : "DARK"}</span>
         </button>
-        <span className="hud-divider"></span>
-        <span>
+        <span className="hud-divider" aria-hidden="true"></span>
+        <span aria-hidden="true">
           <span className="dot"></span>&nbsp;VISIBLE&nbsp;AF
         </span>
-        <span className="hud-divider"></span>
-        <span>{time} CHI</span>
+        <span className="hud-divider" aria-hidden="true"></span>
+        <span aria-hidden="true">{time} CHI</span>
       </div>
-    </div>
+    </header>
   );
 }
 function HUDBottom({ section, total, name }) {
   return (
-    <div className="hud hud-bot">
+    <footer className="hud hud-bot" role="contentinfo">
       <div className="hud-left">
-        <span className="muted">41.88°N · 87.63°W</span>
+        <span className="muted" aria-hidden="true">41.88&#xb0;N &middot; 87.63&#xb0;W</span>
       </div>
-      <div className="hud-center">
-        <span className="muted">SECTOR —</span>
+      <div className="hud-center" aria-hidden="true">
+        <span className="muted">SECTOR &mdash;</span>
         <span>
           {String(section).padStart(2, "0")}/{String(total).padStart(2, "0")}
         </span>
         <span>{name}</span>
       </div>
       <div className="hud-right">
-        <span className="muted">EN_US</span>
-        <span className="hud-divider"></span>
-        <span>↑ top</span>
+        <span className="muted" aria-hidden="true">EN_US</span>
+        <span className="hud-divider" aria-hidden="true"></span>
+        <a href="#top" aria-label="Back to top">&#x2191; top</a>
       </div>
-    </div>
+    </footer>
   );
 }
 
@@ -392,71 +393,59 @@ function Hero() {
       data-section-name="Hero"
     >
       <div className="win-bar">
-        <span className="dots">
+        <span className="dots" aria-hidden="true">
           <i />
           <i />
           <i />
         </span>
-        <span className="grow">promptgoblin — ~/site — zsh — 132×42</span>
-        <span>⌥⌘</span>
+        <span className="grow">promptgoblin &#x2014; ~/site &#x2014; zsh &#x2014; 132&#xd7;42</span>
+        <span aria-hidden="true">&#x2325;&#x2318;</span>
       </div>
       <div className="hero-grid">
         <div className="hero-main reveal" ref={ref}>
           <div className="hero-kicker">
-            <span className="b"></span> Core positioning
+            <span className="b" aria-hidden="true"></span> AEO &middot; Technical SEO &middot; Accessibility
           </div>
           <h1 className="hero-title">
-            AI search
-            <br />
-            visibility &amp;
-            <br />
-            <span className="g">technical SEO</span>.
+            Get found by robots.<br />
+            <span className="g">Stay usable by humans.</span>
           </h1>
           <div className="hero-sub">
-            Get found by robots.
-            <br />
-            Stay usable by humans.<span className="cur"></span>
+            When an AI names the best in your category &#x2014; is it you, or your competitor?
+            <br />We measure that gap. Then we close it.<span className="cur" aria-hidden="true"></span>
           </div>
           <div className="hero-note">
-            A one-goblin shop that makes you <b>Visible AF</b> — we measure who
-            the answer engines actually cite for your category, then ship the
-            schema, crawl, and content fixes (human-reviewed, never
-            auto-deployed) to close the gap. Days, not quarters.
-          </div>
-          <div className="hero-note hero-gap-line">
-            When an AI names the best in your category — is it you, or your
-            competitor? We measure that gap. Then we close it.
+            A one-goblin shop: AEO, technical SEO, and accessibility &#x2014; all three, because they&rsquo;re
+            all the same problem: being readable and credible to every machine that matters.
+            <br />
+            <strong>Visible AF.</strong> No auto-deploys. No surprise invoices. No PDFs you implement yourself.
           </div>
           <div className="hero-cta">
-            <a className="btn" href="#contact" data-cursor-label="summon">
-              ./summon <span className="arr">→</span>
+            <a className="btn" href="#scan" data-cursor-label="scan">
+              run my free scan <span className="arr">&#x2192;</span>
             </a>
-            <a className="btn ghost" href="#work" data-cursor-label="browse">
-              ./see_work
+            <a className="btn ghost" href="#how-it-works" data-cursor-label="learn">
+              see how it works
             </a>
           </div>
-          <div className="hero-note" style={{ marginTop: 14 }}>
-            <b>✓ Free scan, no card.</b> Paid work backed by a 100% money-back
-            guarantee.
+          <div className="hero-guarantee">
+            Free scan, no card. Paid work backed by a 100% money-back guarantee &#x2014; on the work, not a citation number (nobody can honestly guarantee that).
           </div>
         </div>
         <div className="hero-side">
-          <div className="ascii-noise ascii-tr">{`schema fragments: [
-  "@type": "Org",
-  > **nodes ........ }
-**crawling graphs**
-***(.......) "teh"*,
-**objects .........
-^animated paypaths^
-............crable AF`}</div>
           <div className={"goblin-art" + (blink ? " blink" : "")}>
             <GoblinHead />
           </div>
-          <div className="ascii-noise ascii-bl">{`> crawl ok
-> index ok
-> cite-ready ✓`}</div>
           <div className="goblin-cap">
-            <span className="bk">▸</span> mascot.exe — online
+            <span className="bk" aria-hidden="true">&#x25b8;</span> mascot.exe &#x2014; online
+          </div>
+          <div className="hero-side-signals" aria-hidden="true">
+            <div className="hss-row"><span className="hss-engine">ChatGPT</span><span className="hss-bar"><i style={{width:"22%"}}></i></span></div>
+            <div className="hss-row"><span className="hss-engine">Claude</span><span className="hss-bar"><i style={{width:"18%"}}></i></span></div>
+            <div className="hss-row"><span className="hss-engine">Gemini</span><span className="hss-bar"><i style={{width:"15%"}}></i></span></div>
+            <div className="hss-row"><span className="hss-engine">Perplexity</span><span className="hss-bar"><i style={{width:"12%"}}></i></span></div>
+            <div className="hss-row"><span className="hss-engine">AI Overviews</span><span className="hss-bar"><i style={{width:"9%"}}></i></span></div>
+            <div className="hss-label">// citation share before &rarr; grow it</div>
           </div>
         </div>
       </div>
@@ -464,753 +453,121 @@ function Hero() {
   );
 }
 
-/* ===== SPELLBOOK — the three disciplines (AEO · SEO · Accessibility) ===== */
-const SPELLS = [
-  { ico: "fire", nm: "AEO", lv: "answer-engine visibility", sub: "Get cited inside ChatGPT, Claude, Gemini, Perplexity & AI Overviews." },
-  { ico: "bolt", nm: "SEO", lv: "technical foundation", sub: "Crawl, index, schema, Core Web Vitals — the base AEO stands on." },
-  { ico: "ice", nm: "A11Y", lv: "WCAG 2.1 AA + Section 508", sub: "Accessible to people and parseable by machines. Required for gov." },
-];
-function Spellbook() {
-  const ref = useReveal();
-  return (
-    <section
-      className="panel spellbook-sec"
-      data-screen-label="02 Spellbook"
-      data-section-name="Spellbook"
-    >
-      <div className="spellbook reveal" ref={ref}>
-        <div className="sb-head">
-          <span className="sb-title">
-            <span className="sb-bolt">
-              <SpriteLightning size={3} />
-            </span>{" "}
-            Visibility Spellbook
-          </span>
-          <span className="sb-count">3 schools · 1 goblin</span>
-        </div>
-        <div className="sb-cards">
-          {SPELLS.map((s) => (
-            <div className="sb-card" key={s.nm} data-cursor-label="cast">
-              <div className={"sb-ico ico-" + s.ico}>
-                {s.ico === "fire" && <SpriteFire size={4} />}
-                {s.ico === "ice" && <SpriteIce size={4} />}
-                {s.ico === "bolt" && <SpriteLightning size={4} />}
-              </div>
-              <div className="sb-meta">
-                <div className="nm">{s.nm}</div>
-                <div className="lv">{s.lv}</div>
-                <div className="sb-sub">{s.sub}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="sb-foot">
-          <span className="path">&gt; one stack: get found, stay legible, stay compliant</span>
-          <span className="pct">v2</span>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ===== STATS ===== */
-const STATS = [
-  { v: "5", k: "Answer engines scanned" },
-  { v: "6", k: "JSON-LD blocks · this site" },
-  { v: "7", k: "Pipeline nodes · human-gated" },
-  { v: "0", k: "Changes auto-deployed" },
-];
-
-function Stats() {
-  return (
-    <section
-      className="panel"
-      data-screen-label="05 Stats"
-      data-section-name="Telemetry"
-    >
-      <div className="panel-bar">
-        <span className="id">//</span>
-        <span>telemetry</span>
-        <span className="grow"></span>
-        <span className="tk">this site · dogfooded</span>
-      </div>
-      <div className="grid-lines stats">
-        {STATS.map((s, i) => (
-          <div className="stat" key={i}>
-            <div className="v">
-              {s.v}
-              <em>{s.e || ""}</em>
-            </div>
-            <div className="k">{s.k}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== MARQUEE ===== */
-function Marquee() {
-  const words = [
-    "schema.org",
-    "llms.txt",
-    "crawlability",
-    "structured data",
-    "answer engines",
-    "core web vitals",
-    "entity SEO",
-    "JSON-LD",
-    "RAG-ready",
-    "sitemaps",
-    "Visible AF",
-  ];
-  const run = (
-    <span>
-      {words.map((w, i) => (
-        <React.Fragment key={i}>
-          <span>{w}</span>
-          <span className="sep">▪</span>
-        </React.Fragment>
-      ))}
-    </span>
-  );
-  return (
-    <section
-      className="panel marquee"
-      data-screen-label="06 Marquee"
-      data-section-name="Keywords"
-    >
-      <div className="marquee-track">
-        {run}
-        {run}
-        {run}
-      </div>
-    </section>
-  );
-}
-
-/* ===== INDEX / NOW ===== */
-function IndexNow() {
-  const ref = useReveal();
-  return (
-    <section
-      id="index"
-      className="panel"
-      data-screen-label="07 Index"
-      data-section-name="Index / Now"
-    >
-      <div className="panel-bar">
-        <span className="id">01</span>
-        <span>index · now</span>
-        <span className="grow"></span>
-        <span className="tk">$ goblin status</span>
-      </div>
-      <div className="grid-lines index-grid">
-        <div className="idx-left">
-          <div className="h">// now</div>
-          <div className="now-row">
-            <span className="k">Open</span>
-            <span className="val">
-              taking 3 clients · <em>Q3–Q4 26</em>
-            </span>
-          </div>
-          <div className="now-row">
-            <span className="k">Building</span>
-            <span className="val">an llms.txt linter</span>
-          </div>
-          <div className="now-row">
-            <span className="k">Crawling</span>
-            <span className="val">my own graph + demo targets</span>
-          </div>
-          <div className="now-row">
-            <span className="k">Reading</span>
-            <span className="val">Google QRG, again</span>
-          </div>
-          <div className="now-row">
-            <span className="k">Based</span>
-            <span className="val">Logan Square, CHI</span>
-          </div>
-        </div>
-        <div className="idx-right reveal" ref={ref}>
-          <div className="statement">
-            <p className="line-mask">
-              <span style={{ "--d": "0s" }}>
-                I make sites <em>legible</em>
-              </span>
-            </p>
-            <p className="line-mask">
-              <span style={{ "--d": ".07s" }}>to crawlers and LLMs —</span>
-            </p>
-            <p className="line-mask">
-              <span style={{ "--d": ".14s" }}>
-                so you show up <em>where</em>
-              </span>
-            </p>
-            <p className="line-mask">
-              <span style={{ "--d": ".21s" }}>the answer gets written.</span>
-            </p>
-          </div>
-          <div className="body">
-            Two years deep in technical SEO and the new world of answer engines.
-            I ship <em>schema</em>, fix <em>crawl paths</em>, write the{" "}
-            <em>llms.txt</em>, and harden Core Web Vitals — small, urgent jobs
-            that a big agency would scope into a quarter. I move in days and
-            leave you a test suite.
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ===== WORK =====
-   One REAL dogfood case study (live OpenAI + Claude scan of our own site,
-   2026-06-01) + honest method cards. No fabricated clients or outcomes. */
-const WORK = [
+/* ===== HOW IT WORKS — the 6-step engine ===== */
+const ENGINE_STEPS = [
   {
     num: "01",
-    nm: "The Goblin's Own Lair",
-    tag: "dogfood · live scan",
-    span: 2,
-    title: "promptgoblin.zatgeist.com",
-    em: "— baseline 2026-06-01",
-    sub: "We scanned ourselves first. Honest starting line: 0% cited.",
-    term: [
-      { t: "cmd", v: "goblin scan --domain promptgoblin.zatgeist.com" },
-      { t: "mu", v: "// engines: ChatGPT + Claude · 8 buyer queries" },
-      { t: "warn", v: "client cited: 0%  (so is the competitor)" },
-      { t: "mu", v: "// engines cite semrush, ahrefs, moz, hubspot" },
-      { t: "ok", v: "12 fixes queued: 5 schema · 5 citation · 2 content" },
-      { t: "ok", v: "re-scan in 2 wks → measured delta, not a promise" },
-    ],
-    res: "baseline captured · fixes shipping · delta to follow",
+    title: "We ask your customer's question across five AI engines",
+    body: "Not keyword tools — real buyer queries sampled live from ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews. We capture who gets cited, and for what.",
   },
   {
     num: "02",
-    nm: "Schema layer",
-    tag: "method",
-    title: "Entity coverage",
-    em: "",
-    sub: "What an audit surfaces (illustrative, not a client result).",
-    term: [
-      { t: "cmd", v: "goblin audit --schema" },
-      { t: "mu", v: "// parse JSON-LD @types vs expected set" },
-      { t: "ok", v: "flag missing FAQPage / Product / Org / WebSite" },
-    ],
-    res: "hygiene gaps → paste-ready JSON-LD",
+    title: "We map the gap: you vs. your competitor",
+    body: "Every source the AI cited in your category gets logged. Then we diff it against your domain — so you see exactly which brands are eating your lunch, and why.",
   },
   {
     num: "03",
-    nm: "Citation diff",
-    tag: "method",
-    title: "Share of citations",
-    em: "",
-    sub: "Who the engines cite for your category — vs a named rival.",
-    term: [
-      { t: "cmd", v: "goblin diff --vs competitor.com" },
-      { t: "mu", v: "// ask 8 buyer prompts across 5 surfaces" },
-      { t: "ok", v: "rank the sources you're losing to" },
-    ],
-    res: "the gap, named — not a vanity score",
+    title: "One audit: SEO, AEO, and accessibility in a single pass",
+    body: "Missing schema. Thin content. Broken crawl paths. WCAG violations. All surfaced together, across real rendered page states — not a static snapshot. What breaks a screen reader often breaks an AI crawler too.",
   },
   {
     num: "04",
-    nm: "Content gaps",
-    tag: "method",
-    title: "Answer coverage",
-    em: "",
-    sub: "High-intent questions with no page that answers them.",
-    term: [
-      { t: "cmd", v: "goblin audit --content" },
-      { t: "mu", v: "// map prompts → cornerstone pages" },
-      { t: "ok", v: "answer-first briefs, FAQPage-ready" },
-    ],
-    res: "ranked by impact × effort",
+    title: "Every gap becomes a ranked, scoped fix",
+    body: "Impact vs. effort. Paste-ready. Prioritized so you know what to do first. No 200-item checklist that collects dust.",
   },
   {
     num: "05",
-    nm: "Human gate",
-    tag: "principle",
-    span: 2,
-    title: "Nothing auto-deploys",
-    em: "— you approve every change",
-    sub: "The pipeline ranks and drafts. A human goblin reviews and ships.",
-    term: [
-      { t: "cmd", v: "goblin scan … (interrupt_before: human_review)" },
-      { t: "warn", v: "⏸ paused — awaiting human approval" },
-      { t: "ok", v: "approved fixes → reviewed PRs / CMS drafts" },
-    ],
-    res: "agentic, but accountable",
+    title: "A human reviews every change before it ships",
+    body: "The system finds and ranks. A human goblin approves. Nothing auto-deploys — not schema, not content, not a comma. Agentic, but accountable.",
+  },
+  {
+    num: "06",
+    title: "It re-runs on a schedule. You see the delta.",
+    body: "The pipeline loops on a cadence. Each run produces a before/after scorecard. Visibility, citations, SEO health, and accessibility coverage become tracked numbers — not a one-time vibe check.",
   },
 ];
 
-function Work() {
-  return (
-    <section
-      id="work"
-      className="panel"
-      data-screen-label="08 Work"
-      data-section-name="Case study + method"
-    >
-      <div className="panel-bar">
-        <span className="id">02</span>
-        <span>$ ls ./case_study</span>
-        <span className="grow"></span>
-        <span className="tk">dogfood + method · no fake clients</span>
-      </div>
-      <div className="grid-lines work-grid">
-        {WORK.map((w, i) => (
-          <WCard key={w.num} w={w} i={i} />
-        ))}
-      </div>
-    </section>
-  );
-}
-function WCard({ w, i }) {
+function HowItWorks() {
   const ref = useReveal();
   return (
-    <article
+    <section
+      id="how-it-works"
+      className="panel"
+      data-screen-label="02 How it works"
+      data-section-name="How it works"
+    >
+      <div className="panel-bar">
+        <span className="id">&#x25b8;</span>
+        <span>// how it works &middot; the engine under the hood</span>
+        <span className="grow"></span>
+        <span className="tk">automated system &middot; human judgment &middot; measurable results</span>
+      </div>
+      <div className="hiw-layout">
+        <div className="hiw-intro reveal" ref={ref}>
+          <h2 className="hiw-head">How we actually move the needle</h2>
+          <p className="hiw-body">
+            Most SEO shops send you a PDF. We run a system.
+          </p>
+          <p className="hiw-body">
+            Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO,
+            and accessibility &#x2014; with bounded self-healing loops and an eval gate that proves a fix actually
+            works before any human sees it. Then a human reviews every recommended change. Then it ships. Then
+            the system re-runs on a schedule and measures the delta.
+          </p>
+          <p className="hiw-body">
+            You see the gap. Then you watch it close.
+          </p>
+          <div className="hiw-disciplines">
+            <div className="hiw-disc">
+              <span className="hiw-disc-nm">AEO</span>
+              <span className="hiw-disc-lv">answer-engine visibility</span>
+              <span className="hiw-disc-sub">Get cited inside ChatGPT, Claude, Gemini, Perplexity &amp; AI Overviews. The real levers are brand mentions and Bing rank.</span>
+            </div>
+            <div className="hiw-disc">
+              <span className="hiw-disc-nm">SEO</span>
+              <span className="hiw-disc-lv">technical foundation</span>
+              <span className="hiw-disc-sub">Crawlability, indexation, Core Web Vitals, schema hygiene. The ground AEO stands on.</span>
+            </div>
+            <div className="hiw-disc">
+              <span className="hiw-disc-nm">A11Y</span>
+              <span className="hiw-disc-lv">WCAG 2.1 AA + Section 508</span>
+              <span className="hiw-disc-sub">Accessible to people on assistive tech, parseable by every crawler. The same fix helps both.</span>
+            </div>
+          </div>
+        </div>
+        <ol className="hiw-steps" aria-label="Six steps of the pipeline">
+          {ENGINE_STEPS.map((s, i) => (
+            <HiwStep key={s.num} s={s} i={i} />
+          ))}
+        </ol>
+      </div>
+      <div className="hiw-footer">
+        <span className="hiw-footer-label">// the technical name for the system:</span>
+        <span className="hiw-footer-val">a self-healing RAG pipeline on a CI/CD eval gate &mdash; automated system finds gaps, proves fixes work, a human ships them, you watch the numbers move.</span>
+      </div>
+    </section>
+  );
+}
+
+function HiwStep({ s, i }) {
+  const ref = useReveal();
+  return (
+    <li
+      className="hiw-step reveal"
       ref={ref}
-      className={"wcard reveal" + (w.span === 2 ? " span-2" : "")}
-      style={{ transitionDelay: `${i * 0.05}s` }}
-      data-cursor-label="open case"
+      style={{ transitionDelay: `${i * 0.07}s` }}
     >
-      <div className="wcard-head">
-        <span className="num">{w.num}</span>
-        <span className="nm">{w.nm}</span>
-        <span className="tag">{w.tag}</span>
+      <div className="hiw-sn" aria-hidden="true">{s.num}</div>
+      <div className="hiw-sc">
+        <div className="hiw-st">{s.title}</div>
+        <div className="hiw-sd">{s.body}</div>
       </div>
-      <div className="wterm">
-        {w.term.map((l, j) => (
-          <div className="ln" key={j}>
-            {l.t === "cmd" && (
-              <>
-                <span className="pfx">$</span> {l.v}
-              </>
-            )}
-            {l.t === "mu" && <span className="mu">{l.v}</span>}
-            {l.t === "ok" && (
-              <>
-                <span className="ok">✓</span> {l.v}
-              </>
-            )}
-            {l.t === "warn" && (
-              <>
-                <span className="warn">⚠</span> {l.v}
-              </>
-            )}
-          </div>
-        ))}
-        <div className="res">{w.res}</div>
-      </div>
-      <div className="wcard-foot">
-        <span className="ttl">
-          {w.title}
-          {w.em && <em> {w.em}</em>}
-        </span>
-        <span className="sub">{w.sub}</span>
-      </div>
-    </article>
+    </li>
   );
 }
 
-/* ===== SERVICES ===== */
-const SVCS = [
-  {
-    num: "(i)",
-    title: "Technical SEO",
-    lead: "The plumbing: crawl paths, indexation, canonicals, robots, sitemaps — fixed so nothing leaks crawl budget.",
-    items: ["Crawl audits", "Indexation", "Canonicals", "Robots & sitemaps"],
-  },
-  {
-    num: "(ii)",
-    title: "Schema & structured data",
-    lead: "JSON-LD so crawlers and models parse who you are without guessing. Table-stakes hygiene — necessary, not magic. The citation levers are brand mentions and Bing rank; this clears the way for them.",
-    items: ["JSON-LD", "Entity markup", "FAQ / HowTo", "Rich results"],
-  },
-  {
-    num: "(iii)",
-    title: "AI / answer-engine SEO",
-    lead: "Get surfaced inside ChatGPT, Perplexity, and AI Overviews — by earning the brand mentions and Bing-rank signals that drive citations, plus the llms.txt/AEO hygiene that lets them through.",
-    items: ["llms.txt", "AEO strategy", "Citation tuning", "RAG-readiness"],
-  },
-  {
-    num: "(iv)",
-    title: "Core Web Vitals",
-    lead: "Make it fast for humans and bots alike. Green vitals, real-device tested.",
-    items: [
-      "LCP / CLS / INP",
-      "Asset budgets",
-      "Edge & caching",
-      "Lab + field",
-    ],
-  },
-  {
-    num: "(v)",
-    title: "Content for robots + humans",
-    lead: "Pages that read well to a person and parse cleanly for a model. Both audiences, one draft.",
-    items: [
-      "Info architecture",
-      "Heading logic",
-      "Internal links",
-      "Editorial passes",
-    ],
-  },
-  {
-    num: "(vi)",
-    title: "Accessibility (WCAG + 508)",
-    lead: "Usable by people on assistive tech and legible to crawlers — the same fixes serve both. Automated axe-core audit across real component states (collapsed, open, error) plus a human pass, since tooling alone catches ~57%. Required for government (Section 508 / ADA Title II); never sold as compliance-by-tool.",
-    items: [
-      "WCAG 2.1 AA + Section 508",
-      "Stateful axe-core audit",
-      "Human-reviewed remediation",
-      "Reviewed fix PRs",
-    ],
-  },
-];
-
-function Services() {
-  const [open, setOpen] = useState(0);
-  return (
-    <section
-      id="services"
-      className="panel"
-      data-screen-label="09 Services"
-      data-section-name="Services"
-    >
-      <div className="panel-bar">
-        <span className="id">03</span>
-        <span>$ man goblin</span>
-        <span className="grow"></span>
-        <span className="tk">six services · one goblin</span>
-      </div>
-      <div className="panel-body" style={{ padding: 0 }}>
-        {SVCS.map((s, i) => (
-          <div
-            key={s.num}
-            className={"svc-row" + (open === i ? " open" : "")}
-            onClick={() => setOpen(open === i ? -1 : i)}
-            data-cursor-label={open === i ? "close" : "open"}
-          >
-            <div className="num">{s.num}</div>
-            <div className="ttl">
-              {s.title
-                .split(" ")
-                .map((w, idx) =>
-                  idx === 0 ? (
-                    <em key={idx}>{w} </em>
-                  ) : (
-                    <span key={idx}>{w} </span>
-                  ),
-                )}
-            </div>
-            <div>
-              <div className="lead">{s.lead}</div>
-              <div className="desc">
-                <ul>
-                  {s.items.map((it) => (
-                    <li key={it}>{it}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="tog">+</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== QUOTES → house rules / principles (no fabricated testimonials) ===== */
-const QUOTES = [
-  { q: "Nothing auto-deploys. A human goblin reviews every change.", src: "principle · 01" },
-  { q: "Flat fee. No credits, no meter, no surprise invoice.", src: "principle · 02" },
-  { q: "We ship the fixes — not a PDF you implement yourself.", src: "principle · 03" },
-  { q: "Schema is hygiene. We chase the real levers: mentions + Bing.", src: "principle · 04" },
-];
-
-function Quotes() {
-  return (
-    <section
-      className="panel"
-      data-screen-label="11 Quotes"
-      data-section-name="House rules"
-    >
-      <div className="panel-bar">
-        <span className="id">04</span>
-        <span>house rules</span>
-        <span className="grow"></span>
-        <span className="tk">cat ./principles</span>
-      </div>
-      <div className="grid-lines quotes">
-        {QUOTES.map((x, i) => (
-          <div className="quote" key={i}>
-            <div className="q">{x.q}</div>
-            <div className="src">{x.src}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== SCROLLS ===== */
-const SCROLLS = [
-  {
-    num: "N.01",
-    date: "May 2026",
-    read: "8 min",
-    tag: "essay",
-    title: "What <em>llms.txt</em> is, and why your site needs one.",
-  },
-  {
-    num: "N.02",
-    date: "Apr 2026",
-    read: "5 min",
-    tag: "field note",
-    title: "Schema is hygiene, not a citation lever — <em>what actually gets you cited</em>.",
-  },
-  {
-    num: "N.03",
-    date: "Mar 2026",
-    read: "11 min",
-    tag: "teardown",
-    title: "How a site gets <em>cited</em> by ChatGPT.",
-  },
-];
-
-function Scrolls() {
-  return (
-    <section
-      id="scrolls"
-      className="panel"
-      data-screen-label="12 Scrolls"
-      data-section-name="Scrolls"
-    >
-      <div className="panel-bar">
-        <span className="id">05</span>
-        <span>$ cat ./scrolls/*.md</span>
-        <span className="grow"></span>
-        <span className="tk">field notes</span>
-      </div>
-      <div className="grid-lines scrolls">
-        {SCROLLS.map((s) => (
-          <div key={s.num} className="scard scard-soon" data-cursor-label="soon">
-            <div className="meta">
-              <span className="num">{s.num}</span>
-              <span>
-                {s.tag} · {s.date}
-              </span>
-            </div>
-            <h3 dangerouslySetInnerHTML={{ __html: s.title }}></h3>
-            <div className="read">field note · soon</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== CONTACT / SUMMON — lead intake + payment-ready (config at top of file) ===== */
-function Contact() {
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [err, setErr] = useState("");
-
-  const submit = async (e) => {
-    e.preventDefault();
-    setErr("");
-    const data = Object.fromEntries(new FormData(e.target).entries());
-    identifyLead(data);
-    captureEvent("summon_submitted", {
-      domain: leadDomain(data),
-      has_email: Boolean(data.email),
-      target: data.target || "",
-    });
-    captureEvent("lead_recommendation_context", {
-      domain: leadDomain(data),
-      source_event: "summon_submitted",
-      requested_surface: data.target || "",
-    });
-    setSending(true);
-    // If the form backend key isn't set yet, capture locally and show success (demo mode).
-    if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
-      console.info(
-        "[summon] form backend not configured — captured locally:",
-        data,
-      );
-      setSending(false);
-      setSent(true);
-      return;
-    }
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: "New goblin summon ✦ " + (data.domain || ""),
-          from_name: "promptgoblin.io",
-          ...data,
-        }),
-      });
-      if (res.ok) setSent(true);
-      else
-        setErr(
-          "A goblin fumbled that send. Try again, or email hi@promptgoblin.io and we'll run it by hand.",
-        );
-    } catch (_) {
-      setErr(
-        "Couldn't reach the server — check your connection and retry, or email hi@promptgoblin.io.",
-      );
-    }
-    setSending(false);
-  };
-
-  return (
-    <section
-      id="contact"
-      className="panel"
-      data-screen-label="13 Contact"
-      data-section-name="Summon"
-    >
-      <div className="panel-bar">
-        <span className="id">06</span>
-        <span>$ goblin --summon</span>
-        <span className="grow"></span>
-        <span className="tk">3 slots · Q3–Q4 2026</span>
-      </div>
-      <div className="grid-lines contact-grid">
-        <div className="contact-main">
-          <div className="big">
-            <a href="#contact" data-cursor-label="summon">
-              Summon<em>.</em>
-              <span className="arr">→</span>
-            </a>
-          </div>
-          <div className="avail">
-            Drop your domain and what you want to get cited for — I'll run a{" "}
-            <em>free visibility scan</em> and send back the gaps. Best for jobs
-            measured in <em>days</em>, not quarters.
-            <br />
-            <em>No card, no sales call.</em> Paid work carries a{" "}
-            <em>100% money-back guarantee</em> — full refund if we don't deliver
-            or you're not happy within 14 days.
-          </div>
-
-          {!sent ? (
-            <form className="summon-form" onSubmit={submit}>
-              <div className="sf-grid">
-                <label className="sf-field">
-                  <span className="sf-lbl">$ domain</span>
-                  <input
-                    name="domain"
-                    required
-                    placeholder="yourbrand.com"
-                    autoComplete="url"
-                  />
-                </label>
-                <label className="sf-field">
-                  <span className="sf-lbl">$ email</span>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="you@brand.com"
-                    autoComplete="email"
-                  />
-                </label>
-              </div>
-              <label className="sf-field">
-                <span className="sf-lbl">$ get_cited_for</span>
-                <input
-                  name="target"
-                  placeholder={'e.g. "best fleet software"'}
-                />
-              </label>
-              <input
-                type="text"
-                name="botcheck"
-                className="sf-hp"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden="true"
-              />
-              <div className="sf-actions">
-                <button
-                  className="btn"
-                  type="submit"
-                  disabled={sending}
-                  data-cursor-label="run scan"
-                >
-                  {sending ? "casting…" : "run my free scan"}{" "}
-                  <span className="arr">→</span>
-                </button>
-                <a
-                  className="btn ghost"
-                  href={STRIPE_SCOUT_LINK}
-                  data-cursor-label="reserve"
-                >
-                  reserve a Scout audit
-                </a>
-              </div>
-              {err && <div className="sf-err">⚠ {err}</div>}
-            </form>
-          ) : (
-            <div className="sf-ok">
-              <div className="sf-ok-mark">✓</div>
-              <div>
-                <div className="sf-ok-t">
-                  summon received — invisibility cloak: BREAKING
-                </div>
-                <div className="sf-ok-d">
-                  A real human-goblin replies within a working day with your
-                  free scan. Check your inbox (and spam — goblins lurk there
-                  too).
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="contact-side">
-          <div className="cside-row">
-            <span className="k">$ mail</span>
-            <span className="v big">
-              <a href="mailto:hi@promptgoblin.io">hi@promptgoblin.io</a>
-            </span>
-          </div>
-          <div className="cside-row">
-            <span className="k">$ chat</span>
-            <span className="v">@promptgoblin</span>
-          </div>
-          <div className="cside-row">
-            <span className="k">$ ls ./elsewhere</span>
-            <span className="v">
-              <span className="soon-link">github</span> ·{" "}
-              <span className="soon-link">x.com</span> ·{" "}
-              <span className="soon-link">substack</span>
-            </span>
-          </div>
-          <div className="cside-row">
-            <span className="k">$ pwd</span>
-            <span className="v">Chicago, IL · by appt</span>
-          </div>
-        </div>
-      </div>
-      <div className="colophon">
-        <span>© Prompt_Goblin™ 2024–2026 · Visible AF</span>
-        <span>Set in Press Start 2P · VT323 · JetBrains Mono</span>
-      </div>
-    </section>
-  );
-}
-
-/* ===== LIVE SCAN — goblin@visibility-mesh terminal (ported from handoff, dark+lime) ===== */
-let __scanUid = 0; /* monotonic key source — unique across re-runs of the scan loop */
+/* ===== LIVE SCAN — goblin@visibility-mesh terminal ===== */
+let __scanUid = 0;
 function scanScript(domain) {
   const clean = (domain || "").replace(/^https?:\/\//, "").replace(/\/.*$/, "");
   const brand = clean || "your brand";
@@ -1228,8 +585,8 @@ function scanScript(domain) {
     },
     { t: "info", text: "checking ChatGPT / Claude / Gemini / Perplexity" },
     { t: "info", text: "↳ retrieving citation graph [illustrative]" },
-    { t: "warn", text: "competitor cited · you're not — [sample output]" },
-    { t: "err", text: brand + ": 0 mentions · invisibility cloak ACTIVE" },
+    { t: "warn", text: "competitor cited \xb7 you're not — [sample output]" },
+    { t: "err", text: brand + ": 0 mentions \xb7 invisibility cloak ACTIVE" },
     { t: "sep" },
     { t: "issue", sev: "HIGH", text: "weak off-site citation graph" },
     { t: "issue", sev: "MED", text: "missing Organization + Service schema" },
@@ -1252,26 +609,67 @@ function scanScript(domain) {
   ];
 }
 
-const SPELLBARS = [
-  { name: "schema.entity_graph", pct: 92 },
-  { name: "citation.weave", pct: 68 },
-  { name: "content.intent_match", pct: 54 },
-  { name: "crawler.legibility", pct: 81 },
+/* Visibility Spectrum — 5 engine bars replacing the left-side node graph */
+const SPECTRUM_ENGINES = [
+  { name: "ChatGPT",     pct: 22 },
+  { name: "Claude",      pct: 18 },
+  { name: "Gemini",      pct: 15 },
+  { name: "Perplexity",  pct: 12 },
+  { name: "AI Overviews",pct:  9 },
 ];
+
+function VisibilitySpectrum() {
+  const [lit, setLit] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => { if (e.isIntersecting) { setLit(true); io.unobserve(e.target); } }),
+      { threshold: 0.2 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div className="vs-wrap" ref={ref} aria-label="Visibility spectrum — citation share by AI engine (illustrative sample)">
+      <div className="vs-head">
+        <span className="vs-kicker">// visibility spectrum &middot; illustrative</span>
+        <span className="vs-note">enter your domain for a real scan</span>
+      </div>
+      <div className="vs-bars" role="list">
+        {SPECTRUM_ENGINES.map((e) => (
+          <div className="vs-row" key={e.name} role="listitem">
+            <span className="vs-name">{e.name}</span>
+            <div className="vs-bar" role="presentation">
+              <div
+                className={"vs-fill" + (lit ? " lit" : "")}
+                style={{ "--pct": e.pct + "%" }}
+              ></div>
+            </div>
+            <span className="vs-pct" aria-label={e.pct + "% sample citation share"}>
+              {lit ? e.pct + "%" : "0%"}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="vs-footer">
+        <span>&#x26A0; sample data &mdash; your domain&rsquo;s real citations replace these numbers after a scan</span>
+      </div>
+    </div>
+  );
+}
 
 function LiveScan() {
   const [lines, setLines] = useState([]);
   const [status, setStatus] = useState("cursed");
   const [pct, setPct] = useState(0);
-  const [target, setTarget] = useState(""); // "" = idle demo loop; set on submit
+  const [target, setTarget] = useState("");
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
-  const [reportLines, setReportLines] = useState(null); // real Tier-1 lines; null = use scripted demo
+  const [reportLines, setReportLines] = useState(null);
   const bodyRef = useRef(null);
 
-  // (Re)run whenever `target`/`reportLines` change. Idle loops the demo; a submitted
-  // domain plays the REAL Tier-1 report when available, else the scripted demo,
-  // then reveals the "full audit emailed" confirmation.
   useEffect(() => {
     const script = target && reportLines ? reportLines : scanScript(target);
     let i = 0,
@@ -1312,7 +710,7 @@ function LiveScan() {
   const onScan = async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target).entries());
-    if (data.botcheck) return; // honeypot
+    if (data.botcheck) return;
     const domain = (data.domain || "").trim();
     const competitor = (data.competitor || "").trim();
     const scanId = "scan_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -1325,15 +723,11 @@ function LiveScan() {
     });
     setEmail(data.email || "");
     setDone(false);
-    setReportLines(null); // reset; scripted demo shows until the real report lands
+    setReportLines(null);
 
-    // Real Tier-1 hygiene scan. If the backend answers, drive the terminal from
-    // the actual report; otherwise the scripted demo plays as a graceful fallback.
     const report = await runHygieneScan(domain);
     if (report && report.ok) {
       setReportLines(reportToTerminal(report));
-      // The "aha" moment — a real result rendered. Strongest conversion predictor;
-      // PostHog uses it as the mid-funnel step between scan-request and checkout.
       try {
         window.posthog &&
           window.posthog.capture("scan_result_shown", {
@@ -1344,9 +738,8 @@ function LiveScan() {
           });
       } catch (_) {}
     }
-    setTarget(domain); // triggers the run (real lines if set, else scripted)
+    setTarget(domain);
 
-    // Fire the email-gated Tier-2 citation teaser (honest no-op until a key is set).
     if (!competitor) {
       captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
     } else {
@@ -1397,66 +790,69 @@ function LiveScan() {
       id="scan"
       className="panel"
       data-screen-label="03 Scan"
-      data-section-name="Live Scan"
+      data-section-name="Are you citable?"
     >
       <div className="panel-bar">
-        <span className="id">▸</span>
+        <span className="id">&#x25b8;</span>
         <span>$ goblin scan --surface llm</span>
         <span className="grow"></span>
         <span className="tk">
           {target && reportLines
-            ? "live · real scan"
-            : "sample · enter your domain for a real scan"}
+            ? "live \xb7 real scan"
+            : "sample \xb7 enter your domain for a real scan"}
         </span>
       </div>
-      <div className="grid-lines scan-grid">
+      <div className="grid-lines scan-layout">
+        <div className="scan-spectrum-col">
+          <VisibilitySpectrum />
+        </div>
         <div className="scan-term">
           <div className="win-bar">
-            <span className="dots">
+            <span className="dots" aria-hidden="true">
               <i />
               <i />
               <i />
             </span>
-            <span className="grow">goblin@visibility-mesh — /scan</span>
-            <span>{String(pct).padStart(3, "0")}%</span>
+            <span className="grow">goblin@visibility-mesh &#x2014; /scan</span>
+            <span aria-hidden="true">{String(pct).padStart(3, "0")}%</span>
           </div>
-          <div className="scan-body" ref={bodyRef}>
+          <div className="scan-body" ref={bodyRef} role="log" aria-label="Scan terminal output">
             {lines.map((l) => (
               <div className="scan-ln" key={l.id}>
                 {l.t === "cmd" && (
                   <>
-                    <span className="pfx">$</span> {l.text}
+                    <span className="pfx" aria-hidden="true">$</span> {l.text}
                   </>
                 )}
                 {l.t === "info" && (
                   <>
-                    <span className="pfx">›</span>{" "}
+                    <span className="pfx" aria-hidden="true">&#x203a;</span>{" "}
                     <span className="mu">{l.text}</span>
                   </>
                 )}
                 {l.t === "kv" && (
                   <>
-                    <span className="pfx">›</span>{" "}
+                    <span className="pfx" aria-hidden="true">&#x203a;</span>{" "}
                     <span className="key">{l.k}:</span>{" "}
                     <span className="mu">{l.v}</span>
                   </>
                 )}
                 {l.t === "warn" && (
                   <>
-                    <span className="warn">▲</span>{" "}
+                    <span className="warn" aria-hidden="true">&#x25b2;</span>{" "}
                     <span className="warn">{l.text}</span>
                   </>
                 )}
                 {l.t === "err" && (
                   <>
-                    <span className="err">✕</span>{" "}
+                    <span className="err" aria-hidden="true">&#x2715;</span>{" "}
                     <span className="err">{l.text}</span>
                   </>
                 )}
                 {l.t === "issue" && (
                   <>
-                    <span className={l.sev === "HIGH" ? "err" : "mu"}>
-                      {l.sev === "HIGH" ? "▲" : "·"}
+                    <span className={l.sev === "HIGH" ? "err" : "mu"} aria-hidden="true">
+                      {l.sev === "HIGH" ? "▲" : "\xb7"}
                     </span>{" "}
                     <span className="sev">[{l.sev}]</span>{" "}
                     <span className="mu">{l.text}</span>
@@ -1464,40 +860,47 @@ function LiveScan() {
                 )}
                 {l.t === "ok" && (
                   <>
-                    <span className="ok">✓</span>{" "}
+                    <span className="ok" aria-hidden="true">&#x2713;</span>{" "}
                     <span className="ok">{l.text}</span>
                   </>
                 )}
                 {l.t === "sep" && (
-                  <span className="mu sep">
-                    ────────────────────────────────
+                  <span className="mu sep" aria-hidden="true">
+                    &#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;
                   </span>
                 )}
               </div>
             ))}
             <div className="scan-ln">
-              <span className="pfx">$</span> <span className="scan-cur" />
+              <span className="pfx" aria-hidden="true">$</span> <span className="scan-cur" aria-hidden="true" />
             </div>
           </div>
         </div>
         <div className="scan-side">
           {!done ? (
-            <form className="scan-form" onSubmit={onScan}>
-              <div className="sf-lbl">$ run a free scan</div>
+            <form className="scan-form" onSubmit={onScan} aria-label="Free visibility scan">
+              <div className="sf-lbl" id="scan-form-label">$ run a free scan &#x2014; no card required</div>
+              <label className="sr-only" htmlFor="scan-domain">Your domain</label>
               <input
+                id="scan-domain"
                 name="domain"
                 required
                 placeholder="yourbrand.com"
                 autoComplete="url"
+                aria-describedby="scan-form-label"
               />
+              <label className="sr-only" htmlFor="scan-email">Your email</label>
               <input
+                id="scan-email"
                 name="email"
                 type="email"
                 required
                 placeholder="you@brand.com"
                 autoComplete="email"
               />
+              <label className="sr-only" htmlFor="scan-competitor">A competitor (optional)</label>
               <input
+                id="scan-competitor"
                 name="competitor"
                 placeholder="a competitor (optional)"
                 autoComplete="off"
@@ -1511,25 +914,27 @@ function LiveScan() {
                 aria-hidden="true"
               />
               <button className="btn" type="submit" data-cursor-label="scan">
-                run my free scan <span className="arr">→</span>
+                run my free scan <span className="arr">&#x2192;</span>
               </button>
               <div className="scan-disclaimer">
-                Instant result: a technical-hygiene scan — schema, crawl &
-                structured-data gaps. Add your email and we'll follow up with a
+                Instant result: a technical-hygiene scan &#x2014; schema, crawl &amp;
+                structured-data gaps. Add your email and we&rsquo;ll follow up with a
                 Perplexity citation teaser. The full multi-engine audit (ChatGPT
-                · Claude · Gemini · Perplexity · AI Overviews) plus SEO &amp;
+                &middot; Claude &middot; Gemini &middot; Perplexity &middot; AI Overviews) plus SEO &amp;
                 accessibility ships with a paid Scout audit.
               </div>
             </form>
           ) : (
-            <div className="sf-ok">
-              <div className="sf-ok-mark">✓</div>
+            <div className="sf-ok" role="status">
+              <div className="sf-ok-mark" aria-hidden="true">&#x2713;</div>
               <div>
-                <div className="sf-ok-t">scan queued for {target}</div>
+                <div className="sf-ok-t">
+                  scan queued for {target}
+                </div>
                 <div className="sf-ok-d">
                   Your hygiene scan is queued and a Perplexity citation teaser is
                   on its way to {email || "your inbox"}. The terminal above is an
-                  illustrative sample — the full multi-engine audit across all
+                  illustrative sample &#x2014; the full multi-engine audit across all
                   five answer engines, plus SEO &amp; accessibility, is the paid
                   Scout audit.
                 </div>
@@ -1538,25 +943,12 @@ function LiveScan() {
           )}
           <div className="scan-status-row">
             <span className="k">visibility status</span>
-            <span className={"scan-pill " + status}>
+            <span className={"scan-pill " + status} role="status">
               {status === "cursed" ? "✕ cursed" : "⚡ fixable"}
             </span>
           </div>
-          <div className="scan-id">
-            scan id · GBL-{(pct * 73 + 1031).toString(16).toUpperCase()}
-          </div>
-          <div className="scan-spells">
-            {SPELLBARS.map((s) => (
-              <div className="spellbar" key={s.name}>
-                <div className="spellbar-top">
-                  <span className="nm">› {s.name}</span>
-                  <span className="v">{s.pct}%</span>
-                </div>
-                <div className="spellbar-bar">
-                  <i style={{ width: s.pct + "%" }} />
-                </div>
-              </div>
-            ))}
+          <div className="scan-id" aria-live="polite">
+            scan id &middot; GBL-{(pct * 73 + 1031).toString(16).toUpperCase()}
           </div>
         </div>
       </div>
@@ -1564,176 +956,235 @@ function LiveScan() {
   );
 }
 
-/* ===== VISIBILITY MESH — agentic graph (ported from handoff, dark+lime) ===== */
-const MESH_NODES = [
-  { id: "intent", x: 2, y: 16, t: "user.intent", v: '"best fleet software"' },
-  { id: "llm", x: 30, y: 4, t: "llm.query.expand", v: "GPT · Claude · Gemini · Pplx · AIO" },
-  { id: "rag", x: 28, y: 56, t: "rag.retrieve", v: "k=24 sources" },
-  { id: "cite", x: 54, y: 34, t: "citation.weave", v: "you vs. 6 competitors" },
-  { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 4 a11y" },
-  { id: "fix", x: 72, y: 16, t: "goblin.recommend", v: "12 ranked fixes" },
-  { id: "ship", x: 72, y: 62, t: "human.review → PR", v: "queued · 3 pending" },
-];
-const MESH_EDGES = [
-  ["intent", "llm"],
-  ["intent", "rag"],
-  ["llm", "cite"],
-  ["rag", "cite"],
-  ["rag", "schema"],
-  ["cite", "fix"],
-  ["schema", "fix"],
-  ["fix", "ship"],
-];
-const MESH_STEPS = [
-  [
-    "01",
-    "Listen to prompt surfaces",
-    "Agents sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — not just keyword tools.",
-  ],
-  [
-    "02",
-    "Retrieve & diff citation graph",
-    "Map who LLMs actually cite for your category, then diff against your domain to expose exactly which sources you're losing to.",
-  ],
-  [
-    "03",
-    "Audit: schema · SEO · accessibility",
-    "One pass flags missing entities & structured data, technical-SEO leaks, thin content, AND WCAG 2.1 AA / Section 508 gaps — across real rendered component states, not a single snapshot.",
-  ],
-  [
-    "04",
-    "Goblin recommendation engine",
-    "Each gap becomes a ranked, scoped task with impact, effort, and a paste-ready fix prompt a coding agent can act on.",
-  ],
-  [
-    "05",
-    "Human-reviewed PRs",
-    "A human goblin approves every change before it hits your CMS, schema, or repo. Agentic, but accountable — nothing auto-ships.",
-  ],
-  [
-    "06",
-    "Loop on cadence — automatically",
-    "The graph re-runs on a schedule and reports the measured before/after delta. Visibility, citations, SEO, and a11y coverage become a tracked KPI, not a vibe.",
-  ],
-];
-
-function VisibilityMesh() {
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    const id = setInterval(
-      () => setActive((i) => (i + 1) % MESH_NODES.length),
-      1100,
-    );
-    return () => clearInterval(id);
-  }, []);
-  const activeId = MESH_NODES[active].id;
-  const activeEdge = MESH_EDGES[active % MESH_EDGES.length];
-  const VB_W = 900,
-    VB_H = 480;
-  const pos = (id) => {
-    const n = MESH_NODES.find((x) => x.id === id);
-    return { x: (n.x / 100) * VB_W + 92, y: (n.y / 100) * VB_H + 30 };
-  };
-
+/* ===== CREDENTIALS / PROOF ===== */
+function Credentials() {
+  const ref = useReveal();
   return (
     <section
-      id="mesh"
+      id="work"
       className="panel"
-      data-screen-label="04 Mesh"
-      data-section-name="Visibility Mesh"
+      data-screen-label="04 Credentials"
+      data-section-name="Credentials"
     >
       <div className="panel-bar">
-        <span className="id">▸</span>
-        <span>$ goblin graph --run</span>
+        <span className="id">&#x25b8;</span>
+        <span>// credentials &middot; the work behind the goblin</span>
         <span className="grow"></span>
-        <span className="tk">langgraph workflow · human-gated · sample run</span>
+        <span className="tk">WCAG &middot; Section 508 &middot; public sector</span>
       </div>
-      <div className="grid-lines mesh-grid">
-        <div className="mesh-stage">
-          <div className="mesh-bg" />
-          <div className="mesh-head">
-            <span className="mh-l">goblin-graph.runtime</span>
-            <span className="mh-r">
-              ⚡ executing · {String(active + 1).padStart(2, "0")} /{" "}
-              {String(MESH_NODES.length).padStart(2, "0")}
-            </span>
-          </div>
-          <div className="mesh-svg">
-            <svg
-              width="100%"
-              height="100%"
-              viewBox={`0 0 ${VB_W + 200} ${VB_H + 60}`}
-              preserveAspectRatio="none"
-            >
-              {MESH_EDGES.map(([a, b], i) => {
-                const A = pos(a),
-                  B = pos(b);
-                const on = activeEdge[0] === a && activeEdge[1] === b;
-                return (
-                  <g key={i}>
-                    <line
-                      x1={A.x}
-                      y1={A.y}
-                      x2={B.x}
-                      y2={B.y}
-                      stroke={on ? "var(--lime)" : "var(--line-2)"}
-                      strokeWidth={on ? 2 : 1}
-                      strokeDasharray={on ? "0" : "4 5"}
-                    />
-                    {on && (
-                      <circle r="4" fill="var(--lime)">
-                        <animateMotion
-                          dur="1.1s"
-                          repeatCount="indefinite"
-                          path={`M${A.x},${A.y} L${B.x},${B.y}`}
-                        />
-                      </circle>
-                    )}
-                  </g>
-                );
-              })}
-            </svg>
-            {MESH_NODES.map((n) => (
-              <div
-                key={n.id}
-                className={"mnode" + (activeId === n.id ? " on" : "")}
-                style={{ left: n.x + "%", top: n.y + "%" }}
-              >
-                <span className="pin" />
-                <div className="t">{n.t}</div>
-                <div className="v">{n.v}</div>
+      <div className="cred-grid">
+        <div className="cred-left reveal" ref={ref}>
+          <h2 className="cred-head">Built for the hardest rooms.</h2>
+          <p className="cred-sub">We&rsquo;ve shipped accessible software where it had to be right.</p>
+          <p className="cred-lead">
+            Accessibility and technical work delivered for public-sector programs including:
+          </p>
+          <ul className="cred-chips" aria-label="Public sector clients">
+            <li><span aria-hidden="true">&#x25b8;</span> USDA</li>
+            <li><span aria-hidden="true">&#x25b8;</span> City of Chicago</li>
+            <li><span aria-hidden="true">&#x25b8;</span> State of Texas</li>
+            <li><span aria-hidden="true">&#x25b8;</span> State of Illinois</li>
+          </ul>
+          <p className="cred-body">
+            That&rsquo;s not a client logo wall. It means this shop has shipped accessible software where
+            Section 508 wasn&rsquo;t optional, audited by real compliance reviewers, and delivered under
+            scrutiny most agencies never face. We bring the same standard to your site.
+          </p>
+        </div>
+        <div className="cred-right">
+          <div className="cred-term">
+            <div className="win-bar">
+              <span className="dots" aria-hidden="true"><i /><i /><i /></span>
+              <span className="grow">DOGFOOD &middot; LIVE SCAN &middot; HONEST BASELINE</span>
+            </div>
+            <div className="cred-term-body">
+              <div className="cred-ln"><span className="pfx" aria-hidden="true">$</span> goblin scan --domain promptgoblin.zatgeist.com</div>
+              <div className="cred-ln"><span className="mu">// engines: ChatGPT + Claude &middot; 8 buyer queries</span></div>
+              <div className="cred-ln"><span className="warn" aria-hidden="true">&#x26a0;</span> <span className="warn">client cited: 0% &nbsp;(so is the competitor)</span></div>
+              <div className="cred-ln"><span className="mu">// engines cite semrush, ahrefs, moz, hubspot instead</span></div>
+              <div className="cred-ln"><span className="ok" aria-hidden="true">&#x2713;</span> <span className="ok">fixes queued: schema &middot; citation &middot; content</span></div>
+              <div className="cred-ln"><span className="ok" aria-hidden="true">&#x2713;</span> <span className="ok">re-scan in 2 wks &#x2192; measured delta, not a promise</span></div>
+              <div className="cred-sep" aria-hidden="true"></div>
+              <div className="cred-note">
+                We scanned ourselves first. 0% cited is the real number &#x2014; a trust asset, not a weakness.
               </div>
-            ))}
-          </div>
-          <div className="mesh-legend">
-            <span>
-              <i className="lg-on" /> active path
-            </span>
-            <span>
-              <i className="lg-idle" /> idle edge
-            </span>
-            <span>
-              <i className="lg-gate" /> human review gate
-            </span>
+            </div>
           </div>
         </div>
-        <ol className="mesh-steps">
-          {MESH_STEPS.map(([num, t, d]) => (
-            <li key={num}>
-              <div className="sn">{num}</div>
-              <div>
-                <div className="st">{t}</div>
-                <div className="sd">{d}</div>
-              </div>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   );
 }
 
-/* ===== PRICING — Scout / Warband / Warlord (Stripe Payment Links) ===== */
+/* ===== SERVICES ===== */
+const SVCS = [
+  {
+    num: "(i)",
+    title: "Technical SEO",
+    lead: "Search engines and AI crawlers can reach every page. No crawl budget wasted, no pages orphaned, no signals leaking.",
+    items: ["Crawl audits", "Indexation", "Canonicals", "Robots & sitemaps"],
+  },
+  {
+    num: "(ii)",
+    title: "Schema & Structured Data",
+    lead: "JSON-LD so crawlers and models parse who you are without guessing. Table-stakes hygiene &#x2014; necessary, not magic. The citation levers are brand mentions and Bing rank; this clears the way.",
+    items: ["JSON-LD", "Entity markup", "FAQ / HowTo", "Rich results"],
+  },
+  {
+    num: "(iii)",
+    title: "AI / Answer-Engine SEO",
+    lead: "Get named inside ChatGPT, Perplexity, and AI Overviews &#x2014; by earning the brand mentions and Bing-rank signals those engines trust, plus the llms.txt and AEO hygiene that lets them through.",
+    items: ["llms.txt", "AEO strategy", "Citation-acquisition", "RAG-readiness"],
+  },
+  {
+    num: "(iv)",
+    title: "Core Web Vitals",
+    lead: "Fast for humans. Fast for bots. Green scores on the metrics Google and AI crawlers actually check.",
+    items: ["LCP / CLS / INP", "Asset budgets", "Edge & caching", "Lab + field"],
+  },
+  {
+    num: "(v)",
+    title: "Content for Robots + Humans",
+    lead: "Pages that answer the question a person is asking and that a language model can quote cleanly. Both audiences, one draft.",
+    items: ["Info architecture", "Heading logic", "Internal links", "Editorial passes"],
+  },
+  {
+    num: "(vi)",
+    title: "Accessibility (WCAG + 508)",
+    lead: "Usable by people on assistive tech. Required if you sell to government. The same fixes that help a screen reader help an AI crawler. Automated axe-core audit across real component states plus a human pass &#x2014; never sold as compliance-by-checkbox.",
+    items: ["WCAG 2.1 AA + Section 508", "Stateful axe-core audit", "Human-reviewed remediation", "Reviewed fix PRs"],
+  },
+];
+
+function Services() {
+  const [open, setOpen] = useState(0);
+  return (
+    <section
+      id="services"
+      className="panel"
+      data-screen-label="05 Services"
+      data-section-name="Services"
+    >
+      <div className="panel-bar">
+        <span className="id">&#x25b8;</span>
+        <span>$ what we actually do</span>
+        <span className="grow"></span>
+        <span className="tk">six services &middot; one goblin</span>
+      </div>
+      <div className="panel-body" style={{ padding: 0 }}>
+        {SVCS.map((s, i) => (
+          <div
+            key={s.num}
+            className={"svc-row" + (open === i ? " open" : "")}
+            onClick={() => setOpen(open === i ? -1 : i)}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setOpen(open === i ? -1 : i); } }}
+            data-cursor-label={open === i ? "close" : "open"}
+            role="button"
+            tabIndex={0}
+            aria-expanded={open === i}
+            aria-label={s.title}
+          >
+            <div className="num" aria-hidden="true">{s.num}</div>
+            <div className="ttl">
+              {s.title
+                .split(" ")
+                .map((w, idx) =>
+                  idx === 0 ? (
+                    <em key={idx}>{w} </em>
+                  ) : (
+                    <span key={idx}>{w} </span>
+                  ),
+                )}
+            </div>
+            <div>
+              <div className="lead" dangerouslySetInnerHTML={{ __html: s.lead }}></div>
+              <div className="desc">
+                <ul>
+                  {s.items.map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="tog" aria-hidden="true">+</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ===== DASHBOARD TEASER ===== */
+function DashboardTeaser() {
+  const ref = useReveal();
+  return (
+    <section
+      id="dashboard"
+      className="panel"
+      data-screen-label="06 Dashboard"
+      data-section-name="Dashboard"
+    >
+      <div className="panel-bar">
+        <span className="id">&#x25b8;</span>
+        <span>// client dashboard &middot; in development</span>
+        <span className="grow"></span>
+        <span className="tk">coming Q3 2026 &middot; early clients get access first</span>
+      </div>
+      <div className="dash-layout">
+        <div className="dash-copy reveal" ref={ref}>
+          <h2 className="dash-head">You see the gap. Then you watch it close.</h2>
+          <p className="dash-body">
+            Every client on a recurring plan gets a dashboard. Not a vanity report &#x2014; a before/after scorecard.
+          </p>
+          <ul className="dash-list">
+            <li><span className="dash-bullet" aria-hidden="true">&#x25b8;</span> Citation rate per AI engine (ChatGPT, Perplexity, Claude, Gemini, AI Overviews) &#x2014; measured per re-run, never estimated</li>
+            <li><span className="dash-bullet" aria-hidden="true">&#x25b8;</span> You vs. your named competitor, on the queries that matter to your business</li>
+            <li><span className="dash-bullet" aria-hidden="true">&#x25b8;</span> The fix queue: what&rsquo;s approved, what&rsquo;s shipped, what&rsquo;s pending your review</li>
+            <li><span className="dash-bullet" aria-hidden="true">&#x25b8;</span> Technical SEO and accessibility health over time</li>
+          </ul>
+          <p className="dash-note">
+            The gap is the baseline. Every re-run loop is a measured delta &#x2014; movement, never a guaranteed citation number.
+            You&rsquo;re not buying our word for it; you&rsquo;re buying a system that shows its receipts.
+          </p>
+        </div>
+        <div className="dash-preview" aria-label="Dashboard preview — sample data, not live">
+          <div className="dash-preview-bar">
+            <span className="dash-preview-label">// sample data &#x2014; illustrative</span>
+            <span className="dash-status-badge">in development</span>
+          </div>
+          <div className="dash-mock">
+            <div className="dash-mock-kpi">
+              <div className="dash-kpi-label">CITATION RATE</div>
+              <div className="dash-kpi-val">&gt;_ <span>&#x2014;%</span></div>
+              <div className="dash-kpi-sub">// populated after your first real scan</div>
+            </div>
+            <div className="dash-mock-rows">
+              {[
+                { engine: "ChatGPT",      before: "0%", after: "&#x2014;" },
+                { engine: "Perplexity",   before: "0%", after: "&#x2014;" },
+                { engine: "Claude",       before: "0%", after: "&#x2014;" },
+                { engine: "Gemini",       before: "0%", after: "&#x2014;" },
+                { engine: "AI Overviews", before: "0%", after: "&#x2014;" },
+              ].map((r) => (
+                <div className="dash-mock-row" key={r.engine}>
+                  <span className="dme">{r.engine}</span>
+                  <span className="dmb">{r.before}</span>
+                  <span className="dma" aria-label="after — pending scan" dangerouslySetInnerHTML={{ __html: r.after }}></span>
+                </div>
+              ))}
+            </div>
+            <div className="dash-mock-gate">
+              <span className="dash-gate-icon" aria-hidden="true">&#x1F512;</span>
+              <span>human review gate &#x2014; nothing ships unactioned</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ===== PRICING ===== */
 const TIERS = [
   {
     key: "scout",
@@ -1743,12 +1194,12 @@ const TIERS = [
     interval: "one-time",
     link: STRIPE_LINKS.scout,
     cta: "Hire a Scout",
-    desc: "A 5-surface visibility audit that ships reviewed fixes — not a PDF. Headlined by your citation-graph diff vs a named competitor.",
+    desc: "A full visibility audit that ships as reviewed fixes — not a PDF you implement yourself. You get the citation diff, the ranked fix queue, and a 60-minute walkthrough. Done.",
     bullets: [
-      "Full LLM citation audit · 5 surfaces",
+      "Full LLM citation audit \xb7 5 AI surfaces",
       "Schema + entity gap report",
-      "Competitor citation diff (top 6)",
-      "Ranked fix queue · scored by impact × effort",
+      "Competitor citation diff — who they’re citing instead of you, and why",
+      "Ranked fix queue \xb7 scored by impact \xd7 effort",
       "60-min goblin office hour",
     ],
   },
@@ -1762,14 +1213,14 @@ const TIERS = [
     cta: "Summon Warband",
     featured: true,
     tag: "best value",
-    desc: "The recurring agentic loop. We run the graph and ship the reviewed PRs — you approve.",
+    desc: "The automated system runs every week. Reviewed PRs land in your repo or CMS. You approve changes. A goblin is on Slack within 24 hours. You watch the scorecard move.",
     bullets: [
       "Everything in Scout",
-      "Weekly agentic re-runs",
-      "Citation-acquisition campaigns",
-      "Schema + content PRs to your repo / CMS",
-      "Slack w/ a real goblin · <24h SLA",
-      "Live visibility dashboard",
+      "Weekly automated re-runs of the full pipeline",
+      "Citation-acquisition campaigns — building the brand mentions that actually move citations",
+      "Schema + content fix PRs to your repo or CMS",
+      "Slack access \xb7 <24-hour response",
+      "Live visibility dashboard [coming Q3 2026]",
     ],
   },
   {
@@ -1780,11 +1231,11 @@ const TIERS = [
     interval: "/ mo",
     link: STRIPE_LINKS.warlord,
     cta: "Forge Warlord",
-    desc: "White-label the goblin. Multi-domain, custom graph, dedicated strategist.",
+    desc: "The full goblin system running across up to 8 domains. Custom workflows, dedicated retrieval infrastructure, white-label deliverables. You embed the goblin.",
     bullets: [
       "Everything in Warband",
-      "Up to 8 domains / brands",
-      "Custom LangGraph workflows",
+      "Up to 8 domains / brands in one pipeline",
+      "Custom LangGraph workflows built for your category",
       "Dedicated retrieval mesh",
       "Quarterly strategy summit",
       "White-label deliverables",
@@ -1794,8 +1245,6 @@ const TIERS = [
 
 function Pricing() {
   const click = (t) => {
-    // Rich checkout-intent event so PostHog can build a revenue-weighted funnel
-    // (free_scan -> scan_result_shown -> summon -> checkout_clicked -> $).
     try {
       window.posthog &&
         window.posthog.capture("checkout_clicked", {
@@ -1810,14 +1259,17 @@ function Pricing() {
     <section
       id="pricing"
       className="panel"
-      data-screen-label="10 Pricing"
+      data-screen-label="07 Pricing"
       data-section-name="Pricing"
     >
       <div className="panel-bar">
-        <span className="id">07</span>
+        <span className="id">&#x25b8;</span>
         <span>$ goblin --pricing</span>
         <span className="grow"></span>
-        <span className="tk">flat fee · no credits · no sales call</span>
+        <span className="tk">flat fee &middot; no credits &middot; no sales call</span>
+      </div>
+      <div className="pricing-intro">
+        Pick your tier. Pay once or monthly. No retainer trap &#x2014; Scout is a single engagement you can re-up. Warband and Warlord are the recurring loop.
       </div>
       <div className="grid-lines pricing-grid">
         {TIERS.map((t) => (
@@ -1836,7 +1288,7 @@ function Pricing() {
             <ul className="pfeat">
               {t.bullets.map((b) => (
                 <li key={b}>
-                  <span className="c">▸</span> {b}
+                  <span className="c" aria-hidden="true">&#x25b8;</span> {b}
                 </li>
               ))}
             </ul>
@@ -1846,23 +1298,22 @@ function Pricing() {
               data-cursor-label="checkout"
               onClick={() => click(t)}
             >
-              {t.cta} <span className="arr">→</span>
+              {t.cta} <span className="arr">&#x2192;</span>
             </a>
           </div>
         ))}
       </div>
       <div className="penterprise">
         <span>
-          <b style={{ color: "var(--lime)" }}>✓ 100% money-back guarantee</b>{" "}
-          — on the work, not the algorithm. If we don't deliver your audit, or
-          you're not happy with it within 14 days, you get every dollar back. We
-          won't promise a citation number (nobody honestly can) — we guarantee
-          the work and measure the rest straight.
+          <strong style={{ color: "var(--lime)" }}>&#x2713; 100% money-back guarantee</strong>{" "}
+          &#x2014; on the work, not the algorithm. If we don&rsquo;t deliver your audit, or you&rsquo;re not
+          happy within 14 days, you get every dollar back. We won&rsquo;t promise a citation number
+          (nobody honestly can) &#x2014; we guarantee the work and measure the rest straight.
         </span>
       </div>
       <div className="penterprise">
         <span>
-          ◆ enterprise · multi-region · regulated — on-prem retrieval, custom
+          &#x25c6; enterprise &middot; multi-region &middot; regulated &#x2014; on-prem retrieval, custom
           auth, a goblin embedded in your team.
         </span>
         <a
@@ -1870,8 +1321,243 @@ function Pricing() {
           href="mailto:hi@promptgoblin.io"
           data-cursor-label="talk"
         >
-          talk to a goblin <span className="arr">→</span>
+          talk to a goblin <span className="arr">&#x2192;</span>
         </a>
+      </div>
+    </section>
+  );
+}
+
+/* ===== CONTACT / SUMMON ===== */
+function Contact() {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState("");
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setErr("");
+    const data = Object.fromEntries(new FormData(e.target).entries());
+    identifyLead(data);
+    captureEvent("summon_submitted", {
+      domain: leadDomain(data),
+      has_email: Boolean(data.email),
+      target: data.target || "",
+    });
+    captureEvent("lead_recommendation_context", {
+      domain: leadDomain(data),
+      source_event: "summon_submitted",
+      requested_surface: data.target || "",
+    });
+    setSending(true);
+    if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
+      console.info(
+        "[summon] form backend not configured — captured locally:",
+        data,
+      );
+      setSending(false);
+      setSent(true);
+      return;
+    }
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: "New goblin summon ✦ " + (data.domain || ""),
+          from_name: "promptgoblin.io",
+          ...data,
+        }),
+      });
+      if (res.ok) setSent(true);
+      else
+        setErr(
+          "A goblin fumbled that send. Try again, or email hi@promptgoblin.io and we'll run it by hand.",
+        );
+    } catch (_) {
+      setErr(
+        "Couldn’t reach the server — check your connection and retry, or email hi@promptgoblin.io.",
+      );
+    }
+    setSending(false);
+  };
+
+  return (
+    <section
+      id="contact"
+      className="panel"
+      data-screen-label="08 Summon"
+      data-section-name="Summon"
+    >
+      <div className="panel-bar">
+        <span className="id">&#x25b8;</span>
+        <span>$ goblin --summon</span>
+        <span className="grow"></span>
+        <span className="tk">3 slots &middot; Q3&#x2013;Q4 2026</span>
+      </div>
+      <div className="grid-lines contact-grid">
+        <div className="contact-main">
+          <div className="big">
+            <a href="#contact" data-cursor-label="summon">
+              Summon<em>.</em>
+              <span className="arr">&#x2192;</span>
+            </a>
+          </div>
+          <div className="avail">
+            Drop your domain and what you want to get cited for. A free visibility scan comes back within
+            one working day &#x2014; schema, crawl gaps, and a Perplexity citation teaser showing you vs. a competitor.
+            <br />
+            <em>No card, no sales call.</em> Paid work carries a{" "}
+            <em>100% money-back guarantee</em> &#x2014; full refund if we don&rsquo;t deliver or you&rsquo;re not happy within 14 days.
+            Best for jobs measured in <em>days</em>, not quarters.
+          </div>
+
+          {!sent ? (
+            <form className="summon-form" onSubmit={submit} aria-label="Summon a goblin">
+              <div className="sf-grid">
+                <label className="sf-field">
+                  <span className="sf-lbl">$ domain</span>
+                  <input
+                    name="domain"
+                    required
+                    placeholder="yourbrand.com"
+                    autoComplete="url"
+                  />
+                </label>
+                <label className="sf-field">
+                  <span className="sf-lbl">$ email</span>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="you@brand.com"
+                    autoComplete="email"
+                  />
+                </label>
+              </div>
+              <label className="sf-field">
+                <span className="sf-lbl">$ get_cited_for</span>
+                <input
+                  name="target"
+                  placeholder={'e.g. "best fleet software"'}
+                />
+              </label>
+              <input
+                type="text"
+                name="botcheck"
+                className="sf-hp"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
+              <div className="sf-actions">
+                <button
+                  className="btn"
+                  type="submit"
+                  disabled={sending}
+                  data-cursor-label="run scan"
+                >
+                  {sending ? "casting…" : "run my free scan"}{" "}
+                  <span className="arr">&#x2192;</span>
+                </button>
+                <a
+                  className="btn ghost"
+                  href={STRIPE_SCOUT_LINK}
+                  data-cursor-label="reserve"
+                >
+                  reserve a Scout audit
+                </a>
+              </div>
+              {err && <div className="sf-err" role="alert">&#x26a0; {err}</div>}
+            </form>
+          ) : (
+            <div className="sf-ok" role="status">
+              <div className="sf-ok-mark" aria-hidden="true">&#x2713;</div>
+              <div>
+                <div className="sf-ok-t">
+                  summon received &#x2014; invisibility cloak: BREAKING
+                </div>
+                <div className="sf-ok-d">
+                  A real human-goblin replies within one working day with your free scan.
+                  Check your inbox (and spam &#x2014; goblins lurk there too).
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="contact-side">
+          <div className="cside-row">
+            <span className="k">$ mail</span>
+            <span className="v big">
+              <a href="mailto:hi@promptgoblin.io">hi@promptgoblin.io</a>
+            </span>
+          </div>
+          <div className="cside-row">
+            <span className="k">$ chat</span>
+            <span className="v">@promptgoblin</span>
+          </div>
+          <div className="cside-row">
+            <span className="k">$ ls ./elsewhere</span>
+            <span className="v">
+              <span className="soon-link">github</span> &middot;{" "}
+              <span className="soon-link">x.com</span> &middot;{" "}
+              <span className="soon-link">substack</span>
+            </span>
+          </div>
+          <div className="cside-row">
+            <span className="k">$ pwd</span>
+            <span className="v">Chicago, IL &middot; by appt</span>
+          </div>
+        </div>
+      </div>
+      <div className="colophon">
+        <span>&#xa9; Prompt_Goblin&#x2122; 2024&#x2013;2026 &middot; Visible AF</span>
+        <span>Get found. Stay readable. Ship the fix.</span>
+      </div>
+    </section>
+  );
+}
+
+/* ===== MARQUEE ===== */
+function Marquee() {
+  const words = [
+    "schema.org",
+    "llms.txt",
+    "crawlability",
+    "structured data",
+    "answer engines",
+    "core web vitals",
+    "entity SEO",
+    "JSON-LD",
+    "RAG-ready",
+    "sitemaps",
+    "Visible AF",
+  ];
+  const run = (
+    <span>
+      {words.map((w, i) => (
+        <React.Fragment key={i}>
+          <span>{w}</span>
+          <span className="sep" aria-hidden="true">&#x25aa;</span>
+        </React.Fragment>
+      ))}
+    </span>
+  );
+  return (
+    <section
+      className="panel marquee"
+      aria-hidden="true"
+      data-screen-label="marquee"
+      data-section-name="Keywords"
+    >
+      <div className="marquee-track">
+        {run}
+        {run}
+        {run}
       </div>
     </section>
   );
@@ -1972,19 +1658,14 @@ function TweaksMount() {
 
 /* ===== app ===== */
 const SECTIONS = [
-  { id: "01 Hero", name: "Hero" },
-  { id: "02 Spellbook", name: "Spellbook" },
-  { id: "03 Scan", name: "Live Scan" },
-  { id: "04 Mesh", name: "Visibility Mesh" },
-  { id: "05 Stats", name: "Telemetry" },
-  { id: "06 Marquee", name: "Keywords" },
-  { id: "07 Index", name: "Index / Now" },
-  { id: "08 Work", name: "./work" },
-  { id: "09 Services", name: "./services" },
-  { id: "10 Pricing", name: "Pricing" },
-  { id: "11 Quotes", name: "Word on street" },
-  { id: "12 Scrolls", name: "./scrolls" },
-  { id: "13 Contact", name: "Summon" },
+  { id: "01 Hero",         name: "Hero" },
+  { id: "02 How it works", name: "How it works" },
+  { id: "03 Scan",         name: "Are you citable?" },
+  { id: "04 Credentials",  name: "Credentials" },
+  { id: "05 Services",     name: "Services" },
+  { id: "06 Dashboard",    name: "Dashboard" },
+  { id: "07 Pricing",      name: "Pricing" },
+  { id: "08 Summon",       name: "Summon" },
 ];
 
 function App() {
@@ -1995,22 +1676,18 @@ function App() {
     <>
       <Loader />
       <Cursor />
-      <div className="grain"></div>
+      <div className="grain" aria-hidden="true"></div>
       <HUDTop theme={theme} setTheme={setTheme} />
-      <main>
+      <main id="main-content">
         <div className="os">
           <Hero />
-          <Spellbook />
+          <HowItWorks />
           <LiveScan />
-          <VisibilityMesh />
-          <Stats />
-          <Marquee />
-          <IndexNow />
-          <Work />
+          <Credentials />
           <Services />
+          <DashboardTeaser />
+          <Marquee />
           <Pricing />
-          <Quotes />
-          <Scrolls />
           <Contact />
         </div>
       </main>
