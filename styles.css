@@ -10,10 +10,12 @@
   --fg:   #E9E7DC;
   --ink:  #E9E7DC;
   --bone: #E9E7DC;
-  /* muted/faint raised to clear WCAG AA 4.5:1 for small text on --bg (was 0.5/0.28,
-     which axe flagged as serious color-contrast failures — dogfood fix 2026-06-01). */
-  --muted: rgba(233, 231, 220, 0.66);
-  --faint: rgba(233, 231, 220, 0.6);
+  /* muted/faint raised to clear WCAG AA 4.5:1 for SMALL text on --bg. The
+     2026-06-01 bump (0.66/0.60) got close but still failed axe for the tiniest
+     classes (.tk, .scan-id, .cursor-label, .hero-kicker @10px). Raised again
+     2026-06-02 so even 10px text clears 4.5:1. (0.5/0.28 -> 0.66/0.60 -> 0.80/0.74) */
+  --muted: rgba(233, 231, 220, 0.80);
+  --faint: rgba(233, 231, 220, 0.74);
   --line:  rgba(233, 231, 220, 0.16);
   --line-2: rgba(233, 231, 220, 0.30);
 
