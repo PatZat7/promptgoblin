@@ -79,10 +79,59 @@ function reportToTerminal(resp) {
   return out;
 }
 
-// Fire-and-forget lead capture: PostHog event + Web3Forms (no-op until the key is set).
-function captureLead(event, data) {
+function leadDomain(data) {
+  return String((data && data.domain) || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0];
+}
+
+function identifyLead(data) {
+  const email = String((data && data.email) || "").trim().toLowerCase();
+  const domain = leadDomain(data);
+  if (!window.posthog || !email) return;
+  const props = {
+    email,
+    domain,
+    company_domain: domain,
+    requested_surface: data.target || data.competitor || "",
+  };
   try {
-    window.posthog && window.posthog.capture(event, { domain: data.domain });
+    window.posthog.identify(email, props);
+    if (domain) window.posthog.group("company", domain, { domain });
+    if (window.posthog.setPersonProperties) {
+      window.posthog.setPersonProperties(props);
+    }
+  } catch (_) {}
+}
+
+function captureEvent(event, props) {
+  try {
+    window.posthog && window.posthog.capture(event, props || {});
+  } catch (_) {}
+}
+
+// Fire-and-forget lead capture: PostHog identity/event + Web3Forms.
+function captureLead(event, data) {
+  const domain = leadDomain(data);
+  identifyLead(data);
+  captureEvent(event, {
+    domain,
+    scan_id: data && data.scan_id,
+    has_email: Boolean(data && data.email),
+    target: data && data.target,
+    competitor: data && data.competitor,
+  });
+  try {
+    window.posthog &&
+      window.posthog.capture("lead_recommendation_context", {
+        domain,
+        scan_id: data && data.scan_id,
+        source_event: event,
+        requested_surface: (data && (data.target || data.competitor)) || "",
+      });
   } catch (_) {}
   if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
     console.info(
@@ -559,7 +608,7 @@ function IndexNow() {
           <div className="now-row">
             <span className="k">Open</span>
             <span className="val">
-              taking 3 clients · <em>Q3 26</em>
+              taking 3 clients · <em>Q3–Q4 26</em>
             </span>
           </div>
           <div className="now-row">
@@ -944,7 +993,7 @@ function Scrolls() {
       </div>
       <div className="grid-lines scrolls">
         {SCROLLS.map((s) => (
-          <a key={s.num} className="scard" href="#" data-cursor-label="read">
+          <div key={s.num} className="scard scard-soon" data-cursor-label="soon">
             <div className="meta">
               <span className="num">{s.num}</span>
               <span>
@@ -952,8 +1001,8 @@ function Scrolls() {
               </span>
             </div>
             <h3 dangerouslySetInnerHTML={{ __html: s.title }}></h3>
-            <div className="read">read · {s.read}</div>
-          </a>
+            <div className="read">field note · soon</div>
+          </div>
         ))}
       </div>
     </section>
@@ -970,10 +1019,17 @@ function Contact() {
     e.preventDefault();
     setErr("");
     const data = Object.fromEntries(new FormData(e.target).entries());
-    try {
-      window.posthog &&
-        window.posthog.capture("summon_submitted", { domain: data.domain });
-    } catch (_) {}
+    identifyLead(data);
+    captureEvent("summon_submitted", {
+      domain: leadDomain(data),
+      has_email: Boolean(data.email),
+      target: data.target || "",
+    });
+    captureEvent("lead_recommendation_context", {
+      domain: leadDomain(data),
+      source_event: "summon_submitted",
+      requested_surface: data.target || "",
+    });
     setSending(true);
     // If the form backend key isn't set yet, capture locally and show success (demo mode).
     if (WEB3FORMS_KEY.indexOf("REPLACE") !== -1) {
@@ -1023,7 +1079,7 @@ function Contact() {
         <span className="id">06</span>
         <span>$ goblin --summon</span>
         <span className="grow"></span>
-        <span className="tk">Q3–Q4 2026 open</span>
+        <span className="tk">3 slots · Q3–Q4 2026</span>
       </div>
       <div className="grid-lines contact-grid">
         <div className="contact-main">
@@ -1167,12 +1223,12 @@ function scanScript(domain) {
         : '"best enterprise fleet software"',
     },
     { t: "info", text: "checking ChatGPT / Claude / Gemini / Perplexity" },
-    { t: "info", text: "↳ retrieving citation graph (n=2,481 sources)" },
-    { t: "warn", text: "competitor detected: 4 mentions · avg position 2.3" },
+    { t: "info", text: "↳ retrieving citation graph [illustrative]" },
+    { t: "warn", text: "competitor cited · you're not — [sample output]" },
     { t: "err", text: brand + ": 0 mentions · invisibility cloak ACTIVE" },
     { t: "sep" },
-    { t: "issue", sev: "HIGH", text: "missing Organization + Service schema" },
     { t: "issue", sev: "HIGH", text: "weak off-site citation graph" },
+    { t: "issue", sev: "MED", text: "missing Organization + Service schema" },
     {
       t: "issue",
       sev: "MED",
@@ -1254,7 +1310,15 @@ function LiveScan() {
     const data = Object.fromEntries(new FormData(e.target).entries());
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
-    captureLead("free_scan_requested", { domain, email: data.email });
+    const competitor = (data.competitor || "").trim();
+    const scanId = "scan_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    data.scan_id = scanId;
+    captureLead("free_scan_requested", {
+      domain,
+      email: data.email,
+      competitor,
+      scan_id: scanId,
+    });
     setEmail(data.email || "");
     setDone(false);
     setReportLines(null); // reset; scripted demo shows until the real report lands
@@ -1269,6 +1333,7 @@ function LiveScan() {
       try {
         window.posthog &&
           window.posthog.capture("scan_result_shown", {
+            scan_id: scanId,
             domain,
             hygiene_score: report.report && report.report.hygieneScore,
             findings: report.report && (report.report.findings || []).length,
@@ -1278,7 +1343,44 @@ function LiveScan() {
     setTarget(domain); // triggers the run (real lines if set, else scripted)
 
     // Fire the email-gated Tier-2 citation teaser (honest no-op until a key is set).
-    runCitationTeaser({ email: data.email, domain, competitor: data.competitor || "" });
+    if (!competitor) {
+      captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
+    } else {
+      runCitationTeaser({ email: data.email, domain, competitor }).then((tier2) => {
+        if (!tier2) {
+          captureEvent("tier2_error", { scan_id: scanId, domain, competitor, reason: "network_or_unreachable" });
+          return;
+        }
+        if (tier2.ok && tier2.configured && tier2.teaser) {
+          const results = tier2.teaser.results || [];
+          captureEvent("tier2_result_shown", {
+            scan_id: scanId,
+            domain,
+            competitor,
+            engine: tier2.teaser.engine || "perplexity",
+            queries: results.length,
+            client_cited_count: results.filter((r) => r.clientCited).length,
+            competitor_cited_count: results.filter((r) => r.competitorCited).length,
+          });
+        } else if (tier2.ok && tier2.configured === false) {
+          captureEvent("tier2_no_key", { scan_id: scanId, domain, competitor });
+        } else if (tier2.retryAfterHours) {
+          captureEvent("tier2_rate_limited", {
+            scan_id: scanId,
+            domain,
+            competitor,
+            retry_after_hours: tier2.retryAfterHours,
+          });
+        } else {
+          captureEvent("tier2_error", {
+            scan_id: scanId,
+            domain,
+            competitor,
+            status: tier2.error || "unknown",
+          });
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -1408,9 +1510,11 @@ function LiveScan() {
                 run my free scan <span className="arr">→</span>
               </button>
               <div className="scan-disclaimer">
-                Instant teaser. Your full multi-surface audit (ChatGPT · Claude
-                · Gemini · Perplexity · AI Overviews) is emailed within a
-                working day.
+                Instant result: a technical-hygiene scan — schema, crawl &
+                structured-data gaps. Add your email and we'll follow up with a
+                Perplexity citation teaser. The full multi-engine audit (ChatGPT
+                · Claude · Gemini · Perplexity · AI Overviews) plus SEO &amp;
+                accessibility ships with a paid Scout audit.
               </div>
             </form>
           ) : (
@@ -1419,9 +1523,11 @@ function LiveScan() {
               <div>
                 <div className="sf-ok-t">scan queued for {target}</div>
                 <div className="sf-ok-d">
-                  Your full multi-surface audit is on its way to{" "}
-                  {email || "your inbox"} within a working day. The teaser above
-                  is illustrative — the real run hits all five answer engines.
+                  Your hygiene scan is queued and a Perplexity citation teaser is
+                  on its way to {email || "your inbox"}. The terminal above is an
+                  illustrative sample — the full multi-engine audit across all
+                  five answer engines, plus SEO &amp; accessibility, is the paid
+                  Scout audit.
                 </div>
               </div>
             </div>
@@ -1638,7 +1744,7 @@ const TIERS = [
       "Full LLM citation audit · 5 surfaces",
       "Schema + entity gap report",
       "Competitor citation diff (top 6)",
-      "Ranked fix queue · 30+ tasks (impact × effort)",
+      "Ranked fix queue · scored by impact × effort",
       "60-min goblin office hour",
     ],
   },
