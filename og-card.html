@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>og-card</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* FONT CHOICE: system fallbacks only — zero network dependency.
+     Display/wordmark: "Courier New", ui-monospace, monospace (bold, universally present)
+     Body/sub: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", monospace          */
+
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0A0B0A;
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", "Courier New", monospace;
+    color: #E9E7DC;
+  }
+
+  .card {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    background: #0A0B0A;
+    overflow: hidden;
+  }
+
+  /* ── faint grid ── */
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(233,231,220,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(233,231,220,0.055) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ── scanline overlay ── */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.18) 3px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* ── lime left accent bar ── */
+  .accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: #A3E635;
+  }
+
+  /* ── panel border top ── */
+  .panel-top {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    right: 0;
+    height: 2px;
+    background: rgba(163,230,53,0.35);
+  }
+
+  /* ── HUD win-bar strip ── */
+  .win-bar {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    right: 0;
+    height: 36px;
+    background: #0E0F0D;
+    border-bottom: 1px solid rgba(233,231,220,0.16);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 10px;
+  }
+  .win-bar-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(233,231,220,0.18);
+  }
+  .win-bar-dot.lime { background: #A3E635; }
+  .win-bar-label {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    color: rgba(233,231,220,0.45);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-left: 8px;
+  }
+  .win-bar-spacer { flex: 1; }
+  .win-bar-url {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    color: rgba(163,230,53,0.7);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── main content area ── */
+  .content {
+    position: absolute;
+    top: 36px;
+    left: 6px;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 80px 0 72px;
+    gap: 72px;
+  }
+
+  /* ── goblin mark ── */
+  .mark-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 230px;
+    height: 460px;
+    position: relative;
+  }
+  .mark-wrap svg {
+    filter: drop-shadow(0 0 28px rgba(163,230,53,0.30));
+  }
+
+  /* ── vertical divider ── */
+  .divider {
+    width: 1px;
+    height: 380px;
+    background: rgba(233,231,220,0.16);
+    flex-shrink: 0;
+  }
+
+  /* ── text block ── */
+  .text-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* terminal prompt kicker */
+  .kicker {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 13px;
+    color: rgba(163,230,53,0.75);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .kicker::before { content: "▸ "; }
+
+  /* wordmark */
+  .wordmark {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 62px;
+    font-weight: 900;
+    color: #E9E7DC;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    margin-bottom: 32px;
+    text-shadow: 0 0 40px rgba(163,230,53,0.15);
+  }
+  .wordmark span { color: #A3E635; }
+
+  /* headline */
+  .headline {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 26px;
+    font-weight: 700;
+    color: #E9E7DC;
+    line-height: 1.35;
+    margin-bottom: 24px;
+    max-width: 560px;
+  }
+
+  /* sub-line */
+  .sub {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", "Consolas", "Courier New", monospace;
+    font-size: 15px;
+    color: rgba(233,231,220,0.74);
+    line-height: 1.5;
+    margin-bottom: 36px;
+    max-width: 520px;
+  }
+
+  /* tag pills */
+  .tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .tag {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #0A0B0A;
+    background: #A3E635;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+  .tag.ghost {
+    color: rgba(233,231,220,0.65);
+    background: transparent;
+    border: 1px solid rgba(233,231,220,0.22);
+  }
+
+  /* url */
+  .site-url {
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 13px;
+    color: rgba(163,230,53,0.8);
+    letter-spacing: 0.08em;
+  }
+  .site-url::before { content: "→ "; }
+
+  /* ── corner scan-id ── */
+  .scan-id {
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    color: rgba(233,231,220,0.30);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="grid"></div>
+  <div class="scanlines"></div>
+  <div class="accent-bar"></div>
+  <div class="panel-top"></div>
+
+  <!-- HUD win-bar -->
+  <div class="win-bar">
+    <div class="win-bar-dot"></div>
+    <div class="win-bar-dot"></div>
+    <div class="win-bar-dot lime"></div>
+    <span class="win-bar-label">prompt_goblin // og-card v1</span>
+    <div class="win-bar-spacer"></div>
+    <span class="win-bar-url">promptgoblin.zatgeist.com</span>
+  </div>
+
+  <!-- main content -->
+  <div class="content">
+
+    <!-- goblin mark -->
+    <div class="mark-wrap">
+      <svg viewBox="0 0 502.3 360.6" width="230" height="165" fill="#A3E635" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Prompt Goblin">
+        <g>
+          <path d="M316.8,248.9c4.5,8.9,8.8,17.3,13.3,26.1c-2.2,1-4,1.8-6.1,2.7c-6.3-12.3-12.5-24.3-19.1-37.1 c-5.7,10.7-11.1,20.8-16.5,30.9c-3.4,6.4-5.9,6.9-10.8,1.5c-8.5-9.4-16.9-18.9-25.8-28.9c-8.6,9.6-16.8,18.7-25,27.9 c-5.9,6.6-8,6.4-12-1.2c-5.2-9.7-10.5-19.5-16.2-30.1c-6.5,12.6-12.6,24.4-19,36.7c-2-0.8-3.8-1.4-5.7-2.2c0.2-1.1,0.2-1.8,0.5-2.4 c6.4-12.6,12.7-25.3,19.3-37.7c1-2,3.1-4,5.1-4.5c1.1-0.3,3.4,2.5,4.4,4.3c5.9,10.7,11.6,21.6,17.8,33.1 c10.4-11.4,20.2-22.2,30.8-33.9c10.4,11.5,20.2,22.5,30.6,34.1c5.9-11,11.5-21.8,17.4-32.5c1.2-2.2,3.5-3.8,5.3-5.6 c1.7,2,3.8,3.7,5.1,6C312.5,240.1,314.4,244.3,316.8,248.9z"/>
+          <path d="M53.5,55.1c-0.1-1,0.1-1.6,0.3-2.6c2.2-0.4,4.9-1.3,6.3-0.3c27.6,18.3,55.1,36.9,82.6,55.4 c0.2,0.1,0.3,0.4,0.5,0.8c-1,5.2-3.6,5.1-7.6,2.4c-21-14.1-42-28.1-63.1-42.1c-2.1-1.4-4.6-2.3-8.2-4c16,42.5,31.6,83.3,46.8,124.2 c2.3,6.3,6.8,4.7,12.9,5.6c-1.6,2.5-2.9,6-3.9,5.9c-4.7-0.3-10.7,3.2-13.5-4.5c-5.3-14.8-11.1-29.5-16.7-44.2 C78,119.7,65.9,87.6,53.5,55.1z"/>
+          <path d="M435.5,73.8c1.2-3.3,2.2-6,3.9-10.7c-26.3,17.5-51.1,33.9-76.2,50.6c-1.3-1.9-2.3-3.3-3.4-4.8 c0.5-0.7,0.8-1.4,1.3-1.8c27.1-18.2,54.3-36.4,81.5-54.5c1.4-0.9,3.6-0.5,5.4-0.7c0.2,2,1.1,4.3,0.5,6.1c-10.3,28-20.9,56-31.4,84 c-6.8,18.2-13.9,36.3-20.5,54.5c-2.7,7.4-8.6,3.4-13.1,4c-1,0.1-2.4-3-3.7-6c12.7,3,12.5-6.7,14.9-13 C408.4,145.7,421.8,110,435.5,73.8z"/>
+          <path d="M260,302.5c10.9,0,21.1,0,31.9,0c0-4.4,0-8.5,0-13c2.5,0,4.4,0,6.6,0c0,6.5,0,12.7,0,19.4 c-31.3,0-62.2,0-93.6,0c0-6.5,0-12.6,0-19.4c2-0.1,3.9-0.2,6.5-0.3c0,4.6,0,8.6,0,13.3C227.8,302.5,243.5,302.5,260,302.5z"/>
+          <path d="M233.5,66.6c26.9,0,53.1,0,79.6,0c1.9,4.8,1,7-4.4,7c-37.8-0.1-75.7-0.1-113.5-0.1c-4.8,0-6.3-1.7-4.5-6.9 C204.6,66.6,218.7,66.6,233.5,66.6z"/>
+          <path d="M158.9,238.1c2.2-5.7,3.9-11,6.4-15.9c1.1-2.1,4-3.3,6.1-4.9c0.7,0.7,1.4,1.3,2,2c-3.7,9.4-7.4,18.7-11,28.1 c-4.7,12.1-9.4,24.2-13.9,36.3c-1.7,4.5-4.1,5-8.2,2C146.5,270,152.6,254.3,158.9,238.1z"/>
+          <path d="M360,287.3c-1.8-0.8-3.8-1.5-4.3-2.8c-8.6-21.6-17-43.4-25.5-65.1c0.6-0.7,1.1-1.3,1.7-2 c2.1,1.4,5.4,2.3,6.2,4.3c8.3,20.3,16.2,40.8,24.1,61.3C362.5,284.1,361.1,285.8,360,287.3z"/>
+          <path d="M253.7,193.2c5.8,8.5,11.1,16.8,17.1,26.4c-13.7,0.8-12.3-12.6-19.1-17.1c-6.9,4.3-5.3,17.8-18.8,17.4 c5.3-9,9.8-17.2,14.8-25C248.5,193.6,251.3,193.6,253.7,193.2z"/>
+          <g>
+            <path d="M150.9,128.4c-3.4,1.7-6.8,2.8-10.6,4c0,23.7,0,47.9,0,72.8c3.2,0.2,6.3,0.4,10.1,0.6 c0.2,1.8,0.5,3.7,0.8,6.2c-6.1,0-11.7,0-17.8,0c0-29,0-57.8,0-87.6c5.1,0,10.1-0.2,15.1,0.2C149.4,124.7,150.1,126.7,150.9,128.4z"/>
+            <path d="M363.2,199.5c0-23,0-45.3,0-68.1c-3.5,0-6.6,0-10.2,0c0-2.5,0-4.4,0-6.7c5.6,0,11,0,16.8,0 c0,29.2,0,58.2,0,87.4c-5.8,0-11.3,0-17.1,0c0-2.1,0-3.8,0-6.3c3.1-0.1,6.3-0.3,10-0.5C362.9,203.7,363.1,202,363.2,199.5z"/>
+            <path d="M172.9,66.5c6.4-0.4,4.4,3.4,4.3,6.6c-3.4,0.3-6.6,0.5-10,0.8c0,12.8,0,25.3,0,37.9c3.4,0.2,6.6,0.4,10,0.7 c0,2.2,0,4.2,0,6.4c-5.8,0-11.3,0-17.2,0c0-17.4,0-34.5,0-52.4C164,66.5,168.2,66.5,172.9,66.5z"/>
+            <path d="M343.7,103.4c0,5.5,0,10.3,0,15.4c-6.2,0-11.6,0-17.1,0c-0.9-6.2-0.9-6.2,9.8-6.9c0-12.7,0-25.4,0-38.2 c-3.4-0.2-6.6-0.4-10.1-0.6c-0.1-2.1-0.2-3.8-0.3-6.1c6,0,11.6,0,17.8,0C343.7,79.1,343.7,90.9,343.7,103.4z"/>
+            <path d="M318.7,170.9c6.3-4,12.1-7.7,18-11.4c-5.2-8.5-20.5-7-20.8-22.2c9.9,6.1,18.8,11.1,27,16.9 c3.6,2.5,3.6,7.2-0.5,9.9c-8.3,5.5-16.9,10.5-27,14.9C316.4,176.4,317.4,173.8,318.7,170.9z"/>
+            <path d="M174.2,164.2c3.2,2,5.9,3.7,8.7,5.4c4.7,3,4.7,3,3.6,10.2c-8.9-5.5-17.8-10.4-25.9-16.3 c-1.6-1.1-1.6-8-0.1-9.1c8.2-5.9,17-10.9,27-17c-0.4,15.2-15.2,13.8-20.8,22C168.8,160.7,171.3,162.3,174.2,164.2z"/>
+            <path d="M296.9,141.6c2.2-1.3,4-2.3,6.7-3.8c0.3,14.8-15,13.1-19.9,21.2c4.9,7.8,19.5,6.4,20.3,21.3 c-10.1-6.3-19.2-11.4-27.6-17.5c-1.1-0.8-0.3-7.4,1.6-9C283.5,149.3,290.2,145.8,296.9,141.6z"/>
+            <path d="M209.6,166.2c3.9-2.5,7.4-4.6,11.6-7.2c-5-3.1-9.4-5.9-13.7-8.6c-4.2-2.7-9.7-4.6-6.6-12.3 c8.7,5.4,17.6,10.5,25.8,16.6c1.5,1.1,1.4,7.7-0.1,8.8c-8.1,5.9-17,10.9-25.7,16.3C197.4,170.6,205.1,169.8,209.6,166.2z"/>
+            <path d="M253.9,153.3c-5.4,0.7-8.3-1-7.8-6.4c0.5-4.5,3.8-4.9,7.2-4.4C258.1,143.3,258.6,148.4,253.9,153.3z"/>
+            <path d="M252.7,178.1c-5.3,0-7.6-2.8-6.3-7c0.6-1.8,3.8-3.5,6.1-3.9c1.3-0.3,4.5,2.4,4.4,3.2 C256.2,173,254.5,175.5,252.7,178.1z"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- vertical divider -->
+    <div class="divider"></div>
+
+    <!-- text -->
+    <div class="text-block">
+      <div class="kicker">AEO · GEO · Technical SEO · WCAG</div>
+      <div class="wordmark">PROMPT_<span>GOBLIN</span>&#x2122;</div>
+      <div class="headline">Get found by robots.<br>Stay usable by humans.</div>
+      <div class="sub">AI search visibility + technical SEO + WCAG 2.1 AA accessibility.<br>Measured. Shipped. Visible AF.</div>
+      <div class="tags">
+        <span class="tag">Visible AF</span>
+        <span class="tag ghost">AI Search</span>
+        <span class="tag ghost">AEO · GEO</span>
+        <span class="tag ghost">WCAG 2.1 AA</span>
+      </div>
+      <div class="site-url">promptgoblin.zatgeist.com</div>
+    </div>
+
+  </div>
+
+  <!-- corner scan-id -->
+  <div class="scan-id">PG-OG // 1200×630 // v1.0</div>
+</div>
+</body>
+</html>
