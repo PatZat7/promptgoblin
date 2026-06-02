@@ -173,7 +173,7 @@ body[data-palette="bone"] .cursor { background: #2a2a2a; }
 .theme-tog .sw { width:8px; height:8px; background: var(--lime); display:inline-block; }
 .theme-tog .lbl { min-width: 30px; text-align:left; }
 
-main { padding-top: var(--hud-h); }
+main { padding-top: var(--hud-h); padding-bottom: var(--hud-h); }
 
 /* ============================================
    Panel system
@@ -398,6 +398,15 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 .wcard:hover { background: var(--panel); }
 .wcard:hover .wcard-head { background: rgba(163,230,53,0.05); }
 @media (max-width: 900px) { .work-grid { grid-template-columns: 1fr; } .wcard.span-2,.wcard.span-3 { grid-column: span 1; } }
+/* Bug fix: drop the grid item's default min-width:auto so the 1fr track shrinks
+   to the container. The terminal lines (.ln) are nowrap+ellipsis for desktop
+   columnar alignment, but on a phone that silently truncated substantive proof
+   lines ("…not a promise", "…2 content") — verified in-browser at 375px. Wrap
+   them instead so the full dogfood story shows; overflow-wrap breaks long URLs. */
+@media (max-width: 700px) {
+  .wcard { min-width: 0; }
+  .wterm .ln { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
+}
 
 /* ============================================
    SERVICES / CAPABILITIES
@@ -420,7 +429,17 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 .svc-row .desc li::before { content: "▸ "; color: var(--lime); }
 .svc-row .tog { font-family: var(--pixel); font-size: 20px; text-align:right; color: var(--muted); padding-top: 6px; transition: transform .3s, color .3s; }
 .svc-row.open .tog { transform: rotate(45deg); color: var(--lime); }
-@media (max-width: 760px) { .svc-row { grid-template-columns: 36px 1fr 40px; } .svc-row .lead, .svc-row .desc { grid-column: 1 / -1; } }
+@media (max-width: 760px) {
+  .svc-row { grid-template-columns: 36px 1fr 40px; }
+  /* .num → col1/row1, .ttl → col2/row1, .tog → col3/row1 are placed by source
+     order naturally. The class-less wrapper (3rd grid item under the old 4-col
+     layout) auto-placed into the 40px col — force it to span full width on row 2. */
+  .svc-row > div:not([class]) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  /* Dead declarations removed: .lead/.desc are NOT grid items (inside wrapper) */
+}
 
 /* ============================================
    QUOTES
@@ -447,6 +466,9 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 .scard .read { font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.06em; text-transform: uppercase; display:flex; gap: 8px; align-items:center; }
 .scard .read::after { content:"→"; transition: transform .25s; }
 .scard:hover .read::after { transform: translateX(4px); }
+.scard-soon { opacity: 0.55; cursor: default; }
+.scard-soon:hover { background: transparent; }
+.scard-soon .read::after { display: none; }
 @media (max-width: 900px) { .scrolls { grid-template-columns: 1fr; } }
 
 /* ============================================
@@ -575,7 +597,17 @@ body[data-density="tight"] { --pad: 16px; }
 .mesh-steps .sn { font-family: var(--pixel-tiny); font-size: 10px; color: var(--lime); padding-top: 2px; }
 .mesh-steps .st { font-family: var(--mono); font-weight: 700; font-size: 14px; letter-spacing: -.01em; color: var(--fg); }
 .mesh-steps .sd { font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--muted); margin-top: 4px; }
-@media (max-width: 560px) { .mnode { min-width: 120px; font-size: 10px; } .mnode .v { font-size: 11px; } }
+/* The absolutely-positioned graph nodes assume a wide canvas and get clipped
+   off the right edge on phones. Below ~700px, flatten the canvas into a
+   readable vertical timeline (nodes flow top-to-bottom in pipeline order) and
+   drop the connector SVG, which no longer maps to the stacked positions. */
+@media (max-width: 700px) {
+  .mesh-stage { min-height: 0; }
+  .mesh-svg { position: static; height: auto; display: flex; flex-direction: column; gap: 10px; }
+  .mesh-svg > svg { display: none; }
+  .mnode { position: static; min-width: 0; max-width: none; width: 100%; }
+  .mnode .v { white-space: normal; overflow-wrap: anywhere; }
+}
 
 /* ============================================
    SUMMON FORM  — lead intake on the Contact panel
@@ -644,4 +676,23 @@ body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
   .hud-menu { display: none; }
   .hero-grid { grid-template-columns: 1fr; }
   .hero-side { border-left: 0; border-top: 1px solid var(--line); min-height: 60vh; }
+}
+
+/* Mobile HUD: the full right rail (theme + status dot + clock) plus the
+   "AI SEO / Chicago" tag overflow narrow viewports and push a horizontal
+   scrollbar. Trim each bar to its essentials — logo + theme toggle up top,
+   sector readout + "top" link below — and tighten the spacing. */
+@media (max-width: 600px) {
+  /* WCAG 2.5.8: lift footer link touch targets to ≥24px */
+  .cside-row .v a { display: inline-block; padding: 3px 0; }
+
+  .hud { gap: 8px; }
+  .hud-top .hud-left .hud-divider,
+  .hud-top .hud-left .muted { display: none; }
+  .hud-top .hud-right { gap: 10px; }
+  .hud-top .hud-right > span,
+  .hud-top .hud-right .hud-divider { display: none; }
+  .hud-bot .hud-left,
+  .hud-bot .hud-right .muted,
+  .hud-bot .hud-right .hud-divider { display: none; }
 }
