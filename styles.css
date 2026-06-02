@@ -333,7 +333,7 @@ body[data-palette="bone"] .sb-ico { background: #14140f; }
 /* ============================================
    SPELLBOOK end
    ============================================ */
-.stats { grid-template-columns: repeat(5, 1fr); }
+.stats { grid-template-columns: repeat(4, 1fr); }
 .stat { padding: 22px var(--pad); display:flex; flex-direction: column; gap: 8px; }
 .stat .v { font-family: var(--pixel); font-size: calc(22px * var(--display-mult)); color: var(--fg); line-height: 1; }
 .stat .v em { color: var(--lime); font-style: normal; }
@@ -492,6 +492,7 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 .cside-row .v { font-family: var(--mono); font-size: 14px; }
 .cside-row .v a:hover { color: var(--lime); }
 .cside-row .v.big { font-family: var(--pixel-soft); font-size: 22px; }
+.soon-link { color: var(--muted); cursor: default; }
 @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; } .contact-side { border-left: 0; border-top: 1px solid var(--line); } }
 
 .colophon { display:flex; justify-content: space-between; padding: 14px var(--pad); border-top: 1px solid var(--line); font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.05em; text-transform: uppercase; color: var(--muted); }

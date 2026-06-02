@@ -423,6 +423,10 @@ function Hero() {
             schema, crawl, and content fixes (human-reviewed, never
             auto-deployed) to close the gap. Days, not quarters.
           </div>
+          <div className="hero-note hero-gap-line">
+            When an AI names the best in your category — is it you, or your
+            competitor? We measure that gap. Then we close it.
+          </div>
           <div className="hero-cta">
             <a className="btn" href="#contact" data-cursor-label="summon">
               ./summon <span className="arr">→</span>
@@ -512,8 +516,7 @@ function Spellbook() {
 /* ===== STATS ===== */
 const STATS = [
   { v: "5", k: "Answer engines scanned" },
-  { v: "100", e: "%", k: "Schema valid · this site" },
-  { v: "180", e: "ms", k: "Median TTFB · this site" },
+  { v: "6", k: "JSON-LD blocks · this site" },
   { v: "7", k: "Pipeline nodes · human-gated" },
   { v: "0", k: "Changes auto-deployed" },
 ];
@@ -1187,8 +1190,9 @@ function Contact() {
           <div className="cside-row">
             <span className="k">$ ls ./elsewhere</span>
             <span className="v">
-              <a href="#">github</a> · <a href="#">x.com</a> ·{" "}
-              <a href="#">substack</a>
+              <span className="soon-link">github</span> ·{" "}
+              <span className="soon-link">x.com</span> ·{" "}
+              <span className="soon-link">substack</span>
             </span>
           </div>
           <div className="cside-row">
@@ -1563,10 +1567,10 @@ function LiveScan() {
 /* ===== VISIBILITY MESH — agentic graph (ported from handoff, dark+lime) ===== */
 const MESH_NODES = [
   { id: "intent", x: 2, y: 16, t: "user.intent", v: '"best fleet software"' },
-  { id: "llm", x: 30, y: 4, t: "llm.query.expand", v: "GPT · Claude · Gemini" },
+  { id: "llm", x: 30, y: 4, t: "llm.query.expand", v: "GPT · Claude · Gemini · Pplx · AIO" },
   { id: "rag", x: 28, y: 56, t: "rag.retrieve", v: "k=24 sources" },
-  { id: "cite", x: 54, y: 34, t: "citation.weave", v: "graph(82 edges)" },
-  { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 1 a11y" },
+  { id: "cite", x: 54, y: 34, t: "citation.weave", v: "you vs. 6 competitors" },
+  { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 4 a11y" },
   { id: "fix", x: 72, y: 16, t: "goblin.recommend", v: "12 ranked fixes" },
   { id: "ship", x: 72, y: 62, t: "human.review → PR", v: "queued · 3 pending" },
 ];
@@ -1642,7 +1646,7 @@ function VisibilityMesh() {
         <span className="id">▸</span>
         <span>$ goblin graph --run</span>
         <span className="grow"></span>
-        <span className="tk">langgraph workflow · human-gated</span>
+        <span className="tk">langgraph workflow · human-gated · sample run</span>
       </div>
       <div className="grid-lines mesh-grid">
         <div className="mesh-stage">
