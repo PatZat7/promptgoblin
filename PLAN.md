@@ -3,16 +3,17 @@
 > The orchestration doc. The main thread keeps this current; subagents are dispatched from here. This is the "planner" — there is no planner subagent. Last touched: 2026-06-02.
 
 ## Status
-- ✅ **Marketing site live** (promptgoblin.zatgeist.com) — dogfood scan run; contrast regression fixed (axe 100/100, 0 violations).
+- ✅ **Marketing site live** (promptgoblin.zatgeist.com) — DO App Platform, deploy-on-push from `main` (origin: github PatZat7/promptgoblin). axe 100/100, 0 violations. 2026-06-02: shipped the mobile fix + copy/mesh/share/favicon polish (`fix/mobile-and-copy` → main).
 - ✅ **Pipeline task (c)** — done.
 - ✅ **Pipeline task (a)** — per-discipline self-healing verify strands; eval gate green (seo + a11y `fires+converges@1`, `bounded@cap`), 186 tests pass. Committed.
 - ✅ **Leads** — 27 sendable in `pipeline/sales/leads30.md`; prioritized, name-filled DMs in `pipeline/sales/dms_to_send.md`.
 - ✅ **Agent team** — 8 specialists in `.claude/agents/` + this PLAN + project `CLAUDE.md`.
 
 ## In flight
-- _(nothing actively in flight — see "Needs your input" below; uncommitted: mobile CSS + copy edits + the separate analytics diff, all human-gated, none committed yet)_
+- _(nothing in flight. Uncommitted in the tree: only the separate `functions/` Tier-2/SSRF WIP — held intentionally, deploys separately from the static site.)_
 
 ## Recently done
+- ✅ **Pre-launch QA + ship** (2026-06-02): `qa` ran axe-core across 1440/768/375/360 → **0 violations**. One blocker found (Scrolls "soon" cards at 4.3:1) and fixed by `design-system` — dropped the `opacity:0.55` card dim for a dashed muted border so text stays full-contrast (~10.5:1, re-verified). **Favicon** redone per request: transparent (no box), theme-adaptive via `prefers-color-scheme` (white on dark / black on light browser UI) — both schemes verified. `fix/mobile-and-copy` (7 commits) merged to `main` + pushed → deploy-on-push.
 - ✅ **Site polish batch** (2026-06-02 — copywriter + design-system → integrity-reviewer **APPROVE** → preview-verified at :8127, 0 console errors):
   - Mesh graph copy fixed: now 5 answer engines (was 3), `12 gaps · 4 a11y`, `you vs. 6 competitors` (was the cryptic `graph(82 edges)`), + a `sample run` illustrative marker (same misread risk we closed on the scan demo).
   - Hero sub-line A applied (DM message-match); footer social links → non-clickable `soon` spans.

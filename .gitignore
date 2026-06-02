@@ -42,3 +42,6 @@ _stripe_*.json
 
 # Throwaway responsive/audit screenshot runs
 artifacts/
+
+# Ad-hoc QA gate harness output
+_qa_gate*
