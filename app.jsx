@@ -559,7 +559,7 @@ function IndexNow() {
           <div className="now-row">
             <span className="k">Open</span>
             <span className="val">
-              2 of 3 slots · <em>Q3 26</em>
+              taking 3 clients · <em>Q3 26</em>
             </span>
           </div>
           <div className="now-row">
@@ -568,7 +568,7 @@ function IndexNow() {
           </div>
           <div className="now-row">
             <span className="k">Crawling</span>
-            <span className="val">12 client graphs</span>
+            <span className="val">my own graph + demo targets</span>
           </div>
           <div className="now-row">
             <span className="k">Reading</span>
@@ -1297,7 +1297,11 @@ function LiveScan() {
         <span className="id">▸</span>
         <span>$ goblin scan --surface llm</span>
         <span className="grow"></span>
-        <span className="tk">live · your prompt surface</span>
+        <span className="tk">
+          {target && reportLines
+            ? "live · real scan"
+            : "sample · enter your domain for a real scan"}
+        </span>
       </div>
       <div className="grid-lines scan-grid">
         <div className="scan-term">
@@ -1647,7 +1651,7 @@ const TIERS = [
     link: STRIPE_LINKS.warband,
     cta: "Summon Warband",
     featured: true,
-    tag: "most chosen",
+    tag: "best value",
     desc: "The recurring agentic loop. We run the graph and ship the reviewed PRs — you approve.",
     bullets: [
       "Everything in Scout",
