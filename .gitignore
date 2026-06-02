@@ -36,3 +36,9 @@ _last_report.json
 _scan_e2e.mjs
 _stripe_*.py
 _stripe_*.json
+
+# Stray downloads / binaries — never commit (e.g. comet_installer_latest.exe)
+*.exe
+
+# Throwaway responsive/audit screenshot runs
+artifacts/
