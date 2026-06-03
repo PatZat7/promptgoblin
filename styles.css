@@ -86,6 +86,11 @@ html { overflow-x: clip; }
 body { overflow-x: clip; cursor: none; }
 body[data-cursor="off"] { cursor: auto; }
 body[data-cursor="off"] .cursor, body[data-cursor="off"] .cursor-label { display: none; }
+/* No custom cursor on touch / coarse-pointer devices — restore the native one */
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+  .cursor, .cursor-label { display: none !important; }
+}
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }

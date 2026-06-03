@@ -187,6 +187,8 @@ function Cursor() {
     lbl = useRef(null);
   const [label, setLabel] = useState("");
   useEffect(() => {
+    // No custom cursor on touch / coarse-pointer devices — skip the rAF + listeners.
+    if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return;
     let x = innerWidth / 2,
       y = innerHeight / 2,
       tx = x,
