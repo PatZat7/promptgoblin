@@ -447,41 +447,6 @@ body[data-motion="high"] .marquee-track { animation-duration: 22s; }
 }
 
 /* ============================================
-   QUOTES
-   ============================================ */
-.quotes { grid-template-columns: repeat(4, 1fr); }
-.quote { padding: 30px var(--pad); display:flex; flex-direction: column; gap: 18px; min-height: 180px; }
-.quote .q { font-family: var(--pixel-soft); font-size: 22px; line-height: 1.15; color: var(--fg); }
-.quote .q::before { content: "“"; color: var(--lime); }
-.quote .q::after { content: "”"; color: var(--lime); }
-.quote .src { margin-top: auto; font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.06em; text-transform: uppercase; color: var(--muted); }
-.quote .stars { color: var(--lime); letter-spacing: 2px; font-size: 11px; }
-@media (max-width: 900px) { .quotes { grid-template-columns: 1fr 1fr; } }
-
-/* ============================================
-   SCROLLS / JOURNAL
-   ============================================ */
-.scrolls { grid-template-columns: 1fr 1fr 1fr; }
-.scard { padding: 32px var(--pad); display:flex; flex-direction: column; gap: 20px; min-height: 270px; transition: background .2s; }
-.scard:hover { background: var(--panel); }
-.scard .meta { display:flex; justify-content: space-between; font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.06em; text-transform: uppercase; color: var(--muted); }
-.scard .meta .num { color: var(--lime); }
-.scard h3 { font-family: var(--pixel); font-weight: 400; font-size: calc(12px * var(--display-mult)); line-height: 1.6; text-transform: uppercase; margin-top: auto; }
-.scard h3 em { color: var(--lime); font-style: normal; }
-.scard .read { font-family: var(--pixel-tiny); font-size: 9px; letter-spacing:.06em; text-transform: uppercase; display:flex; gap: 8px; align-items:center; }
-.scard .read::after { content:"→"; transition: transform .25s; }
-.scard:hover .read::after { transform: translateX(4px); }
-/* WCAG 1.4.3 fix: blanket opacity:0.55 multiplied --muted's effective alpha to
-   ~0.44, compositing to ~4.3:1 on --bg (AA small-text requires 4.5:1). Fix:
-   remove the ancestor opacity; signal "inactive" via muted headline color and
-   dashed border instead. All text nodes now pass at full token ratios (≥10:1). */
-.scard-soon { opacity: 1; cursor: default; border-style: dashed; border-color: var(--line-2); }
-.scard-soon h3 { color: var(--muted); }
-.scard-soon:hover { background: transparent; }
-.scard-soon .read::after { display: none; }
-@media (max-width: 900px) { .scrolls { grid-template-columns: 1fr; } }
-
-/* ============================================
    CONTACT
    ============================================ */
 .contact-grid { grid-template-columns: 1.3fr 1fr; }
@@ -936,6 +901,7 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
 .sf-ok-mark { font-family: var(--pixel); color: var(--bg); background: var(--lime); width: 34px; height: 34px; display: grid; place-items: center; flex: 0 0 auto; }
 .sf-ok-t { font-family: var(--pixel-tiny); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--lime); }
 .sf-ok-d { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.sf-ok .sr-again { margin-top: 12px; }
 
 /* scan-form rules consolidated in LIVE SCAN block above */
 
@@ -983,9 +949,15 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
   .cside-row .v a { display: inline-block; padding: 3px 0; }
 
   .hud { gap: 8px; }
+  /* Float the light/dark toggle to the far left on mobile; brand follows it.
+     Swap the top bar from the 1fr/auto/1fr grid to a predictable flex row so
+     the toggle pins to the left edge instead of stranding mid-bar. */
+  .hud-top { display: flex; align-items: center; gap: 14px; }
+  .hud-top .hud-center { display: none; }
+  .hud-top .hud-left { order: 2; flex: 1 1 auto; min-width: 0; }
   .hud-top .hud-left .hud-divider,
   .hud-top .hud-left .muted { display: none; }
-  .hud-top .hud-right { gap: 10px; }
+  .hud-top .hud-right { order: 1; flex: 0 0 auto; gap: 10px; justify-content: flex-start; }
   .hud-top .hud-right > span,
   .hud-top .hud-right .hud-divider { display: none; }
   .hud-bot .hud-left,
@@ -1004,8 +976,8 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
 /* section layout */
 .how-grid {
   display: grid;
-  gap: var(--pad);
-  padding: var(--pad);
+  gap: 34px;
+  padding: calc(var(--pad) + 26px) var(--pad);
   background: var(--bg);
 }
 @media (min-width: 900px) {
@@ -1015,20 +987,20 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
 .how-intro .kicker {
   display: block;
   font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--faint); margin-bottom: 10px;
+  text-transform: uppercase; color: var(--faint); margin-bottom: 18px;
 }
 .how-intro .h-sec {
   font-family: var(--pixel); font-size: calc(16px * var(--display-mult));
-  line-height: 1.35; color: var(--ink); margin-bottom: 4px;
+  line-height: 1.42; color: var(--ink); margin-bottom: 16px;
 }
 .how-intro .mono-note {
   font-family: var(--mono); font-size: 12px; color: var(--faint);
 }
-.how-p { font-size: 14px; line-height: 1.7; color: var(--muted); margin-bottom: 16px; }
-.how-punch { font-family: var(--mono); font-size: 14px; color: var(--ink); font-weight: 700; margin-bottom: 10px; }
-.how-tech { font-family: var(--mono); font-size: 12px; color: var(--faint); line-height: 1.55; }
+.how-p { font-size: 14px; line-height: 1.75; color: var(--muted); margin-bottom: 24px; }
+.how-punch { font-family: var(--mono); font-size: 14px; color: var(--ink); font-weight: 700; margin: 10px 0 18px; }
+.how-tech { font-family: var(--mono); font-size: 12px; color: var(--faint); line-height: 1.6; }
 .how-close {
-  padding: 20px var(--pad) calc(var(--pad) + 6px);
+  padding: 32px var(--pad) calc(var(--pad) + 10px);
   font-family: var(--mono); font-size: 12.5px; color: var(--faint); line-height: 1.65;
   border-top: 1px solid var(--line);
 }

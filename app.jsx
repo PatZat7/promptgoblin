@@ -751,96 +751,6 @@ function Services() {
   );
 }
 
-/* ===== QUOTES → house rules / principles (no fabricated testimonials) ===== */
-const QUOTES = [
-  { q: "Nothing auto-deploys. A software engineer reviews every change.", src: "principle · 01" },
-  { q: "Flat fee. No credits, no meter, no surprise invoice.", src: "principle · 02" },
-  { q: "We ship the fixes — not a PDF you implement yourself.", src: "principle · 03" },
-  { q: "Schema is hygiene. We chase the real levers: mentions + Bing.", src: "principle · 04" },
-];
-
-function Quotes() {
-  return (
-    <section
-      className="panel"
-      data-screen-label="12 Quotes"
-      data-section-name="House rules"
-    >
-      <div className="panel-bar">
-        <span className="id">04</span>
-        <span>house rules</span>
-        <span className="grow"></span>
-        <span className="tk">cat ./principles</span>
-      </div>
-      <div className="grid-lines quotes">
-        {QUOTES.map((x, i) => (
-          <div className="quote" key={i}>
-            <div className="q">{x.q}</div>
-            <div className="src">{x.src}</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== SCROLLS ===== */
-const SCROLLS = [
-  {
-    num: "N.01",
-    date: "May 2026",
-    read: "8 min",
-    tag: "essay",
-    title: "What <em>llms.txt</em> is, and why your site needs one.",
-  },
-  {
-    num: "N.02",
-    date: "Apr 2026",
-    read: "5 min",
-    tag: "field note",
-    title: "Schema is hygiene, not a citation lever — <em>what actually gets you cited</em>.",
-  },
-  {
-    num: "N.03",
-    date: "Mar 2026",
-    read: "11 min",
-    tag: "teardown",
-    title: "How a site gets <em>cited</em> by ChatGPT.",
-  },
-];
-
-function Scrolls() {
-  return (
-    <section
-      id="scrolls"
-      className="panel"
-      data-screen-label="13 Scrolls"
-      data-section-name="Scrolls"
-    >
-      <div className="panel-bar">
-        <span className="id">05</span>
-        <span>$ cat ./scrolls/*.md</span>
-        <span className="grow"></span>
-        <span className="tk">field notes</span>
-      </div>
-      <div className="grid-lines scrolls">
-        {SCROLLS.map((s) => (
-          <div key={s.num} className="scard scard-soon" data-cursor-label="soon">
-            <div className="meta">
-              <span className="num">{s.num}</span>
-              <span>
-                {s.tag} · {s.date}
-              </span>
-            </div>
-            <h3 dangerouslySetInnerHTML={{ __html: s.title }}></h3>
-            <div className="read">field note · soon</div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 /* ===== CONTACT / SUMMON — lead intake + payment-ready (config at top of file) ===== */
 function Contact() {
   const [sending, setSending] = useState(false);
@@ -1001,6 +911,17 @@ function Contact() {
                   free scan. Check your inbox (and spam — goblins lurk there
                   too).
                 </div>
+                <button
+                  type="button"
+                  className="sr-again"
+                  onClick={() => {
+                    setErr("");
+                    setSent(false);
+                  }}
+                  data-cursor-label="summon again"
+                >
+                  ↺ summon another
+                </button>
               </div>
             </div>
           )}
@@ -1185,7 +1106,7 @@ function HowItWorks() {
         <div className="how-intro reveal" ref={ref}>
           <span className="kicker">how it works · the engine under the hood</span>
           <h2 className="h-sec">How we actually move the needle</h2>
-          <p className="mono-note" style={{ marginTop: 8, marginBottom: 18 }}>// automated system · software-engineer judgment · measurable results</p>
+          <p className="mono-note" style={{ marginTop: 10, marginBottom: 32 }}>// automated system · software-engineer judgment · measurable results</p>
           <p className="how-p">Most SEO shops send you a PDF. <span style={{ color: "var(--lime)" }}>We run a system.</span></p>
           <p className="how-p">Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO, and accessibility — with bounded self-healing loops and an eval gate that proves a fix actually works before any engineer sees it. Then a software engineer reviews every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a schedule and measures the delta.</p>
           <p className="how-punch">You see the gap. Then you watch it close.</p>
@@ -1334,6 +1255,7 @@ function LiveScan() {
     setSummary("");
     setErrorMsg("");
     setTarget("");
+    setEmail("");
     setMode("idle");
   };
 
@@ -2233,8 +2155,6 @@ const SECTIONS = [
   { id: "08 Index", name: "Index / Now" },
   { id: "10 Services", name: "./services" },
   { id: "11 Pricing", name: "Pricing" },
-  { id: "12 Quotes", name: "Word on street" },
-  { id: "13 Scrolls", name: "./scrolls" },
   { id: "14 Contact", name: "Summon" },
 ];
 
@@ -2260,8 +2180,6 @@ function App() {
           <IndexNow />
           <Services />
           <Pricing />
-          <Quotes />
-          <Scrolls />
           <Contact />
         </div>
       </main>
