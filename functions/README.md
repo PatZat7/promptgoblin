@@ -99,7 +99,7 @@ Eyeball real output locally (Tier-1 does a real fetch; Tier-2 uses the no-key pa
 you export a key):
 
 ```bash
-node test/invoke-local.js tier1 https://promptgoblin.zatgeist.com
+node test/invoke-local.js tier1 https://promptgoblin.io
 node test/invoke-local.js tier2
 PERPLEXITY_API_KEY=pplx-… node test/invoke-local.js tier2 you.com   # live Tier-2
 ```
@@ -130,7 +130,7 @@ doctl serverless functions get scan/tier2 --url
 syncs `lib/` into each action and zips it. To rotate the key later, re-export and redeploy,
 or set it in the DO control panel (Functions → namespace → Settings → Environment Variables).
 
-CORS is locked to `https://promptgoblin.zatgeist.com` (localhost allowed for dev) in
+CORS is locked to `https://promptgoblin.io` (localhost allowed for dev) in
 `lib/util.js → corsHeaders`.
 
 ## Wiring to the site

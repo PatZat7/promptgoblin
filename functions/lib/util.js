@@ -7,7 +7,7 @@
  * unit-testable with `node test/*.test.js` and zero keys.
  */
 
-const ALLOWED_ORIGIN = "https://promptgoblin.zatgeist.com";
+const ALLOWED_ORIGIN = "https://promptgoblin.io";
 
 /**
  * CORS headers. We allow the live site origin plus localhost for dev. DO

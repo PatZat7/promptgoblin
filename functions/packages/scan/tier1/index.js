@@ -27,7 +27,7 @@ async function fetchText(url, { asBytes = false } = {}) {
     const resp = await fetch(url, {
       redirect: "follow",
       signal: controller.signal,
-      headers: { "User-Agent": "PromptGoblinScanBot/1.0 (+https://promptgoblin.zatgeist.com)" },
+      headers: { "User-Agent": "PromptGoblinScanBot/1.0 (+https://promptgoblin.io)" },
     });
     if (!resp.ok) return { ok: false, status: resp.status, text: null, bytes: 0 };
     const text = await resp.text();
