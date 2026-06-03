@@ -1,0 +1,133 @@
+.grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tier {
+  padding: 42px var(--pad) 38px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: background 0.2s;
+}
+.tier:hover {
+  background: var(--panel);
+}
+.featured {
+  background: rgba(163, 230, 53, 0.06);
+  box-shadow: inset 0 0 0 1px var(--lime);
+}
+
+.tag {
+  position: absolute;
+  top: 0;
+  right: var(--pad);
+  transform: translateY(-50%);
+  background: var(--lime);
+  color: var(--bg);
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+}
+
+.name {
+  font-family: var(--pixel-tiny);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.who {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.price {
+  font-family: var(--pixel);
+  font-size: calc(34px * var(--display-mult));
+  color: var(--fg);
+  margin-top: 22px;
+  line-height: 1;
+}
+.priceUnit {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin-left: 7px;
+  letter-spacing: 0;
+}
+.desc {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+  line-height: 1.5;
+  min-height: 3.1em;
+}
+
+.features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 26px 0 30px;
+}
+.feature {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--fg);
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 6px;
+  line-height: 1.4;
+}
+.check {
+  color: var(--lime);
+}
+
+/* the global .btn pins to the bottom; featured tier gets the filled treatment */
+.tier :global(.btn) {
+  margin-top: auto;
+}
+.featured :global(.btn) {
+  background: var(--lime);
+  color: var(--bg);
+  border-color: var(--lime);
+}
+.featured :global(.btn:hover) {
+  background: transparent;
+  color: var(--fg);
+}
+.featured :global(.btn .arr) {
+  color: var(--bg);
+}
+.featured :global(.btn:hover .arr) {
+  color: var(--lime);
+}
+
+.enterprise {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  padding: 26px var(--pad);
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.enterprise :global(.btn) {
+  flex: 0 0 auto;
+}
+.guarantee {
+  color: var(--lime);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

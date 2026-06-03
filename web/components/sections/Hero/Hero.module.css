@@ -1,0 +1,200 @@
+.hero {
+  border-top: 0;
+}
+
+.winBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px var(--pad);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.dots {
+  display: inline-flex;
+  gap: 6px;
+}
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line-2);
+  display: inline-block;
+}
+.dots i:first-child {
+  background: var(--lime);
+}
+.grow {
+  flex: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+}
+.grid > * {
+  min-width: 0;
+}
+
+.main {
+  padding: clamp(44px, 6vw, 96px) var(--pad) clamp(48px, 6vw, 88px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+}
+
+.kicker {
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.kickerBar {
+  width: 22px;
+  height: 1px;
+  background: var(--lime);
+  display: inline-block;
+}
+
+.title {
+  font-family: var(--pixel);
+  font-size: calc(clamp(30px, 5.4vw, 76px) * var(--display-mult));
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+.titleAccent {
+  color: var(--lime);
+}
+
+.sub {
+  font-family: var(--mono);
+  font-size: clamp(15px, 1.5vw, 20px);
+  line-height: 1.5;
+  color: var(--fg);
+  max-width: 30ch;
+}
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  background: var(--lime);
+  vertical-align: -0.12em;
+  margin-left: 0.1em;
+  animation: heroBlink 1.06s steps(2, end) infinite;
+}
+@keyframes heroBlink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.note {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 42ch;
+}
+.note b {
+  color: var(--lime);
+  font-weight: 500;
+}
+.noteTight {
+  margin-top: 14px;
+}
+
+.cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* right column — goblin terminal */
+.side {
+  border-left: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  color: var(--lime);
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    rgba(163, 230, 53, 0.03) 3px 4px
+  );
+}
+.asciiNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--faint);
+  opacity: 0.5;
+  white-space: pre;
+  overflow: hidden;
+  padding: 14px;
+}
+.asciiTopRight {
+  inset: auto auto auto auto;
+  top: 14px;
+  right: 16px;
+  text-align: right;
+}
+.asciiBottomLeft {
+  inset: auto auto auto auto;
+  bottom: 14px;
+  left: 16px;
+}
+
+.art {
+  position: relative;
+  z-index: 2;
+  width: min(78%, 360px);
+}
+.art svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 16px var(--glow)) drop-shadow(0 0 36px var(--glow));
+  transition: opacity 0.12s steps(2, end), filter 0.4s;
+}
+.artBlink svg {
+  opacity: 0.5;
+}
+
+.caption {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.captionBlink {
+  color: var(--lime);
+  animation: heroBlink 1.06s steps(2, end) infinite;
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    min-height: 60vh;
+  }
+}

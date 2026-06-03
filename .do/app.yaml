@@ -1,23 +1,54 @@
 # DigitalOcean App Platform spec — Prompt Goblin marketing site
-# Static site, zero build step (React + Babel-standalone load from CDN at runtime).
-# Mirrors the Zatgeist pipeline: static_site, source_dir "/", deploy-on-push to main.
+# Next.js 16 app in web/, built to a STATIC EXPORT (web/out) and served as static
+# assets — same static hosting model as before, now with a build step.
 #
-# Apply with:  doctl apps create --spec .do/app.yaml
-# or update :  doctl apps update <APP_ID> --spec .do/app.yaml
-# (or paste into the DigitalOcean dashboard, or use the DigitalOcean MCP server.)
-#
-# NOTE: set `github.repo` to the real repo once it exists (placeholder below).
+# Apply:  doctl apps update b2fc9d71-4cf8-41b0-ad84-696043cd2def --spec .do/app.yaml
+#   (or via the DigitalOcean MCP / dashboard)
 name: promptgoblin
 region: nyc
+features:
+  - buildpack-stack=ubuntu-22
 static_sites:
   - name: promptgoblin-site
     github:
-      repo: PatZat7/promptgoblin      # TODO: confirm/replace with the real GitHub repo
+      repo: PatZat7/promptgoblin
       branch: main
       deploy_on_push: true
-    source_dir: /
-    build_command: ""                  # no build — Babel transpiles .jsx in-browser
-    output_dir: /
+    source_dir: web              # buildpack detects web/package.json (Node)
+    build_command: npm ci --include=dev && npm run build
+    output_dir: out              # next.config output:'export' → web/out
     index_document: index.html
-    catchall_document: index.html      # SPA-style fallback
-    error_document: index.html
+    catchall_document: index.html
+domains:
+  - domain: promptgoblin.io
+    type: PRIMARY
+  - domain: www.promptgoblin.io
+    type: ALIAS
+  - domain: promptgoblin.zatgeist.com
+    type: ALIAS
+    zone: zatgeist.com
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /
+        authority:
+          exact: www.promptgoblin.io
+      redirect:
+        authority: promptgoblin.io
+        scheme: https
+        redirect_code: 301
+    - match:
+        path:
+          prefix: /
+        authority:
+          exact: promptgoblin.zatgeist.com
+      redirect:
+        authority: promptgoblin.io
+        scheme: https
+        redirect_code: 301
+    - match:
+        path:
+          prefix: /
+      component:
+        name: promptgoblin-site

@@ -1,0 +1,52 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: var(--pad);
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity 0.55s ease, visibility 0s 0.55s;
+}
+.hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.cmd {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+.count {
+  font-family: var(--pixel);
+  font-size: clamp(40px, 7vw, 88px);
+  line-height: 1.1;
+  color: var(--fg);
+}
+.count em {
+  color: var(--lime);
+  font-style: normal;
+}
+.right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.right b {
+  color: var(--lime);
+  font-weight: 400;
+}
+
+/* Reduced-motion: skip the intro entirely. */
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    display: none;
+  }
+}

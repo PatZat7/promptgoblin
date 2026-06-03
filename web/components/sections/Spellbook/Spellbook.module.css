@@ -1,0 +1,125 @@
+.section {
+  padding: var(--pad);
+}
+
+.spellbook {
+  border: 1px solid var(--lime);
+  border-radius: 8px;
+  padding: 24px;
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--glow), 0 0 22px var(--glow), inset 0 0 30px rgba(163, 230, 53, 0.04);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--pixel-tiny);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.count {
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 18px;
+  background: rgba(0, 0, 0, 0.28);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+:global([data-palette="bone"]) .card {
+  background: rgba(0, 0, 0, 0.05);
+}
+.card:hover {
+  border-color: var(--lime);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px var(--glow);
+}
+
+.icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+:global([data-palette="bone"]) .icon {
+  background: #14140f;
+}
+
+.name {
+  font-family: var(--pixel-tiny);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+  line-height: 1.2;
+}
+.level {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-top: 6px;
+}
+.sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 9px;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.path {
+  color: var(--muted);
+}
+.version {
+  color: var(--lime);
+  font-family: var(--pixel-tiny);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 760px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

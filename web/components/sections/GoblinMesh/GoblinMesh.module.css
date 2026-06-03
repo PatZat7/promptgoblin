@@ -1,0 +1,167 @@
+/* Goblin Graph — the agentic visibility mesh + the numbered workflow steps.
+   Geometry mirrors the Claude Design handoff: graph stage on the left
+   (bordered + 24px grid pattern, nodes spill past the edge), bordered step
+   cards on the right, vertically centered against the shorter graph. */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  padding: var(--pad);
+}
+
+/* ---- left: the animated graph stage ---- */
+.stage {
+  position: relative;
+  padding: 28px;
+  min-height: 540px;
+  border: 1px solid var(--line);
+  overflow: visible; /* nodes intentionally spill past the right edge */
+}
+.gridBg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(233, 231, 220, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(233, 231, 220, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.headLeft { color: var(--muted); }
+.headRight { color: var(--lime); }
+
+.svgWrap {
+  position: relative;
+  width: 100%;
+  height: 480px;
+}
+.svgWrap > svg {
+  position: absolute;
+  inset: 0;
+}
+
+.node {
+  position: absolute;
+  min-width: 168px;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  z-index: 2;
+}
+.pin {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 8px;
+  height: 8px;
+  background: var(--line-2);
+}
+.nodeLabel {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 9px;
+}
+.nodeValue {
+  color: var(--fg);
+  font-size: 12.5px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+.nodeActive {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 1px var(--glow), 0 0 18px var(--glow);
+}
+.nodeActive .pin { background: var(--lime); }
+.nodeActive .nodeLabel { color: var(--lime); }
+
+.legend {
+  position: relative;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.legend i {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.legendOn { background: var(--lime); }
+.legendIdle { background: var(--line-2); }
+.legendGate { background: var(--fg); }
+
+/* ---- right: numbered workflow steps ---- */
+.steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  align-items: start;
+  border: 1px solid var(--line);
+  padding: 20px;
+}
+.stepNumber {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--lime);
+  padding-top: 3px;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}
+.stepTitle {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.stepDescription {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* Phones: the absolutely-positioned nodes would clip, so flatten the canvas
+   into a top-to-bottom timeline and drop the connector SVG. */
+@media (max-width: 700px) {
+  .stage { min-height: 0; }
+  .svgWrap { position: static; height: auto; display: flex; flex-direction: column; gap: 10px; }
+  .svgWrap > svg { display: none; }
+  .node { position: static; min-width: 0; width: 100%; }
+  .nodeValue { white-space: normal; overflow-wrap: anywhere; }
+}

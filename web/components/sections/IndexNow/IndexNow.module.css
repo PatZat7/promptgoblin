@@ -1,0 +1,78 @@
+.grid {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+.left {
+  padding: var(--pad);
+}
+.heading {
+  font-family: var(--pixel);
+  font-size: calc(15px * var(--display-mult));
+  text-transform: uppercase;
+  margin-bottom: 26px;
+  line-height: 1.4;
+}
+.nowRow {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+}
+.nowRow:first-of-type {
+  border-top: 0;
+}
+.nowKey {
+  color: var(--muted);
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-top: 3px;
+}
+.nowVal em {
+  color: var(--lime);
+  font-style: normal;
+}
+
+.right {
+  padding: clamp(28px, 4vw, 56px) var(--pad);
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.statement {
+  font-family: var(--pixel);
+  font-size: calc(clamp(20px, 2.4vw, 34px) * var(--display-mult));
+  line-height: 1.5;
+}
+.statement em {
+  color: var(--lime);
+  font-style: normal;
+}
+.body {
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 56ch;
+  margin-top: 34px;
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+}
+.body em {
+  color: var(--fg);
+  font-style: normal;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .right {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}

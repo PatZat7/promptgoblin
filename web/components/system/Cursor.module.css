@@ -1,0 +1,49 @@
+/* Pixel cursor — a lime square that lerp-follows the mouse, grows over
+   links/buttons, and shows a terminal-style label from the hovered element's
+   data-cursor. Ported from the promptgoblinv1 design (PixelCursor). */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 10px;
+  height: 10px;
+  background: var(--lime);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.15s ease-out, height 0.15s ease-out, background 0.15s;
+  will-change: transform;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.cursor::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 16px;
+  top: 2px;
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--bg);
+  background: var(--lime);
+  padding: 2px 5px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.cursor[data-label]:not([data-label=""])::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+/* enlarge over real controls (set by JS); section-level labels don't enlarge */
+.pointer {
+  width: 22px;
+  height: 22px;
+}
+/* native pointer devices only; reduced-motion users keep their OS cursor */
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor { display: none; }
+}

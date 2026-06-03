@@ -1,0 +1,32 @@
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 14px 0;
+}
+.track {
+  display: inline-flex;
+  gap: 30px;
+  animation: scrollX 40s linear infinite;
+  font-family: var(--pixel-soft);
+  font-size: clamp(26px, 3.4vw, 46px);
+}
+:global([data-motion="low"]) .track { animation-duration: 84s; }
+:global([data-motion="high"]) .track { animation-duration: 22s; }
+.track > span {
+  display: inline-flex;
+  gap: 30px;
+  align-items: center;
+}
+.sep {
+  color: var(--lime);
+}
+@keyframes scrollX {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

@@ -1,0 +1,24 @@
+.panel {
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+.panel:first-child {
+  border-top: 0;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px var(--pad);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--bg);
+}
+.mark { color: var(--lime); }
+.grow { flex: 1; }
+.note { color: var(--faint); }
