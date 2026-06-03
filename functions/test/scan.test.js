@@ -59,6 +59,23 @@ const ROBOTS_WELCOMING = `User-agent: *\nAllow: /\nUser-agent: GPTBot\nAllow: /\
 const ROBOTS_BLOCKING = `User-agent: *\nDisallow: /\n`;
 const LLMS_GOOD = `# Acme\n\n> Acme makes widgets.\n\n## What Acme does\n- widgets\n`;
 
+// Service / government pattern: Service + OfferCatalog, NO Product. Must NEVER be
+// told it's "missing Product schema" (honest-broker rule).
+const SERVICE_HTML = `<!doctype html><html lang="en"><head>
+  <title>Hatfield &amp; Co — Chicago employment lawyers</title>
+  <script type="application/ld+json">
+  {"@graph":[{"@type":"Organization"},{"@type":"WebSite"},{"@type":"Service"},{"@type":"OfferCatalog"}]}
+  </script>
+</head><body><h1>Employment law</h1></body></html>`;
+
+// Commerce pattern: og:type=product signals a storefront, so a missing Product
+// schema here IS a fair (commerce-only) finding.
+const COMMERCE_HTML = `<!doctype html><html lang="en"><head>
+  <title>Acme Store — buy the widget</title>
+  <meta property="og:type" content="product">
+  <script type="application/ld+json">{"@type":"Organization"}</script>
+</head><body><h1>Widget</h1></body></html>`;
+
 // ---------------------------------------------------------------------------
 // util
 // ---------------------------------------------------------------------------
@@ -102,6 +119,36 @@ ok("rich: welcomes AI bots", rich.crawlability.welcomesAiBots);
 ok("rich: sitemap detected", rich.crawlability.sitemap === "https://acme.com/sitemap.xml");
 ok("rich: llms.txt valid", rich.llmsTxt.valid);
 ok("rich: scores higher than thin", rich.hygieneScore > thin.hygieneScore);
+
+// Product schema is commerce-only — service/gov sites must never be flagged for it.
+const service = buildHygieneReport({
+  url: "https://hatfieldlaw.com/",
+  html: SERVICE_HTML,
+  contentBytes: Buffer.byteLength(SERVICE_HTML),
+  robotsText: ROBOTS_WELCOMING,
+  llmsText: null,
+});
+ok(
+  "service site: NOT flagged missing Product (honest-broker)",
+  !service.schema.missing.includes("Product") &&
+    !service.findings.some((f) => /Product JSON-LD/.test(f.detail)),
+);
+ok("service site: still audited (has other findings)", service.findings.length > 0);
+
+const commerce = buildHygieneReport({
+  url: "https://acmestore.com/widget",
+  html: COMMERCE_HTML,
+  contentBytes: Buffer.byteLength(COMMERCE_HTML),
+  robotsText: ROBOTS_WELCOMING,
+  llmsText: null,
+});
+ok("commerce page: flagged missing Product", commerce.schema.missing.includes("Product"));
+ok(
+  "commerce Product finding is MED (sev 3), not HIGH",
+  commerce.findings
+    .filter((f) => /Product JSON-LD/.test(f.detail))
+    .every((f) => f.severity === 3),
+);
 
 // ---------------------------------------------------------------------------
 // Tier-2 Perplexity adapter (stubbed fetch — no key, no network)

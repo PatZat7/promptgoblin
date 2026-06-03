@@ -18,11 +18,14 @@
 
 // Schema @types AEO/GEO playbooks consider table stakes for a marketed domain.
 // Mirrors pipeline goblin/nodes/schema_audit.py:_EXPECTED_TYPES.
+// NOTE: Product is intentionally NOT in this universal set — it is commerce-only
+// and flagged conditionally below (see pageSignalsCommerce). We never tell a
+// service or government site it's "missing Product schema": those correctly use
+// Service / Offer / OfferCatalog. (Honest-broker rule.)
 const EXPECTED_TYPES = [
   "Organization",
   "WebSite",
   "FAQPage",
-  "Product",
   "BreadcrumbList",
 ];
 
@@ -201,6 +204,28 @@ function analyzeLlmsTxt(llmsText) {
   };
 }
 
+/** Does the page signal commerce intent? Only then is a missing Product schema a
+ * fair finding (a real storefront benefits from Product markup). */
+function pageSignalsCommerce(html, schemaFound) {
+  const f = schemaFound || [];
+  if (f.includes("Product") || f.includes("Offer") || f.includes("AggregateOffer")) return true;
+  if (/<meta[^>]+property=["']og:type["'][^>]+content=["']product["']/i.test(html)) return true;
+  if (/<meta[^>]+property=["']product:price/i.test(html)) return true;
+  if (/itemprop\s*=\s*["']price["']/i.test(html)) return true;
+  return false;
+}
+
+/** Service / government sites correctly use Service / Offer / OfferCatalog — never
+ * tell them they're "missing Product schema" (a self-discrediting, inapplicable
+ * claim). Detect that pattern from their structured data. */
+function pageSignalsService(schemaFound) {
+  const SERVICE_TYPES = [
+    "Service", "ProfessionalService", "LegalService", "MedicalBusiness",
+    "LocalBusiness", "GovernmentService", "GovernmentOrganization", "OfferCatalog",
+  ];
+  return (schemaFound || []).some((t) => SERVICE_TYPES.includes(t));
+}
+
 /**
  * Compose the full Tier-1 report from already-fetched inputs. This is the
  * pure core; the handler does the fetching and wraps this.
@@ -208,6 +233,16 @@ function analyzeLlmsTxt(llmsText) {
 function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
   const schemaFound = extractJsonLdTypes(html);
   const schemaMissing = EXPECTED_TYPES.filter((t) => !schemaFound.includes(t));
+  // Product is commerce-only — add it to "missing" ONLY when the page signals
+  // commerce intent and is NOT a service/government site. Keeps us from telling a
+  // law firm or a .gov it's "missing Product schema" (the honesty wedge).
+  if (
+    !schemaFound.includes("Product") &&
+    pageSignalsCommerce(html, schemaFound) &&
+    !pageSignalsService(schemaFound)
+  ) {
+    schemaMissing.push("Product");
+  }
   const malformedJsonLd = countMalformedJsonLd(html);
   const head = analyzeHead(html);
   const weight = analyzeWeight(html, contentBytes);
@@ -219,7 +254,9 @@ function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
   const add = (severity, area, detail) => findings.push({ severity, area, detail });
 
   for (const t of schemaMissing) {
-    const sev = t === "FAQPage" || t === "Product" ? 4 : 3;
+    // FAQPage is a strong, broadly-applicable AEO lever (HIGH). Product, when it
+    // reaches here, is a commerce-only gap (MED) — gated by the conditional above.
+    const sev = t === "FAQPage" ? 4 : 3;
     add(sev, "schema", `Missing ${t} JSON-LD. Engines can't extract this entity cleanly.`);
   }
   if (malformedJsonLd > 0)
