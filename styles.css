@@ -716,6 +716,7 @@ body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
   display: grid;
   gap: var(--pad);
   padding: var(--pad);
+  background: var(--bg);
 }
 @media (min-width: 900px) {
   .how-grid { grid-template-columns: 1fr 1.4fr; align-items: start; gap: 36px; }
