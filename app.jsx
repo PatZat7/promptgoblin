@@ -399,7 +399,7 @@ function Hero() {
           <div className="hero-note">
             A one-goblin shop that makes you <b>Visible AF</b> — we measure who
             the answer engines actually cite for your category, then ship the
-            schema, crawl, and content fixes (human-reviewed, never
+            schema, crawl, and content fixes (software-engineer-reviewed, never
             auto-deployed) to close the gap. Days, not quarters.
           </div>
           <div className="hero-note hero-gap-line">
@@ -493,7 +493,7 @@ function Spellbook() {
 const STATS = [
   { v: "5", k: "Answer engines scanned" },
   { v: "6", k: "JSON-LD blocks · this site" },
-  { v: "7", k: "Pipeline nodes · human-gated" },
+  { v: "7", k: "Pipeline nodes · engineer-gated" },
   { v: "0", k: "Changes auto-deployed" },
 ];
 
@@ -686,11 +686,11 @@ const SVCS = [
   {
     num: "(vi)",
     title: "Accessibility (WCAG + 508)",
-    lead: "Usable by people on assistive tech and legible to crawlers — the same fixes serve both. Automated axe-core audit across real component states (collapsed, open, error) plus a human pass, since tooling alone catches ~57%. Required for government (Section 508 / ADA Title II); never sold as compliance-by-tool.",
+    lead: "Usable by people on assistive tech and legible to crawlers — the same fixes serve both. Automated axe-core audit across real component states (collapsed, open, error) plus a software-engineer pass, since tooling alone catches ~57%. Required for government (Section 508 / ADA Title II); never sold as compliance-by-tool.",
     items: [
       "WCAG 2.1 AA + Section 508",
       "Stateful axe-core audit",
-      "Human-reviewed remediation",
+      "Engineer-reviewed remediation",
       "Reviewed fix PRs",
     ],
   },
@@ -751,7 +751,7 @@ function Services() {
 
 /* ===== QUOTES → house rules / principles (no fabricated testimonials) ===== */
 const QUOTES = [
-  { q: "Nothing auto-deploys. A human goblin reviews every change.", src: "principle · 01" },
+  { q: "Nothing auto-deploys. A software engineer reviews every change.", src: "principle · 01" },
   { q: "Flat fee. No credits, no meter, no surprise invoice.", src: "principle · 02" },
   { q: "We ship the fixes — not a PDF you implement yourself.", src: "principle · 03" },
   { q: "Schema is hygiene. We chase the real levers: mentions + Bing.", src: "principle · 04" },
@@ -995,7 +995,7 @@ function Contact() {
                   summon received — invisibility cloak: BREAKING
                 </div>
                 <div className="sf-ok-d">
-                  A real human-goblin replies within a working day with your
+                  A real software engineer replies within a working day with your
                   free scan. Check your inbox (and spam — goblins lurk there
                   too).
                 </div>
@@ -1046,8 +1046,8 @@ const ENGINE_PHASES = [
   { stage: 0, gate: null,    pk: "self-heal · re-patch", pkFail: false, rd: "self-heal loop · retrieval re-tries the fix", tick: "ok" },
   { stage: 1, gate: "eval",  pk: "→ eval gate",       pkFail: false, rd: "eval gate · re-running…", tick: "ok" },
   { stage: 1, gate: "pass",  pk: "PASS",              pkFail: false, rd: "eval: PASS · 201 tests + eval green (2026-06-02)", tick: "ok" },
-  { stage: 2, gate: "pass",  pk: "→ human review",    pkFail: false, rd: "halt · awaiting human approval — nothing auto-ships", tick: "ok" },
-  { stage: 2, gate: "pass",  pk: "approved ✓",        pkFail: false, rd: "human approved → reviewed PR opened on your repo", tick: "ok" },
+  { stage: 2, gate: "pass",  pk: "→ engineer review", pkFail: false, rd: "halt · awaiting engineer approval — nothing auto-ships", tick: "ok" },
+  { stage: 2, gate: "pass",  pk: "approved ✓",        pkFail: false, rd: "engineer approved → reviewed PR opened on your repo", tick: "ok" },
   { stage: 2, gate: "pass",  pk: "re-scan → Δ",       pkFail: false, rd: "re-run on cadence · measured before/after delta (sample)", tick: "ok" },
 ];
 
@@ -1105,7 +1105,7 @@ function EngineDiagram() {
   const ENGINE_STAGES = [
     { num: "01 · diagnose", name: "Find the gap", desc: "RAG pipeline samples engines + audits SEO / a11y, surfaces a scoped fix." },
     { num: "02 · eval gate", name: "Prove it passes", desc: "CI/CD eval gate runs the suite. Red on regression → the fix bounces back to self-heal." },
-    { num: "03 · human", name: "A human approves", desc: "Every change halts here. A goblin approves → reviewed PR. Nothing auto-deploys." },
+    { num: "03 · engineer", name: "An engineer approves", desc: "Every change halts here. A software engineer approves → reviewed PR. Nothing auto-deploys." },
   ];
 
   return (
@@ -1134,7 +1134,7 @@ function EngineDiagram() {
                   {i === 2 && (
                     <span className="stage-badge">
                       <svg className="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-                      human-gated
+                      engineer-gated
                     </span>
                   )}
                 </div>
@@ -1157,9 +1157,9 @@ function EngineDiagram() {
       <div className="engine-legend">
         <span><i className="lg-active"></i>active path</span>
         <span><i className="lg-fail"></i>failed gate → self-heal</span>
-        <span><i className="lg-human"></i>human review gate</span>
+        <span><i className="lg-human"></i>engineer review gate</span>
       </div>
-      <p className="engine-rm-note">▸ One pipeline: <b style={{ color: "var(--lime)" }}>diagnose → eval gate → human approve</b>. A failed gate bounces the fix back to the self-healing loop; nothing ships until a human approves. SEO + accessibility proven on the gate (2026-06-02); schema scaffolded.</p>
+      <p className="engine-rm-note">▸ One pipeline: <b style={{ color: "var(--lime)" }}>diagnose → eval gate → engineer approve</b>. A failed gate bounces the fix back to the self-healing loop; nothing ships until a software engineer approves. SEO + accessibility proven on the gate (2026-06-02); schema scaffolded.</p>
     </div>
   );
 }
@@ -1177,15 +1177,15 @@ function HowItWorks() {
         <span className="id">▸</span>
         <span>$ goblin engine --explain</span>
         <span className="grow"></span>
-        <span className="tk">self-healing · eval-gated · human-approved</span>
+        <span className="tk">self-healing · eval-gated · engineer-approved</span>
       </div>
       <div className="grid-lines how-grid">
         <div className="how-intro reveal" ref={ref}>
           <span className="kicker">how it works · the engine under the hood</span>
           <h2 className="h-sec">How we actually move the needle</h2>
-          <p className="mono-note" style={{ marginTop: 8, marginBottom: 18 }}>// automated system · human judgment · measurable results</p>
+          <p className="mono-note" style={{ marginTop: 8, marginBottom: 18 }}>// automated system · software-engineer judgment · measurable results</p>
           <p className="how-p">Most SEO shops send you a PDF. <span style={{ color: "var(--lime)" }}>We run a system.</span></p>
-          <p className="how-p">Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO, and accessibility — with bounded self-healing loops and an eval gate that proves a fix actually works before any human sees it. Then a human reviews every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a schedule and measures the delta.</p>
+          <p className="how-p">Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO, and accessibility — with bounded self-healing loops and an eval gate that proves a fix actually works before any engineer sees it. Then a software engineer reviews every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a schedule and measures the delta.</p>
           <p className="how-punch">You see the gap. Then you watch it close.</p>
           <p className="how-tech">"RAG pipeline" and "CI/CD eval gate" are the accurate technical names for what runs. We surface them once for credibility, then translate them for everyone else.</p>
         </div>
@@ -1193,7 +1193,7 @@ function HowItWorks() {
           <EngineDiagram />
         </div>
       </div>
-      <p className="how-close">The technical name for the system is a <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The plain-language version: an automated system finds the gaps, proves fixes work, a human ships them, and you watch the numbers move.</p>
+      <p className="how-close">The technical name for the system is a <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The plain-language version: an automated system finds the gaps, proves fixes work, a software engineer ships them, and you watch the numbers move.</p>
     </section>
   );
 }
@@ -1286,6 +1286,7 @@ function LiveScan() {
   const [lines, setLines] = useState([]);
   const [pct, setPct] = useState(0);
   const [scanLabel, setScanLabel] = useState("");
+  const [steps, setSteps] = useState([]); // visual stepper: per-phase status + measured value
   const [report, setReport] = useState(null);
   const [summary, setSummary] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -1361,6 +1362,7 @@ function LiveScan() {
     setSummary("");
     setLines([mkLine({ t: "cmd", text: "goblin scan --surface hygiene --domain " + host })]);
     setPct(8);
+    setSteps(SCAN_PHASES.map((p) => ({ key: p.key, label: p.label, status: "pending", value: null, tone: "ok" })));
 
     // Fire the REAL Tier-1 request immediately, then narrate the genuine
     // operations (labels only — values come from the real report) while it runs.
@@ -1368,6 +1370,7 @@ function LiveScan() {
     for (let idx = 0; idx < SCAN_PHASES.length; idx++) {
       if (!alive()) return;
       setScanLabel(SCAN_PHASES[idx].label);
+      setSteps((prev) => prev.map((s, i) => (i <= idx ? { ...s, status: "active" } : s)));
       setPct(Math.min(78, 12 + (idx + 1) * 13));
       await scanSleep(420 + Math.random() * 160);
     }
@@ -1408,14 +1411,19 @@ function LiveScan() {
         });
     } catch (_) {}
 
-    for (const p of SCAN_PHASES) {
+    for (let j = 0; j < SCAN_PHASES.length; j++) {
+      const p = SCAN_PHASES[j];
       if (!alive()) return;
       await scanSleep(240 + Math.random() * 120);
       if (!alive()) return;
+      const tone = phaseTone(r, p.key);
       setLines((prev) => [
         ...prev,
-        mkLine({ t: "phase", k: p.label, v: pv[p.key], tone: phaseTone(r, p.key) }),
+        mkLine({ t: "phase", k: p.label, v: pv[p.key], tone }),
       ]);
+      setSteps((prev) =>
+        prev.map((s, i) => (i === j ? { ...s, status: "done", value: pv[p.key], tone } : s)),
+      );
       setPct((prev) => Math.min(94, prev + 4));
     }
     if (!alive()) return;
@@ -1642,6 +1650,7 @@ function LiveScan() {
               email={email}
               target={target}
               band={band}
+              steps={steps}
               onReset={resetToIdle}
             />
           ) : mode === "error" ? (
@@ -1654,6 +1663,11 @@ function LiveScan() {
               <button className="btn" onClick={resetToIdle} data-cursor-label="retry">
                 try another domain <span className="arr">→</span>
               </button>
+            </div>
+          ) : mode === "scanning" ? (
+            <div className="scan-live">
+              <div className="sf-lbl">$ scanning {target}</div>
+              <ScanStepper steps={steps} />
             </div>
           ) : (
             <form className="scan-form" onSubmit={onScan}>
@@ -1725,7 +1739,25 @@ function LiveScan() {
   );
 }
 
-function ScanResult({ report, email, target, band, onReset }) {
+function ScanStepper({ steps }) {
+  return (
+    <ol className="scan-stepper" aria-label="scan progress">
+      {steps.map((s) => (
+        <li className={"sx " + s.status} key={s.key}>
+          <span className="sx-dot" aria-hidden="true">
+            {s.status === "done" ? "✓" : ""}
+          </span>
+          <span className="sx-label">{s.label}</span>
+          {s.value ? (
+            <span className={"sx-val pv-" + (s.tone || "ok")}>{s.value}</span>
+          ) : null}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function ScanResult({ report, email, target, band, steps, onReset }) {
   const found = (report.schema && report.schema.found) || [];
   const missing = (report.schema && report.schema.missing) || [];
   const findings = report.findings || [];
@@ -1734,6 +1766,7 @@ function ScanResult({ report, email, target, band, onReset }) {
   const lowN = findings.filter((f) => f.severity <= 2).length;
   return (
     <div className="scan-result">
+      {steps && steps.length ? <ScanStepper steps={steps} /> : null}
       <div className="sr-top">
         <div className={"sr-score band-" + band.key}>
           <span className="sr-num">{report.hygieneScore}</span>
@@ -1765,9 +1798,9 @@ function ScanResult({ report, email, target, band, onReset }) {
       <p className="sr-disc">{report.disclaimer}</p>
       <div className="sr-cta">
         <div className="sr-ok-t">
-          ✓ Real hygiene result delivered above. A human goblin will personally
-          email {email || "you"} about the full citation &amp; accessibility audit
-          — no automated report.
+          ✓ Real hygiene result delivered above. A software engineer (me) will
+          personally review it and email {email || "you"} about the full citation
+          &amp; accessibility audit — no automated report.
         </div>
         <a className="btn" href="#pricing" data-cursor-label="audit">
           see the full Scout audit <span className="arr">→</span>
@@ -1788,7 +1821,7 @@ const MESH_NODES = [
   { id: "cite", x: 54, y: 34, t: "citation.weave", v: "you vs. 6 competitors" },
   { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 4 a11y" },
   { id: "fix", x: 72, y: 16, t: "goblin.recommend", v: "12 ranked fixes" },
-  { id: "ship", x: 72, y: 62, t: "human.review → PR", v: "queued · 3 pending" },
+  { id: "ship", x: 72, y: 62, t: "engineer.review → PR", v: "queued · 3 pending" },
 ];
 const MESH_EDGES = [
   ["intent", "llm"],
@@ -1823,8 +1856,8 @@ const MESH_STEPS = [
   ],
   [
     "05",
-    "Human-reviewed PRs",
-    "A human goblin approves every change before it hits your CMS, schema, or repo. Agentic, but accountable — nothing auto-ships.",
+    "Engineer-reviewed PRs",
+    "A software engineer approves every change before it hits your CMS, schema, or repo. Agentic, but accountable — nothing auto-ships.",
   ],
   [
     "06",
@@ -1862,7 +1895,7 @@ function VisibilityMesh() {
         <span className="id">▸</span>
         <span>$ goblin graph --run</span>
         <span className="grow"></span>
-        <span className="tk">langgraph workflow · human-gated · sample run</span>
+        <span className="tk">langgraph workflow · engineer-gated · sample run</span>
       </div>
       <div className="grid-lines mesh-grid">
         <div className="mesh-stage">
@@ -1929,7 +1962,7 @@ function VisibilityMesh() {
               <i className="lg-idle" /> idle edge
             </span>
             <span>
-              <i className="lg-gate" /> human review gate
+              <i className="lg-gate" /> engineer review gate
             </span>
           </div>
         </div>
