@@ -481,9 +481,6 @@ function Spellbook() {
       <div className="spellbook reveal" ref={ref}>
         <div className="sb-head">
           <span className="sb-title">
-            <span className="sb-bolt">
-              <SpriteLightning size={3} />
-            </span>{" "}
             Visibility Spellbook
           </span>
           <span className="sb-count">3 schools · 1 goblin</span>
