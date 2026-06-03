@@ -19,4 +19,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://promptgoblin.zatgeist.com/sitemap.xml
+Sitemap: https://promptgoblin.io/sitemap.xml
