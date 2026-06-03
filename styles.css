@@ -559,6 +559,65 @@ body[data-density="tight"] { --pad: 16px; }
 .scan-note { margin-top: auto; font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
 .scan-note b { color: var(--lime); font-weight: 500; }
 
+/* --- scan: real backend-driven progress + measured results card --- */
+.scan-progress { height: 2px; background: rgba(163,230,53,0.10); position: relative; overflow: hidden; }
+.scan-progress > i { position: absolute; inset: 0 auto 0 0; background: var(--lime); box-shadow: 0 0 10px var(--glow); transition: width .45s ease; }
+
+.scan-ln .ph-dots { color: var(--faint); }
+.scan-ln .pv { color: var(--lime); }
+.scan-ln .pv-ok { color: var(--lime); }
+.scan-ln .pv-warn { color: var(--fire-2); }
+.scan-ln .pv-bad { color: var(--fire); }
+.scan-running .mu { color: var(--lime); }
+.scan-sample-tag {
+  display: inline-block; margin-top: 6px;
+  font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line-2); padding: 3px 8px;
+}
+
+.scan-checks { list-style: none; margin-top: 2px; display: flex; flex-direction: column; gap: 6px; }
+.scan-checks li { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-left: 15px; position: relative; }
+.scan-checks li::before { content: "›"; position: absolute; left: 0; color: var(--lime); }
+
+/* honest failure — never demo theater on a real submit */
+.scan-err-card { display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(227,59,20,.5); padding: 18px; background: rgba(227,59,20,.05); }
+.scan-err-msg { font-family: var(--mono); font-size: 14px; color: var(--fg); }
+.scan-err-msg b { color: var(--fire); font-weight: 600; }
+.scan-err-why { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.5; }
+.scan-err-card .btn { justify-content: center; margin-top: 4px; }
+
+/* results card — the conversion moment */
+.scan-result { display: flex; flex-direction: column; gap: 18px; }
+.sr-top { display: flex; align-items: center; gap: 16px; }
+.sr-score { display: flex; align-items: baseline; gap: 2px; font-family: var(--pixel); line-height: 1; padding: 10px 14px; border: 1px solid var(--line-2); }
+.sr-score.band-ok { color: var(--lime); border-color: var(--lime); box-shadow: inset 0 0 0 1px var(--lime), 0 0 18px var(--glow); }
+.sr-score.band-warn { color: var(--fire-2); border-color: rgba(245,158,11,.5); }
+.sr-score.band-bad { color: var(--fire); border-color: rgba(227,59,20,.5); }
+.sr-num { font-size: 40px; font-weight: 400; }
+.sr-den { font-size: 14px; color: var(--faint); }
+.sr-top-meta { display: flex; flex-direction: column; gap: 4px; }
+.sr-k { font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.sr-sub { font-family: var(--mono); font-size: 12.5px; color: var(--fg); }
+
+.sr-block { display: flex; flex-direction: column; gap: 8px; }
+.sr-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.sr-chip { font-family: var(--mono); font-size: 11px; padding: 3px 8px; border: 1px solid var(--line-2); color: var(--muted); }
+.sr-chip.ok { color: var(--lime); border-color: rgba(163,230,53,.45); }
+.sr-chip.miss { color: var(--faint); border-style: dashed; }
+
+.sr-disc { font-family: var(--mono); font-size: 11px; line-height: 1.55; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.sr-cta { display: flex; flex-direction: column; gap: 10px; }
+.sr-ok-t { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--lime); }
+.sr-cta .btn { justify-content: center; }
+.sr-again { align-self: flex-start; font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding: 4px 0; }
+.sr-again:hover { color: var(--lime); }
+
+/* status-pill bands (results / scanning / error) */
+.scan-pill.ok { color: var(--bg); background: var(--lime); border-color: var(--lime); }
+.scan-pill.warn { color: var(--fire-2); border-color: rgba(245,158,11,.5); }
+.scan-pill.bad { color: var(--fire); border-color: rgba(227,59,20,.5); }
+.scan-pill.scanning { color: var(--lime); border-color: rgba(163,230,53,.4); }
+
 /* ============================================
    VISIBILITY MESH  — agentic LangGraph graph
    (ported from the handoff agent graph, re-skinned dark + lime)

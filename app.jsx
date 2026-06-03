@@ -54,30 +54,9 @@ async function runCitationTeaser({ email, domain, competitor }) {
   }
 }
 
-// Map a Tier-1 report into the LiveScan terminal's line shape ({ t, text, k, v, sev }).
-// The `summary` line carries the honest "hygiene ≠ citation guarantee" language verbatim.
-function reportToTerminal(resp) {
-  const r = resp.report || {};
-  const schema = r.schema || {};
-  const out = [
-    { t: "cmd", text: "goblin scan --surface hygiene --url " + (r.url || "") },
-    { t: "kv", k: "hygiene", v: (r.hygieneScore != null ? r.hygieneScore : "?") + "/100" },
-    { t: "info", text: "schema found: " + ((schema.found || []).join(", ") || "none") },
-  ];
-  if ((schema.missing || []).length) {
-    out.push({ t: "warn", text: "missing schema: " + schema.missing.join(", ") });
-  }
-  (r.findings || []).slice(0, 6).forEach((f) =>
-    out.push({
-      t: "issue",
-      sev: f.severity >= 4 ? "HIGH" : f.severity === 3 ? "MED" : "LOW",
-      text: f.detail || f.title || "",
-    }),
-  );
-  out.push({ t: "sep" });
-  out.push({ t: "ok", text: resp.summary || "scan complete" });
-  return out;
-}
+// Tier-1 report -> terminal lines lives next to <LiveScan> below
+// (SCAN_PHASES / phaseValues / phaseTone). Every phase resolves to a MEASURED
+// value from the real report — never a fabricated one.
 
 function leadDomain(data) {
   return String((data && data.domain) || "")
@@ -1221,103 +1200,138 @@ function HowItWorks() {
 
 /* ===== LIVE SCAN — goblin@visibility-mesh terminal (ported from handoff, dark+lime) ===== */
 let __scanUid = 0; /* monotonic key source — unique across re-runs of the scan loop */
-function scanScript(domain) {
-  const clean = (domain || "").replace(/^https?:\/\//, "").replace(/\/.*$/, "");
-  const brand = clean || "your brand";
-  return [
-    {
-      t: "cmd",
-      text: "goblin scan --surface llm" + (clean ? " --domain " + clean : ""),
-    },
-    {
-      t: "kv",
-      k: "query",
-      v: clean
-        ? '"best ' + clean + ' alternative"'
-        : '"best enterprise fleet software"',
-    },
-    { t: "info", text: "checking ChatGPT / Claude / Gemini / Perplexity" },
-    { t: "info", text: "↳ retrieving citation graph [illustrative]" },
-    { t: "warn", text: "competitor cited · you're not — [sample output]" },
-    { t: "err", text: brand + ": 0 mentions · invisibility cloak ACTIVE" },
-    { t: "sep" },
-    { t: "issue", sev: "HIGH", text: "weak off-site citation graph" },
-    { t: "issue", sev: "MED", text: "missing Organization + Service schema" },
-    {
-      t: "issue",
-      sev: "MED",
-      text: "thin comparison content (vs. 6 competitors)",
-    },
-    {
-      t: "issue",
-      sev: "MED",
-      text: "no LLM-readable proof pages or trust assets",
-    },
-    { t: "sep" },
-    {
-      t: "ok",
-      text: "goblin.recommend → schema + citation assets + intent pages",
-    },
-    { t: "ok", text: "invisibility cloak: BREAKABLE" },
-  ];
-}
+const mkLine = (o) => ({ ...o, id: __scanUid++ });
+const scanSleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const SPELLBARS = [
-  { name: "schema.entity_graph", pct: 92 },
-  { name: "citation.weave", pct: 68 },
-  { name: "content.intent_match", pct: 54 },
-  { name: "crawler.legibility", pct: 81 },
+// The real operations Tier-1 performs, narrated as honest phases. Each resolves
+// to a MEASURED value from the report below — Tier-1 never queries answer engines,
+// so this path never claims a ChatGPT/Claude/Gemini citation count.
+const SCAN_PHASES = [
+  { key: "fetch", label: "fetch surface" },
+  { key: "robots", label: "read robots.txt" },
+  { key: "llms", label: "read llms.txt" },
+  { key: "schema", label: "parse JSON-LD" },
+  { key: "score", label: "score hygiene" },
 ];
 
+// Idle loop: a clearly-labelled SAMPLE of what the FREE hygiene scan measures.
+// Illustrative only — no real domain queried, no fabricated engine/citation stats.
+const SAMPLE_LINES = [
+  { t: "cmd", text: "goblin scan --surface hygiene --sample" },
+  { t: "phase", k: "fetch surface", v: "71 KB", tone: "ok" },
+  { t: "phase", k: "read robots.txt", v: "welcomes AI crawlers", tone: "ok" },
+  { t: "phase", k: "read llms.txt", v: "not found", tone: "warn" },
+  { t: "phase", k: "parse JSON-LD", v: "2 of 5 entity types", tone: "warn" },
+  { t: "phase", k: "score hygiene", v: "64 / 100", tone: "warn" },
+  { t: "sep" },
+  { t: "issue", sev: "HIGH", text: "missing FAQPage + Product JSON-LD" },
+  { t: "issue", sev: "MED", text: "no llms.txt — hygiene, not a citation lever" },
+  { t: "issue", sev: "LOW", text: "2 <h1> tags — pick one" },
+  { t: "sep" },
+  { t: "ok", text: "goblin.recommend → structured data + crawl welcome mat" },
+  { t: "sample", text: "sample output — enter your domain for a real scan" },
+];
+
+function scanHost(url) {
+  return String(url || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0];
+}
+
+// Resolve each phase to a MEASURED value pulled straight from the real report.
+function phaseValues(r) {
+  r = r || {};
+  const cwv = r.coreWebVitalsProxies || {};
+  const crawl = r.crawlability || {};
+  const llms = r.llmsTxt || {};
+  const schema = r.schema || {};
+  const foundN = (schema.found || []).length;
+  const total = foundN + (schema.missing || []).length;
+  return {
+    fetch: cwv.htmlKilobytes != null ? cwv.htmlKilobytes + " KB" : "ok",
+    robots: !crawl.present
+      ? "not found"
+      : crawl.welcomesAiBots
+        ? "welcomes AI crawlers"
+        : "blocks AI crawlers",
+    llms: llms.present ? (llms.valid ? "found · on-spec" : "found · off-spec") : "not found",
+    schema: foundN + (total ? " of " + total : "") + " entity types",
+    score: (r.hygieneScore != null ? r.hygieneScore : "?") + " / 100",
+  };
+}
+function phaseTone(r, key) {
+  r = r || {};
+  if (key === "robots") return r.crawlability && r.crawlability.welcomesAiBots ? "ok" : "warn";
+  if (key === "llms") return r.llmsTxt && r.llmsTxt.present ? "ok" : "warn";
+  if (key === "schema") return r.schema && (r.schema.missing || []).length === 0 ? "ok" : "warn";
+  if (key === "score") {
+    const s = r.hygieneScore;
+    return s >= 80 ? "ok" : s >= 50 ? "warn" : "bad";
+  }
+  return "ok";
+}
+function scoreBand(s) {
+  if (s == null) return { key: "warn", label: "scan complete" };
+  if (s >= 80) return { key: "ok", label: "healthy" };
+  if (s >= 50) return { key: "warn", label: "fixable" };
+  return { key: "bad", label: "cursed" };
+}
+
 function LiveScan() {
+  const [mode, setMode] = useState("idle"); // idle | scanning | results | error
   const [lines, setLines] = useState([]);
-  const [status, setStatus] = useState("cursed");
   const [pct, setPct] = useState(0);
-  const [target, setTarget] = useState(""); // "" = idle demo loop; set on submit
+  const [scanLabel, setScanLabel] = useState("");
+  const [report, setReport] = useState(null);
+  const [summary, setSummary] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [email, setEmail] = useState("");
-  const [done, setDone] = useState(false);
-  const [reportLines, setReportLines] = useState(null); // real Tier-1 lines; null = use scripted demo
+  const [target, setTarget] = useState("");
+  const runRef = useRef(0);
   const bodyRef = useRef(null);
 
-  // (Re)run whenever `target`/`reportLines` change. Idle loops the demo; a submitted
-  // domain plays the REAL Tier-1 report when available, else the scripted demo,
-  // then reveals the "full audit emailed" confirmation.
+  // Idle: loop the SAMPLE reveal. A run token (runRef) cancels it the instant a
+  // real scan starts and makes the loop immune to StrictMode double-invoke, so
+  // terminal lines never double up.
   useEffect(() => {
-    const script = target && reportLines ? reportLines : scanScript(target);
-    let i = 0,
-      cancelled = false,
-      timer;
+    if (mode !== "idle") return;
+    const run = ++runRef.current;
+    let i = 0;
+    let timer;
+    setLines([]);
+    setPct(0);
     const tick = () => {
-      if (cancelled) return;
-      if (i >= script.length) {
-        setStatus("fixable");
-        if (target) {
-          setDone(true);
-          return;
-        }
+      if (runRef.current !== run) return;
+      if (i >= SAMPLE_LINES.length) {
         timer = setTimeout(() => {
+          if (runRef.current !== run) return;
           setLines([]);
-          setStatus("cursed");
           setPct(0);
           i = 0;
-          timer = setTimeout(tick, 1400);
+          timer = setTimeout(tick, 900);
         }, 4200);
         return;
       }
-      setLines((p) => [...p, { ...script[i], id: __scanUid++ }]);
-      setPct(Math.round(((i + 1) / script.length) * 100));
+      setLines((p) => [...p, mkLine(SAMPLE_LINES[i])]);
+      setPct(Math.round(((i + 1) / SAMPLE_LINES.length) * 100));
       i++;
       timer = setTimeout(tick, 300 + Math.random() * 220);
     };
-    setLines([]);
-    setStatus("cursed");
-    setPct(0);
     timer = setTimeout(tick, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [target, reportLines]);
+    return () => clearTimeout(timer);
+  }, [mode]);
+
+  const resetToIdle = () => {
+    runRef.current++;
+    setReport(null);
+    setSummary("");
+    setErrorMsg("");
+    setTarget("");
+    setMode("idle");
+  };
 
   const onScan = async (e) => {
     e.preventDefault();
@@ -1325,7 +1339,9 @@ function LiveScan() {
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
     const competitor = (data.competitor || "").trim();
-    const scanId = "scan_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    const host = scanHost(domain);
+    const scanId =
+      "scan_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     data.scan_id = scanId;
     captureLead("free_scan_requested", {
       domain,
@@ -1334,35 +1350,119 @@ function LiveScan() {
       scan_id: scanId,
     });
     setEmail(data.email || "");
-    setDone(false);
-    setReportLines(null); // reset; scripted demo shows until the real report lands
+    setTarget(host);
 
-    // Real Tier-1 hygiene scan. If the backend answers, drive the terminal from
-    // the actual report; otherwise the scripted demo plays as a graceful fallback.
-    const report = await runHygieneScan(domain);
-    if (report && report.ok) {
-      setReportLines(reportToTerminal(report));
-      // The "aha" moment — a real result rendered. Strongest conversion predictor;
-      // PostHog uses it as the mid-funnel step between scan-request and checkout.
-      try {
-        window.posthog &&
-          window.posthog.capture("scan_result_shown", {
-            scan_id: scanId,
-            domain,
-            hygiene_score: report.report && report.report.hygieneScore,
-            findings: report.report && (report.report.findings || []).length,
-          });
-      } catch (_) {}
+    const run = ++runRef.current;
+    const alive = () => runRef.current === run;
+    setMode("scanning");
+    setReport(null);
+    setErrorMsg("");
+    setSummary("");
+    setLines([mkLine({ t: "cmd", text: "goblin scan --surface hygiene --domain " + host })]);
+    setPct(8);
+
+    // Fire the REAL Tier-1 request immediately, then narrate the genuine
+    // operations (labels only — values come from the real report) while it runs.
+    const respPromise = runHygieneScan(domain);
+    for (let idx = 0; idx < SCAN_PHASES.length; idx++) {
+      if (!alive()) return;
+      setScanLabel(SCAN_PHASES[idx].label);
+      setPct(Math.min(78, 12 + (idx + 1) * 13));
+      await scanSleep(420 + Math.random() * 160);
     }
-    setTarget(domain); // triggers the run (real lines if set, else scripted)
+    if (!alive()) return;
+    setScanLabel("compiling report");
 
-    // Fire the email-gated Tier-2 citation teaser (honest no-op until a key is set).
+    let resp;
+    try {
+      resp = await respPromise;
+    } catch (_) {
+      resp = null;
+    }
+    if (!alive()) return;
+
+    // Honest failure path — a real submit NEVER falls back to demo theater.
+    if (!resp || !resp.ok || !resp.report) {
+      const why = (resp && resp.error) || "host unreachable or not public";
+      setLines((p) => [...p, mkLine({ t: "err", text: "scan failed · " + why })]);
+      setErrorMsg(why);
+      setScanLabel("");
+      setPct(100);
+      setMode("error");
+      captureEvent("scan_failed", { scan_id: scanId, domain, reason: "tier1_unreachable" });
+      return;
+    }
+
+    // Real result — the "aha" moment. Reveal MEASURED phase values one by one.
+    const r = resp.report;
+    const pv = phaseValues(r);
+    setScanLabel("");
+    try {
+      window.posthog &&
+        window.posthog.capture("scan_result_shown", {
+          scan_id: scanId,
+          domain,
+          hygiene_score: r.hygieneScore,
+          findings: (r.findings || []).length,
+        });
+    } catch (_) {}
+
+    for (const p of SCAN_PHASES) {
+      if (!alive()) return;
+      await scanSleep(240 + Math.random() * 120);
+      if (!alive()) return;
+      setLines((prev) => [
+        ...prev,
+        mkLine({ t: "phase", k: p.label, v: pv[p.key], tone: phaseTone(r, p.key) }),
+      ]);
+      setPct((prev) => Math.min(94, prev + 4));
+    }
+    if (!alive()) return;
+    setLines((prev) => [...prev, mkLine({ t: "sep" })]);
+    const findings = (r.findings || []).slice(0, 6);
+    for (const f of findings) {
+      if (!alive()) return;
+      await scanSleep(200 + Math.random() * 120);
+      if (!alive()) return;
+      setLines((prev) => [
+        ...prev,
+        mkLine({
+          t: "issue",
+          sev: f.severity >= 4 ? "HIGH" : f.severity === 3 ? "MED" : "LOW",
+          text: f.detail || "",
+        }),
+      ]);
+    }
+    if (!findings.length) {
+      setLines((prev) => [
+        ...prev,
+        mkLine({ t: "ok", text: "no hygiene gaps found — clean surface" }),
+      ]);
+    }
+    if (!alive()) return;
+    await scanSleep(220);
+    setLines((prev) => [
+      ...prev,
+      mkLine({ t: "sep" }),
+      mkLine({ t: "ok", text: resp.summary || "scan complete" }),
+    ]);
+    setReport(r);
+    setSummary(resp.summary || "");
+    setPct(100);
+    setMode("results");
+
+    // Email-gated Tier-2 citation teaser (honest no-op until a key is set).
     if (!competitor) {
       captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
     } else {
       runCitationTeaser({ email: data.email, domain, competitor }).then((tier2) => {
         if (!tier2) {
-          captureEvent("tier2_error", { scan_id: scanId, domain, competitor, reason: "network_or_unreachable" });
+          captureEvent("tier2_error", {
+            scan_id: scanId,
+            domain,
+            competitor,
+            reason: "network_or_unreachable",
+          });
           return;
         }
         if (tier2.ok && tier2.configured && tier2.teaser) {
@@ -1373,8 +1473,8 @@ function LiveScan() {
             competitor,
             engine: tier2.teaser.engine || "perplexity",
             queries: results.length,
-            client_cited_count: results.filter((r) => r.clientCited).length,
-            competitor_cited_count: results.filter((r) => r.competitorCited).length,
+            client_cited_count: results.filter((r2) => r2.clientCited).length,
+            competitor_cited_count: results.filter((r2) => r2.competitorCited).length,
           });
         } else if (tier2.ok && tier2.configured === false) {
           captureEvent("tier2_no_key", { scan_id: scanId, domain, competitor });
@@ -1400,7 +1500,25 @@ function LiveScan() {
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [lines.length]);
+  }, [lines.length, mode]);
+
+  const band = report ? scoreBand(report.hygieneScore) : null;
+  const statusPill =
+    mode === "results" && band
+      ? band.key
+      : mode === "scanning"
+        ? "scanning"
+        : mode === "error"
+          ? "bad"
+          : "cursed";
+  const statusText =
+    mode === "results" && band
+      ? (band.key === "ok" ? "✓ " : band.key === "warn" ? "⚡ " : "✕ ") + band.label
+      : mode === "scanning"
+        ? "… scanning"
+        : mode === "error"
+          ? "✕ failed"
+          : "✕ cursed";
 
   return (
     <section
@@ -1411,12 +1529,16 @@ function LiveScan() {
     >
       <div className="panel-bar">
         <span className="id">▸</span>
-        <span>$ goblin scan --surface llm</span>
+        <span>$ goblin scan --surface hygiene</span>
         <span className="grow"></span>
         <span className="tk">
-          {target && reportLines
-            ? "live · real scan"
-            : "sample · enter your domain for a real scan"}
+          {mode === "results"
+            ? "live · real result"
+            : mode === "scanning"
+              ? "live · scanning your domain"
+              : mode === "error"
+                ? "scan failed"
+                : "sample · enter your domain for a real scan"}
         </span>
       </div>
       <div className="grid-lines scan-grid">
@@ -1429,6 +1551,9 @@ function LiveScan() {
             </span>
             <span className="grow">goblin@visibility-mesh — /scan</span>
             <span>{String(pct).padStart(3, "0")}%</span>
+          </div>
+          <div className="scan-progress" aria-hidden="true">
+            <i style={{ width: pct + "%" }} />
           </div>
           <div className="scan-body" ref={bodyRef}>
             {lines.map((l) => (
@@ -1449,6 +1574,14 @@ function LiveScan() {
                     <span className="pfx">›</span>{" "}
                     <span className="key">{l.k}:</span>{" "}
                     <span className="mu">{l.v}</span>
+                  </>
+                )}
+                {l.t === "phase" && (
+                  <>
+                    <span className="pfx">›</span>{" "}
+                    <span className="key">{l.k}</span>
+                    <span className="ph-dots"> ··· </span>
+                    <span className={"pv pv-" + (l.tone || "ok")}>{l.v}</span>
                   </>
                 )}
                 {l.t === "warn" && (
@@ -1478,6 +1611,9 @@ function LiveScan() {
                     <span className="ok">{l.text}</span>
                   </>
                 )}
+                {l.t === "sample" && (
+                  <span className="scan-sample-tag">{l.text}</span>
+                )}
                 {l.t === "sep" && (
                   <span className="mu sep">
                     ────────────────────────────────
@@ -1485,13 +1621,40 @@ function LiveScan() {
                 )}
               </div>
             ))}
-            <div className="scan-ln">
-              <span className="pfx">$</span> <span className="scan-cur" />
-            </div>
+            {mode === "scanning" ? (
+              <div className="scan-ln scan-running">
+                <span className="pfx">›</span>{" "}
+                <span className="mu">{scanLabel || "scanning"}</span>{" "}
+                <span className="scan-cur" />
+              </div>
+            ) : (
+              <div className="scan-ln">
+                <span className="pfx">$</span> <span className="scan-cur" />
+              </div>
+            )}
           </div>
         </div>
         <div className="scan-side">
-          {!done ? (
+          {mode === "results" && report ? (
+            <ScanResult
+              report={report}
+              email={email}
+              target={target}
+              band={band}
+              onReset={resetToIdle}
+            />
+          ) : mode === "error" ? (
+            <div className="scan-err-card">
+              <div className="sf-lbl">$ scan failed</div>
+              <div className="scan-err-msg">
+                Couldn't complete a real scan of <b>{target}</b>.
+              </div>
+              <div className="scan-err-why">{errorMsg}</div>
+              <button className="btn" onClick={resetToIdle} data-cursor-label="retry">
+                try another domain <span className="arr">→</span>
+              </button>
+            </div>
+          ) : (
             <form className="scan-form" onSubmit={onScan}>
               <div className="sf-lbl">$ run a free scan</div>
               <input
@@ -1499,6 +1662,7 @@ function LiveScan() {
                 required
                 placeholder="yourbrand.com"
                 autoComplete="url"
+                disabled={mode === "scanning"}
               />
               <input
                 name="email"
@@ -1506,11 +1670,13 @@ function LiveScan() {
                 required
                 placeholder="you@brand.com"
                 autoComplete="email"
+                disabled={mode === "scanning"}
               />
               <input
                 name="competitor"
                 placeholder="a competitor (optional)"
                 autoComplete="off"
+                disabled={mode === "scanning"}
               />
               <input
                 type="text"
@@ -1520,57 +1686,95 @@ function LiveScan() {
                 autoComplete="off"
                 aria-hidden="true"
               />
-              <button className="btn" type="submit" data-cursor-label="scan">
-                run my free scan <span className="arr">→</span>
+              <button
+                className="btn"
+                type="submit"
+                data-cursor-label="scan"
+                disabled={mode === "scanning"}
+              >
+                {mode === "scanning" ? "scanning…" : "run my free scan"}{" "}
+                <span className="arr">→</span>
               </button>
               <div className="scan-disclaimer">
-                Instant result: a technical-hygiene scan — schema, crawl &
-                structured-data gaps. Add your email and we'll follow up with a
-                Perplexity citation teaser. The full multi-engine audit (ChatGPT
-                · Claude · Gemini · Perplexity · AI Overviews) plus SEO &amp;
-                accessibility ships with a paid Scout audit.
+                Instant, real result: a technical-<b>hygiene</b> scan of your live
+                page — structured data, crawl welcome mat, head tags & Core Web
+                Vitals proxies. Hygiene is table stakes, <b>not</b> a citation
+                guarantee. The full multi-engine citation audit (ChatGPT · Claude
+                · Gemini · Perplexity · AI Overviews) plus SEO &amp; accessibility
+                ships with a paid Scout audit.
               </div>
+              <ul className="scan-checks">
+                <li>structured data / JSON-LD entities</li>
+                <li>robots.txt + llms.txt crawl welcome mat</li>
+                <li>title · meta · canonical · OpenGraph</li>
+                <li>Core Web Vitals proxies</li>
+              </ul>
             </form>
-          ) : (
-            <div className="sf-ok">
-              <div className="sf-ok-mark">✓</div>
-              <div>
-                <div className="sf-ok-t">scan queued for {target}</div>
-                <div className="sf-ok-d">
-                  Your hygiene scan is queued and a Perplexity citation teaser is
-                  on its way to {email || "your inbox"}. The terminal above is an
-                  illustrative sample — the full multi-engine audit across all
-                  five answer engines, plus SEO &amp; accessibility, is the paid
-                  Scout audit.
-                </div>
-              </div>
-            </div>
           )}
           <div className="scan-status-row">
             <span className="k">visibility status</span>
-            <span className={"scan-pill " + status}>
-              {status === "cursed" ? "✕ cursed" : "⚡ fixable"}
-            </span>
+            <span className={"scan-pill " + statusPill}>{statusText}</span>
           </div>
           <div className="scan-id">
             scan id · GBL-{(pct * 73 + 1031).toString(16).toUpperCase()}
           </div>
-          <div className="scan-spells">
-            {SPELLBARS.map((s) => (
-              <div className="spellbar" key={s.name}>
-                <div className="spellbar-top">
-                  <span className="nm">› {s.name}</span>
-                  <span className="v">{s.pct}%</span>
-                </div>
-                <div className="spellbar-bar">
-                  <i style={{ width: s.pct + "%" }} />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function ScanResult({ report, email, target, band, onReset }) {
+  const found = (report.schema && report.schema.found) || [];
+  const missing = (report.schema && report.schema.missing) || [];
+  const findings = report.findings || [];
+  const highN = findings.filter((f) => f.severity >= 4).length;
+  const medN = findings.filter((f) => f.severity === 3).length;
+  const lowN = findings.filter((f) => f.severity <= 2).length;
+  return (
+    <div className="scan-result">
+      <div className="sr-top">
+        <div className={"sr-score band-" + band.key}>
+          <span className="sr-num">{report.hygieneScore}</span>
+          <span className="sr-den">/100</span>
+        </div>
+        <div className="sr-top-meta">
+          <div className="sr-k">hygiene · {target}</div>
+          <div className="sr-sub">
+            {highN} high · {medN} medium · {lowN} low
+          </div>
+        </div>
+      </div>
+      <div className="sr-block">
+        <div className="sr-k">structured data</div>
+        <div className="sr-chips">
+          {found.map((t) => (
+            <span className="sr-chip ok" key={"f" + t}>
+              ✓ {t}
+            </span>
+          ))}
+          {missing.map((t) => (
+            <span className="sr-chip miss" key={"m" + t}>
+              ✕ {t}
+            </span>
+          ))}
+          {!found.length && !missing.length && <span className="sr-chip">—</span>}
+        </div>
+      </div>
+      <p className="sr-disc">{report.disclaimer}</p>
+      <div className="sr-cta">
+        <div className="sr-ok-t">
+          ✓ hygiene result delivered above — we'll follow up at{" "}
+          {email || "your inbox"} about the full citation &amp; accessibility audit.
+        </div>
+        <a className="btn" href="#pricing" data-cursor-label="audit">
+          see the full Scout audit <span className="arr">→</span>
+        </a>
+      </div>
+      <button className="sr-again" onClick={onReset} data-cursor-label="rescan">
+        ↺ scan another domain
+      </button>
+    </div>
   );
 }
 
