@@ -1,5 +1,5 @@
 /* global React, ReactDOM, TweaksPanel, useTweaks, TweakSection, TweakRadio, TweakToggle, GoblinHead */
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef, useCallback } = React;
 
 /* ===== external integration config (replace placeholders to go live) ===== */
 const WEB3FORMS_KEY = "ee75925c-9368-4791-9f1c-522ead6fe7f1"; // free static-site form backend — web3forms.com
@@ -525,7 +525,7 @@ function Stats() {
   return (
     <section
       className="panel"
-      data-screen-label="05 Stats"
+      data-screen-label="06 Stats"
       data-section-name="Telemetry"
     >
       <div className="panel-bar">
@@ -577,7 +577,7 @@ function Marquee() {
   return (
     <section
       className="panel marquee"
-      data-screen-label="06 Marquee"
+      data-screen-label="07 Marquee"
       data-section-name="Keywords"
     >
       <div className="marquee-track">
@@ -596,7 +596,7 @@ function IndexNow() {
     <section
       id="index"
       className="panel"
-      data-screen-label="07 Index"
+      data-screen-label="08 Index"
       data-section-name="Index / Now"
     >
       <div className="panel-bar">
@@ -749,7 +749,7 @@ function Work() {
     <section
       id="work"
       className="panel"
-      data-screen-label="08 Work"
+      data-screen-label="09 Work"
       data-section-name="Case study + method"
     >
       <div className="panel-bar">
@@ -875,7 +875,7 @@ function Services() {
     <section
       id="services"
       className="panel"
-      data-screen-label="09 Services"
+      data-screen-label="10 Services"
       data-section-name="Services"
     >
       <div className="panel-bar">
@@ -934,7 +934,7 @@ function Quotes() {
   return (
     <section
       className="panel"
-      data-screen-label="11 Quotes"
+      data-screen-label="12 Quotes"
       data-section-name="House rules"
     >
       <div className="panel-bar">
@@ -985,7 +985,7 @@ function Scrolls() {
     <section
       id="scrolls"
       className="panel"
-      data-screen-label="12 Scrolls"
+      data-screen-label="13 Scrolls"
       data-section-name="Scrolls"
     >
       <div className="panel-bar">
@@ -1075,7 +1075,7 @@ function Contact() {
     <section
       id="contact"
       className="panel"
-      data-screen-label="13 Contact"
+      data-screen-label="14 Contact"
       data-section-name="Summon"
     >
       <div className="panel-bar">
@@ -1205,6 +1205,168 @@ function Contact() {
         <span>© Prompt_Goblin™ 2024–2026 · Visible AF</span>
         <span>Set in Press Start 2P · VT323 · JetBrains Mono</span>
       </div>
+    </section>
+  );
+}
+
+/* ===== HOW IT WORKS — self-healing eval-gate motion diagram ===== */
+const RM = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const ENGINE_PHASES = [
+  { stage: 0, gate: null,    pk: "fix packet · a11y", pkFail: false, rd: "scan → gap found: contrast on .cta (sample)", tick: "ok" },
+  { stage: 1, gate: "eval",  pk: "→ eval gate",       pkFail: false, rd: "eval gate · running 201 tests + eval…", tick: "ok" },
+  { stage: 1, gate: "fail",  pk: "RED · regression",  pkFail: true,  rd: "eval: RED — patch broke 2 tests. bounce back.", tick: "bad" },
+  { stage: 0, gate: null,    pk: "self-heal · re-patch", pkFail: false, rd: "self-heal loop · retrieval re-tries the fix", tick: "ok" },
+  { stage: 1, gate: "eval",  pk: "→ eval gate",       pkFail: false, rd: "eval gate · re-running…", tick: "ok" },
+  { stage: 1, gate: "pass",  pk: "PASS",              pkFail: false, rd: "eval: PASS · 201 tests + eval green (2026-06-02)", tick: "ok" },
+  { stage: 2, gate: "pass",  pk: "→ human review",    pkFail: false, rd: "halt · awaiting human approval — nothing auto-ships", tick: "ok" },
+  { stage: 2, gate: "pass",  pk: "approved ✓",        pkFail: false, rd: "human approved → reviewed PR opened on your repo", tick: "ok" },
+  { stage: 2, gate: "pass",  pk: "re-scan → Δ",       pkFail: false, rd: "re-run on cadence · measured before/after delta (sample)", tick: "ok" },
+];
+
+function EngineDiagram() {
+  const [p, setP] = useState(0);
+  const wrapRef = useRef(null);
+  const stageRef0 = useRef(null);
+  const stageRef1 = useRef(null);
+  const stageRef2 = useRef(null);
+  const stageRefs = [stageRef0, stageRef1, stageRef2];
+  const packetRef = useRef(null);
+  const reduced = RM();
+
+  useEffect(() => {
+    if (reduced) { setP(6); return; }
+    let alive = true;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      let i = 0;
+      const tick = () => {
+        if (!alive) return;
+        setP(i % ENGINE_PHASES.length);
+        i++;
+        timer = setTimeout(tick, i % ENGINE_PHASES.length === 0 ? 1700 : 1500);
+      };
+      let timer = setTimeout(tick, 600);
+      io.disconnect();
+      cleanup = () => { alive = false; clearTimeout(timer); };
+    }, { threshold: 0.35 });
+    let cleanup = () => { alive = false; };
+    if (wrapRef.current) io.observe(wrapRef.current);
+    return () => { io.disconnect(); cleanup(); };
+  }, [reduced]);
+
+  const place = useCallback(() => {
+    const wrap = wrapRef.current, pk = packetRef.current;
+    if (!wrap || !pk) return;
+    const target = stageRefs[ENGINE_PHASES[p].stage].current;
+    if (!target) return;
+    const w = wrap.getBoundingClientRect(), t = target.getBoundingClientRect();
+    const x = t.left - w.left + t.width / 2 - pk.offsetWidth / 2;
+    const y = t.top - w.top - pk.offsetHeight - 6;
+    pk.style.transform = `translate(${Math.max(2, x)}px, ${Math.max(2, y)}px)`;
+  }, [p]);
+
+  useEffect(() => { place(); }, [p, place]);
+  useEffect(() => {
+    const r = () => place();
+    window.addEventListener("resize", r);
+    const t = setTimeout(place, 120);
+    return () => { window.removeEventListener("resize", r); clearTimeout(t); };
+  }, [place]);
+
+  const ph = ENGINE_PHASES[p];
+  const ENGINE_STAGES = [
+    { num: "01 · diagnose", name: "Find the gap", desc: "RAG pipeline samples engines + audits SEO / a11y, surfaces a scoped fix." },
+    { num: "02 · eval gate", name: "Prove it passes", desc: "CI/CD eval gate runs the suite. Red on regression → the fix bounces back to self-heal." },
+    { num: "03 · human", name: "A human approves", desc: "Every change halts here. A goblin approves → reviewed PR. Nothing auto-deploys." },
+  ];
+
+  return (
+    <div className="panel engine" ref={wrapRef}>
+      <div className="panel-bar engine-panel-bar">
+        <span className="lhs"><span className="lights"><i className="on"></i><i className="on"></i><i></i></span>goblin-engine · self-healing · eval-gated</span>
+        <span className="sample-tag">sample run</span>
+      </div>
+
+      <div className="engine-stage-wrap">
+        <div className="stages">
+          {ENGINE_STAGES.map((s, i) => {
+            const isGate = i === 1;
+            const active = ph.stage === i;
+            const gateState = isGate ? ph.gate : null;
+            return (
+              <React.Fragment key={i}>
+                <div ref={stageRefs[i]}
+                  className={"stage" + (isGate ? " gate" : "") + (active ? " active" : "") + (gateState === "fail" ? " fail" : "")}>
+                  <div className="stage-num">{s.num}</div>
+                  <div className="stage-name">{s.name}</div>
+                  <div className="stage-desc">{s.desc}</div>
+                  {isGate && gateState === "pass" && <span className="stage-badge pass">● eval PASS</span>}
+                  {isGate && gateState === "fail" && <span className="stage-badge failb">● eval RED</span>}
+                  {isGate && (gateState === "eval" || gateState === null) && <span className="stage-badge">○ idle</span>}
+                  {i === 2 && (
+                    <span className="stage-badge">
+                      <svg className="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                      human-gated
+                    </span>
+                  )}
+                </div>
+                {i < 2 && <div className="conn"><svg className="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h15M14 7l5 5-5 5"/></svg><svg className="v" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v15M7 14l5 5 5-5"/></svg></div>}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        {!reduced && (
+          <div ref={packetRef} className={"packet" + (ph.pkFail ? " fail" : "")}>
+            <span className="pk-dot"></span>{ph.pk}
+          </div>
+        )}
+      </div>
+
+      <div className="engine-readout">
+        <span className={"rd-tick" + (ph.tick === "bad" ? " bad" : "")}>{ph.tick === "bad" ? "⚠" : "▸"}</span>
+        <span>{ph.rd}</span>
+      </div>
+      <div className="engine-legend">
+        <span><i className="lg-active"></i>active path</span>
+        <span><i className="lg-fail"></i>failed gate → self-heal</span>
+        <span><i className="lg-human"></i>human review gate</span>
+      </div>
+      <p className="engine-rm-note">▸ One pipeline: <b style={{ color: "var(--lime)" }}>diagnose → eval gate → human approve</b>. A failed gate bounces the fix back to the self-healing loop; nothing ships until a human approves. SEO + accessibility proven on the gate (2026-06-02); schema scaffolded.</p>
+    </div>
+  );
+}
+
+function HowItWorks() {
+  const ref = useReveal();
+  return (
+    <section
+      id="how-it-works"
+      className="panel"
+      data-screen-label="03 HowItWorks"
+      data-section-name="How we move the needle"
+    >
+      <div className="panel-bar">
+        <span className="id">▸</span>
+        <span>$ goblin engine --explain</span>
+        <span className="grow"></span>
+        <span className="tk">self-healing · eval-gated · human-approved</span>
+      </div>
+      <div className="grid-lines how-grid">
+        <div className="how-intro reveal" ref={ref}>
+          <span className="kicker">how it works · the engine under the hood</span>
+          <h2 className="h-sec">How we actually move the needle</h2>
+          <p className="mono-note" style={{ marginTop: 8, marginBottom: 18 }}>// automated system · human judgment · measurable results</p>
+          <p className="how-p">Most SEO shops send you a PDF. <span style={{ color: "var(--lime)" }}>We run a system.</span></p>
+          <p className="how-p">Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO, and accessibility — with bounded self-healing loops and an eval gate that proves a fix actually works before any human sees it. Then a human reviews every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a schedule and measures the delta.</p>
+          <p className="how-punch">You see the gap. Then you watch it close.</p>
+          <p className="how-tech">"RAG pipeline" and "CI/CD eval gate" are the accurate technical names for what runs. We surface them once for credibility, then translate them for everyone else.</p>
+        </div>
+        <div className="how-diagram">
+          <EngineDiagram />
+        </div>
+      </div>
+      <p className="how-close">The technical name for the system is a <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The plain-language version: an automated system finds the gaps, proves fixes work, a human ships them, and you watch the numbers move.</p>
     </section>
   );
 }
@@ -1396,7 +1558,7 @@ function LiveScan() {
     <section
       id="scan"
       className="panel"
-      data-screen-label="03 Scan"
+      data-screen-label="05 Scan"
       data-section-name="Live Scan"
     >
       <div className="panel-bar">
@@ -1810,7 +1972,7 @@ function Pricing() {
     <section
       id="pricing"
       className="panel"
-      data-screen-label="10 Pricing"
+      data-screen-label="11 Pricing"
       data-section-name="Pricing"
     >
       <div className="panel-bar">
@@ -1974,17 +2136,18 @@ function TweaksMount() {
 const SECTIONS = [
   { id: "01 Hero", name: "Hero" },
   { id: "02 Spellbook", name: "Spellbook" },
-  { id: "03 Scan", name: "Live Scan" },
+  { id: "03 HowItWorks", name: "How we move the needle" },
   { id: "04 Mesh", name: "Visibility Mesh" },
-  { id: "05 Stats", name: "Telemetry" },
-  { id: "06 Marquee", name: "Keywords" },
-  { id: "07 Index", name: "Index / Now" },
-  { id: "08 Work", name: "./work" },
-  { id: "09 Services", name: "./services" },
-  { id: "10 Pricing", name: "Pricing" },
-  { id: "11 Quotes", name: "Word on street" },
-  { id: "12 Scrolls", name: "./scrolls" },
-  { id: "13 Contact", name: "Summon" },
+  { id: "05 Scan", name: "Live Scan" },
+  { id: "06 Stats", name: "Telemetry" },
+  { id: "07 Marquee", name: "Keywords" },
+  { id: "08 Index", name: "Index / Now" },
+  { id: "09 Work", name: "./work" },
+  { id: "10 Services", name: "./services" },
+  { id: "11 Pricing", name: "Pricing" },
+  { id: "12 Quotes", name: "Word on street" },
+  { id: "13 Scrolls", name: "./scrolls" },
+  { id: "14 Contact", name: "Summon" },
 ];
 
 function App() {
@@ -2001,8 +2164,9 @@ function App() {
         <div className="os">
           <Hero />
           <Spellbook />
-          <LiveScan />
+          <HowItWorks />
           <VisibilityMesh />
+          <LiveScan />
           <Stats />
           <Marquee />
           <IndexNow />

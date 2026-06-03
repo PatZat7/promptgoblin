@@ -702,3 +702,145 @@ body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
   .hud-bot .hud-right .muted,
   .hud-bot .hud-right .hud-divider { display: none; }
 }
+
+/* =================================================
+   HOW-IT-WORKS section — layout + engine diagram
+   Token map: --panel-2→var(--panel) · --bg-2→var(--panel) · --radius→3px
+   --bad→var(--fire) · --dim→var(--faint) · --good→var(--lime)
+   --lime-ink→var(--bg) · --e-inout→cubic-bezier(.4,0,.2,1) · --t-med→.2s
+   --f-mono→var(--mono) · --f-label→var(--pixel-tiny)
+   ================================================= */
+
+/* section layout */
+.how-grid {
+  display: grid;
+  gap: var(--pad);
+  padding: var(--pad);
+}
+@media (min-width: 900px) {
+  .how-grid { grid-template-columns: 1fr 1.4fr; align-items: start; gap: 36px; }
+}
+
+.how-intro .kicker {
+  display: block;
+  font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--faint); margin-bottom: 10px;
+}
+.how-intro .h-sec {
+  font-family: var(--pixel); font-size: calc(16px * var(--display-mult));
+  line-height: 1.35; color: var(--ink); margin-bottom: 4px;
+}
+.how-intro .mono-note {
+  font-family: var(--mono); font-size: 12px; color: var(--faint);
+}
+.how-p { font-size: 14px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
+.how-punch { font-family: var(--mono); font-size: 14px; color: var(--ink); font-weight: 700; margin-bottom: 10px; }
+.how-tech { font-family: var(--mono); font-size: 12px; color: var(--faint); line-height: 1.55; }
+.how-close {
+  padding: 14px var(--pad) var(--pad);
+  font-family: var(--mono); font-size: 12.5px; color: var(--faint); line-height: 1.6;
+  border-top: 1px solid var(--line);
+}
+
+/* engine-panel-bar: overrides .panel-bar for the inner engine panel's bar
+   (uses extracted-CSS lhs/lights pattern instead of the site's id/tk pattern) */
+.engine-panel-bar {
+  font-family: var(--pixel-tiny); font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--faint);
+  margin: -20px -18px 18px;
+  border-radius: 3px 3px 0 0;
+  padding: 10px 14px;
+}
+.engine-panel-bar .lhs { display: flex; align-items: center; gap: 8px; }
+.engine-panel-bar .lights { display: flex; gap: 5px; }
+.engine-panel-bar .lights i {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line-2); display: block;
+}
+.engine-panel-bar .lights i.on { background: var(--lime); }
+.sample-tag {
+  font-family: var(--pixel-tiny); font-size: 8.5px; letter-spacing: .1em;
+  color: var(--bg); background: var(--faint); padding: 2px 6px;
+  border-radius: 2px; text-transform: uppercase;
+}
+
+/* engine wrapper */
+.engine { padding: 20px 18px 18px; }
+.engine-stage-wrap { position: relative; }
+.stages {
+  display: flex; flex-direction: column; gap: 14px; position: relative;
+}
+@media (min-width: 760px) { .stages { flex-direction: row; align-items: stretch; gap: 0; } }
+
+.stage {
+  flex: 1; border: 1px solid var(--line-2); border-radius: 3px;
+  background: var(--panel); padding: 16px 14px; position: relative; min-height: 116px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.stage.active {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 1px var(--lime), 0 0 22px color-mix(in srgb, var(--lime) 22%, transparent);
+}
+.stage.gate.fail {
+  border-color: var(--fire);
+  box-shadow: 0 0 0 1px var(--fire), 0 0 22px color-mix(in srgb, var(--fire) 28%, transparent);
+}
+.stage-num  { font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .12em; color: var(--faint); }
+.stage-name { font-family: var(--mono); font-weight: 700; font-size: 14px; margin-top: 4px; }
+.stage-desc { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+.stage-badge {
+  margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; padding: 3px 8px; border-radius: 2px;
+  border: 1px solid var(--line-2); color: var(--faint);
+}
+.stage-badge.pass  { color: var(--lime); border-color: var(--lime); }
+.stage-badge.failb { color: var(--fire); border-color: var(--fire); }
+.stage-badge .lock { width: 11px; height: 11px; }
+
+/* connectors */
+.conn { display: flex; align-items: center; justify-content: center; color: var(--faint); flex: none; padding: 2px; }
+.conn svg { width: 22px; height: 22px; }
+@media (max-width: 759px) { .conn .h { display: none; } }
+@media (min-width: 760px)  { .conn { width: 40px; } .conn .v { display: none; } }
+
+/* travelling fix-packet */
+.packet {
+  position: absolute; z-index: 5; left: 0; top: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .02em;
+  background: var(--lime); color: var(--bg); font-weight: 700;
+  padding: 4px 8px; border-radius: 2px; pointer-events: none;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--lime) 50%, transparent);
+  transition: transform .85s cubic-bezier(.4,0,.2,1), background .3s;
+  white-space: nowrap;
+}
+.packet.fail { background: var(--fire); color: #fff; box-shadow: 0 0 16px color-mix(in srgb, var(--fire) 50%, transparent); }
+.packet .pk-dot { width: 7px; height: 7px; background: currentColor; border-radius: 1px; }
+
+.engine-readout {
+  margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;
+  font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+  display: flex; align-items: center; gap: 10px; min-height: 22px;
+}
+.engine-readout .rd-tick { color: var(--lime); }
+.engine-readout .rd-tick.bad { color: var(--fire); }
+.engine-legend {
+  display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px;
+  font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .1em;
+  color: var(--faint); text-transform: uppercase;
+}
+.engine-legend i { width: 9px; height: 9px; display: inline-block; margin-right: 6px; vertical-align: middle; border-radius: 1px; }
+.lg-active { background: var(--lime); }
+.lg-fail   { background: var(--fire); }
+.lg-human  { background: var(--ink); border: 1px solid var(--line-2); }
+
+/* reduced-motion static hint */
+.engine-rm-note { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .packet { transition: none !important; }
+  .engine-rm-note {
+    display: block; margin-top: 10px;
+    font-family: var(--mono); font-size: 12px; color: var(--faint);
+  }
+}
+}
