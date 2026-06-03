@@ -518,38 +518,139 @@ body[data-density="tight"] { --pad: 16px; }
 
 /* ============================================
    LIVE SCAN  — goblin@visibility-mesh terminal
-   (ported from the handoff hero terminal, re-skinned dark + lime)
+   (v2: awwwards-level CRT/HUD treatment · dark + lime)
    ============================================ */
 .scan-grid { grid-template-columns: 1.4fr 1fr; }
 @media (max-width: 900px) { .scan-grid { grid-template-columns: 1fr; } }
 
+/* ---- Terminal column ---- */
 .scan-term { display: flex; flex-direction: column; min-width: 0; }
+
+/* win-bar: second and third dots get distinct muted colors (not grey blobs) */
+.scan-term .win-bar .dots i:nth-child(2) { background: rgba(247,164,29,.55); }
+.scan-term .win-bar .dots i:nth-child(3) { background: rgba(227,59,20,.4); }
+
+/* progress bar: taller, brighter, with animated leading-edge shimmer */
+.scan-progress {
+  height: 3px;
+  background: rgba(163,230,53,0.08);
+  position: relative; overflow: hidden;
+}
+.scan-progress > i {
+  position: absolute; inset: 0 auto 0 0;
+  background: var(--lime);
+  box-shadow: 0 0 12px var(--glow), 0 0 4px var(--lime);
+  transition: width .45s ease;
+}
+/* shimmer pulse on the fill edge while scanning */
+@keyframes scanShimmer {
+  0%   { opacity: 1; }
+  50%  { opacity: .65; }
+  100% { opacity: 1; }
+}
+
+/* body: deeper CRT scanline — denser, slightly more contrast */
 .scan-body {
   flex: 1; padding: 20px var(--pad) 24px;
-  font-family: var(--mono); font-size: 12.5px; line-height: 1.7;
-  color: var(--muted); min-height: 360px; max-height: 460px; overflow: hidden;
-  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(163,230,53,0.03) 3px 4px);
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+  color: var(--muted); min-height: 380px; max-height: 480px; overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(163,230,53,0.025) 2px,
+      rgba(163,230,53,0.025) 3px
+    );
+  /* subtle inner vignette so lines feel contained */
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.45);
 }
-.scan-ln { white-space: pre-wrap; word-break: break-word; animation: scanIn .25s ease both; }
-.scan-ln .pfx { color: var(--lime); margin-right: 2px; }
-.scan-ln .key { color: var(--fg); }
-.scan-ln .mu  { color: var(--muted); }
+
+/* animate each new line in from slightly below */
+.scan-ln {
+  white-space: pre-wrap; word-break: break-word;
+  animation: scanIn .2s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes scanIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* glyph / token colors */
+.scan-ln .pfx  { color: var(--lime); margin-right: 2px; }
+.scan-ln .key  { color: var(--fg); }
+.scan-ln .mu   { color: var(--muted); }
 .scan-ln .warn { color: var(--fire-2); }
 .scan-ln .err  { color: var(--fire); font-weight: 500; }
 .scan-ln .ok   { color: var(--lime); }
 .scan-ln .sev  { color: var(--faint); margin-right: 4px; }
 .scan-ln .sep  { color: var(--faint); }
-@keyframes scanIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
-.scan-cur { display: inline-block; width: 8px; height: 14px; background: var(--lime); vertical-align: -2px; animation: blink 1.06s steps(2,end) infinite; }
 
-.scan-side { border-left: 1px solid var(--line); padding: var(--pad); display: flex; flex-direction: column; gap: 24px; }
+/* phase lines: key + dotted leader + value in a loose tabular layout */
+.scan-ln .ph-dots {
+  color: var(--faint);
+  /* stretch the dots to align values without a fixed grid (pre-wrap handles overflow) */
+  letter-spacing: .12em;
+}
+.scan-ln .pv     { color: var(--lime); }
+.scan-ln .pv-ok  { color: var(--lime); }
+.scan-ln .pv-warn { color: var(--fire-2); }
+.scan-ln .pv-bad  { color: var(--fire); }
+
+/* scanning indicator: label animates in lime */
+.scan-running .mu { color: var(--lime); }
+
+/* blinking cursor */
+.scan-cur {
+  display: inline-block; width: 8px; height: 14px;
+  background: var(--lime); vertical-align: -2px;
+  animation: blink 1.06s steps(2,end) infinite;
+}
+
+/* SAMPLE badge */
+.scan-sample-tag {
+  display: inline-block; margin-top: 6px;
+  font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--line-2); padding: 3px 8px;
+}
+
+/* ---- Side column ---- */
+.scan-side {
+  border-left: 1px solid var(--line); padding: var(--pad);
+  display: flex; flex-direction: column; gap: 22px;
+}
 @media (max-width: 900px) { .scan-side { border-left: 0; border-top: 1px solid var(--line); } }
-.scan-status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.scan-status-row .k { font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.scan-pill { font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border: 1px solid var(--line-2); }
-.scan-pill.cursed  { color: var(--fire); border-color: rgba(227,59,20,.5); }
-.scan-pill.fixable { color: var(--bg); background: var(--lime); border-color: var(--lime); }
-.scan-id { font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: .06em; text-transform: uppercase; }
+
+/* status row: always pinned near bottom via margin-top: auto on last row */
+.scan-status-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: auto;
+}
+.scan-status-row .k {
+  font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted);
+}
+.scan-pill {
+  font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 6px 10px; border: 1px solid var(--line-2);
+}
+/* status-pill bands */
+.scan-pill.cursed   { color: var(--fire); border-color: rgba(227,59,20,.5); }
+.scan-pill.fixable  { color: var(--bg); background: var(--lime); border-color: var(--lime); }
+.scan-pill.ok       { color: var(--bg); background: var(--lime); border-color: var(--lime); box-shadow: 0 0 10px var(--glow); }
+.scan-pill.warn     { color: var(--fire-2); border-color: rgba(245,158,11,.5); }
+.scan-pill.bad      { color: var(--fire); border-color: rgba(227,59,20,.5); }
+.scan-pill.scanning {
+  color: var(--lime); border-color: rgba(163,230,53,.4);
+  animation: scanShimmer 1.4s ease-in-out infinite;
+}
+
+.scan-id {
+  font-family: var(--mono); font-size: 11px; color: var(--faint);
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* legacy spellbar — kept in case still present in DOM, non-visible by default */
 .scan-spells { display: flex; flex-direction: column; gap: 12px; margin-top: 2px; }
 .spellbar-top { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11.5px; }
 .spellbar-top .nm { color: var(--muted); }
@@ -559,64 +660,181 @@ body[data-density="tight"] { --pad: 16px; }
 .scan-note { margin-top: auto; font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
 .scan-note b { color: var(--lime); font-weight: 500; }
 
-/* --- scan: real backend-driven progress + measured results card --- */
-.scan-progress { height: 2px; background: rgba(163,230,53,0.10); position: relative; overflow: hidden; }
-.scan-progress > i { position: absolute; inset: 0 auto 0 0; background: var(--lime); box-shadow: 0 0 10px var(--glow); transition: width .45s ease; }
-
-.scan-ln .ph-dots { color: var(--faint); }
-.scan-ln .pv { color: var(--lime); }
-.scan-ln .pv-ok { color: var(--lime); }
-.scan-ln .pv-warn { color: var(--fire-2); }
-.scan-ln .pv-bad { color: var(--fire); }
-.scan-running .mu { color: var(--lime); }
-.scan-sample-tag {
-  display: inline-block; margin-top: 6px;
-  font-family: var(--pixel-tiny); font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--muted); border: 1px solid var(--line-2); padding: 3px 8px;
+/* ---- Scan form (idle / scanning states) ---- */
+.scan-form { display: flex; flex-direction: column; gap: 10px; }
+.scan-form input {
+  font-family: var(--mono); font-size: 14px; color: var(--fg);
+  background: rgba(0,0,0,.28); border: 1px solid var(--line-2);
+  padding: 11px 12px; outline: none;
+  transition: border-color .15s, background .15s, box-shadow .15s;
 }
-
+body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
+.scan-form input::placeholder { color: var(--faint); }
+.scan-form input:focus {
+  border-color: var(--lime); background: rgba(163,230,53,.05);
+  box-shadow: 0 0 0 1px rgba(163,230,53,.18);
+}
+/* disabled state during scan — dim without losing readability */
+.scan-form input:disabled,
+.scan-form .btn:disabled {
+  opacity: .45; cursor: default;
+}
+.scan-form .btn { justify-content: center; }
+.scan-disclaimer {
+  font-family: var(--mono); font-size: 11px; line-height: 1.55; color: var(--muted);
+}
 .scan-checks { list-style: none; margin-top: 2px; display: flex; flex-direction: column; gap: 6px; }
-.scan-checks li { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-left: 15px; position: relative; }
+.scan-checks li {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  padding-left: 15px; position: relative;
+}
 .scan-checks li::before { content: "›"; position: absolute; left: 0; color: var(--lime); }
 
-/* honest failure — never demo theater on a real submit */
-.scan-err-card { display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(227,59,20,.5); padding: 18px; background: rgba(227,59,20,.05); }
+/* ---- Error card ---- */
+.scan-err-card {
+  display: flex; flex-direction: column; gap: 10px;
+  border: 1px solid rgba(227,59,20,.5); padding: 18px;
+  background: rgba(227,59,20,.05);
+}
 .scan-err-msg { font-family: var(--mono); font-size: 14px; color: var(--fg); }
 .scan-err-msg b { color: var(--fire); font-weight: 600; }
 .scan-err-why { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.5; }
 .scan-err-card .btn { justify-content: center; margin-top: 4px; }
 
-/* results card — the conversion moment */
-.scan-result { display: flex; flex-direction: column; gap: 18px; }
-.sr-top { display: flex; align-items: center; gap: 16px; }
-.sr-score { display: flex; align-items: baseline; gap: 2px; font-family: var(--pixel); line-height: 1; padding: 10px 14px; border: 1px solid var(--line-2); }
-.sr-score.band-ok { color: var(--lime); border-color: var(--lime); box-shadow: inset 0 0 0 1px var(--lime), 0 0 18px var(--glow); }
-.sr-score.band-warn { color: var(--fire-2); border-color: rgba(245,158,11,.5); }
-.sr-score.band-bad { color: var(--fire); border-color: rgba(227,59,20,.5); }
-.sr-num { font-size: 40px; font-weight: 400; }
-.sr-den { font-size: 14px; color: var(--faint); }
-.sr-top-meta { display: flex; flex-direction: column; gap: 4px; }
-.sr-k { font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.sr-sub { font-family: var(--mono); font-size: 12.5px; color: var(--fg); }
+/* ============================================================
+   RESULTS CARD — the conversion moment. Make it sing.
+   ============================================================ */
+.scan-result { display: flex; flex-direction: column; gap: 20px; }
 
-.sr-block { display: flex; flex-direction: column; gap: 8px; }
-.sr-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.sr-chip { font-family: var(--mono); font-size: 11px; padding: 3px 8px; border: 1px solid var(--line-2); color: var(--muted); }
-.sr-chip.ok { color: var(--lime); border-color: rgba(163,230,53,.45); }
-.sr-chip.miss { color: var(--faint); border-style: dashed; }
+/* score block: big pixel number + band ring */
+.sr-top { display: flex; align-items: center; gap: 18px; }
 
-.sr-disc { font-family: var(--mono); font-size: 11px; line-height: 1.55; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; margin: 0; }
+.sr-score {
+  position: relative;
+  display: flex; align-items: baseline; gap: 3px;
+  font-family: var(--pixel); line-height: 1;
+  /* generous padding creates a "scorecard" tile */
+  padding: 16px 20px 14px;
+  border: 1px solid var(--line-2);
+  /* subtle inset on all bands so the tile has depth */
+  background: rgba(0,0,0,.35);
+  flex: 0 0 auto;
+  transition: box-shadow .35s ease;
+}
+body[data-palette="bone"] .sr-score { background: rgba(0,0,0,.06); }
+
+/* band-ok: lime ring + diffuse glow */
+.sr-score.band-ok {
+  color: var(--lime);
+  border-color: var(--lime);
+  box-shadow:
+    0 0 0 1px rgba(163,230,53,.5),
+    0 0 24px rgba(163,230,53,.28),
+    inset 0 0 12px rgba(163,230,53,.07);
+}
+/* band-warn: amber ring */
+.sr-score.band-warn {
+  color: var(--fire-2);
+  border-color: rgba(247,164,29,.6);
+  box-shadow:
+    0 0 0 1px rgba(247,164,29,.3),
+    0 0 18px rgba(247,164,29,.18),
+    inset 0 0 10px rgba(247,164,29,.05);
+}
+/* band-bad: fire ring */
+.sr-score.band-bad {
+  color: var(--fire);
+  border-color: rgba(227,59,20,.6);
+  box-shadow:
+    0 0 0 1px rgba(227,59,20,.3),
+    0 0 18px rgba(227,59,20,.18),
+    inset 0 0 10px rgba(227,59,20,.05);
+}
+
+/* numeric score: chunky pixel type */
+.sr-num { font-size: 48px; font-weight: 400; }
+/* denominator /100 — small, faint, sits on the baseline */
+.sr-den { font-size: 13px; color: var(--faint); align-self: flex-end; padding-bottom: 3px; }
+
+/* headline meta: domain + finding counts */
+.sr-top-meta { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.sr-k {
+  font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted);
+  /* clamp long domains */
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.sr-sub {
+  font-family: var(--mono); font-size: 12.5px; color: var(--fg); line-height: 1.3;
+}
+
+/* structured-data block */
+.sr-block { display: flex; flex-direction: column; gap: 9px; }
+
+/* chip row */
+.sr-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.sr-chip {
+  font-family: var(--mono); font-size: 11px; padding: 3px 9px;
+  border: 1px solid var(--line-2); color: var(--muted);
+}
+.sr-chip.ok {
+  color: var(--lime); border-color: rgba(163,230,53,.45);
+  /* subtle bg on dark so ok chips read as "present" */
+  background: rgba(163,230,53,.06);
+}
+/* bone: transparent bg so the pre-existing lime contrast isn't made worse
+   by tinting the surface (4d7c0f on plain F4F2EC vs a tinted surface) */
+body[data-palette="bone"] .sr-chip.ok { background: transparent; }
+/* missing chips: dashed border, recessed — clearly absent */
+.sr-chip.miss {
+  color: var(--faint); border-style: dashed; opacity: .75;
+}
+
+/* disclaimer — honest, below the chips */
+.sr-disc {
+  font-family: var(--mono); font-size: 11px; line-height: 1.6; color: var(--muted);
+  border-top: 1px solid var(--line); padding-top: 14px; margin: 0;
+}
+
+/* CTA block */
 .sr-cta { display: flex; flex-direction: column; gap: 10px; }
-.sr-ok-t { font-family: var(--mono); font-size: 12.5px; line-height: 1.5; color: var(--lime); }
+.sr-ok-t {
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.55; color: var(--lime);
+}
+/* On bone palette: lime #4d7c0f on #F4F2EC passes AA (≈7.8:1) — no override needed */
 .sr-cta .btn { justify-content: center; }
-.sr-again { align-self: flex-start; font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); padding: 4px 0; }
+/* primary CTA gets the same filled-lime treatment as the hero CTA */
+.sr-cta .btn:not(.ghost) {
+  background: var(--lime); color: var(--bg); border-color: var(--lime);
+  box-shadow: 0 0 18px rgba(163,230,53,.22);
+}
+.sr-cta .btn:not(.ghost):hover {
+  background: transparent; color: var(--fg); border-color: var(--lime);
+  box-shadow: none;
+}
+body[data-palette="bone"] .sr-cta .btn:not(.ghost) {
+  color: var(--bg);
+}
+
+/* "scan another" ghost link */
+.sr-again {
+  align-self: flex-start;
+  font-family: var(--pixel-tiny); font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--faint); padding: 4px 0;
+  transition: color .15s;
+}
 .sr-again:hover { color: var(--lime); }
 
-/* status-pill bands (results / scanning / error) */
-.scan-pill.ok { color: var(--bg); background: var(--lime); border-color: var(--lime); }
-.scan-pill.warn { color: var(--fire-2); border-color: rgba(245,158,11,.5); }
-.scan-pill.bad { color: var(--fire); border-color: rgba(227,59,20,.5); }
-.scan-pill.scanning { color: var(--lime); border-color: rgba(163,230,53,.4); }
+/* ---- Mobile adjustments ---- */
+@media (max-width: 900px) {
+  /* on mobile the result card is full-width — give the score tile room */
+  .sr-num { font-size: 42px; }
+}
+@media (max-width: 500px) {
+  /* prevent score tile from swallowing half the viewport */
+  .sr-score { padding: 12px 14px 10px; }
+  .sr-num { font-size: 36px; }
+}
 
 /* ============================================
    VISIBILITY MESH  — agentic LangGraph graph
@@ -699,14 +917,7 @@ body[data-palette="bone"] .sf-field input { background: rgba(0,0,0,.04); }
 .sf-ok-t { font-family: var(--pixel-tiny); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--lime); }
 .sf-ok-d { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
 
-/* Free-scan tool form (inside the Live Scan section) */
-.scan-form { display: flex; flex-direction: column; gap: 10px; }
-.scan-form input { font-family: var(--mono); font-size: 14px; color: var(--fg); background: rgba(0,0,0,.25); border: 1px solid var(--line-2); padding: 11px 12px; outline: none; transition: border-color .15s, background .15s; }
-body[data-palette="bone"] .scan-form input { background: rgba(0,0,0,.04); }
-.scan-form input::placeholder { color: var(--faint); }
-.scan-form input:focus { border-color: var(--lime); background: rgba(163,230,53,.05); }
-.scan-form .btn { justify-content: center; }
-.scan-disclaimer { font-family: var(--mono); font-size: 11px; line-height: 1.5; color: var(--muted); }
+/* scan-form rules consolidated in LIVE SCAN block above */
 
 /* ============================================
    PRICING  — Scout / Warband / Warlord

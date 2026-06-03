@@ -1218,6 +1218,7 @@ const SCAN_PHASES = [
 // Illustrative only — no real domain queried, no fabricated engine/citation stats.
 const SAMPLE_LINES = [
   { t: "cmd", text: "goblin scan --surface hygiene --sample" },
+  { t: "info", text: "illustrative sample · no domain queried" },
   { t: "phase", k: "fetch surface", v: "71 KB", tone: "ok" },
   { t: "phase", k: "read robots.txt", v: "welcomes AI crawlers", tone: "ok" },
   { t: "phase", k: "read llms.txt", v: "not found", tone: "warn" },
@@ -1229,7 +1230,7 @@ const SAMPLE_LINES = [
   { t: "issue", sev: "LOW", text: "2 <h1> tags — pick one" },
   { t: "sep" },
   { t: "ok", text: "goblin.recommend → structured data + crawl welcome mat" },
-  { t: "sample", text: "sample output — enter your domain for a real scan" },
+  { t: "sample", text: "↑ illustrative sample — not your site · enter your domain above for a real scan" },
 ];
 
 function scanHost(url) {
@@ -1696,7 +1697,7 @@ function LiveScan() {
                 <span className="arr">→</span>
               </button>
               <div className="scan-disclaimer">
-                Instant, real result: a technical-<b>hygiene</b> scan of your live
+                Live, real result: a technical-<b>hygiene</b> scan of your live
                 page — structured data, crawl welcome mat, head tags & Core Web
                 Vitals proxies. Hygiene is table stakes, <b>not</b> a citation
                 guarantee. The full multi-engine citation audit (ChatGPT · Claude
@@ -1764,8 +1765,9 @@ function ScanResult({ report, email, target, band, onReset }) {
       <p className="sr-disc">{report.disclaimer}</p>
       <div className="sr-cta">
         <div className="sr-ok-t">
-          ✓ hygiene result delivered above — we'll follow up at{" "}
-          {email || "your inbox"} about the full citation &amp; accessibility audit.
+          ✓ Real hygiene result delivered above. A human goblin will personally
+          email {email || "you"} about the full citation &amp; accessibility audit
+          — no automated report.
         </div>
         <a className="btn" href="#pricing" data-cursor-label="audit">
           see the full Scout audit <span className="arr">→</span>
