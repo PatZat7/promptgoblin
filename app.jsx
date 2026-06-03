@@ -663,156 +663,7 @@ function IndexNow() {
   );
 }
 
-/* ===== WORK =====
-   One REAL dogfood case study (live OpenAI + Claude scan of our own site,
-   2026-06-01) + honest method cards. No fabricated clients or outcomes. */
-const WORK = [
-  {
-    num: "01",
-    nm: "The Goblin's Own Lair",
-    tag: "dogfood · live scan",
-    span: 2,
-    title: "promptgoblin.zatgeist.com",
-    em: "— baseline 2026-06-01",
-    sub: "We scanned ourselves first. Honest starting line: 0% cited.",
-    term: [
-      { t: "cmd", v: "goblin scan --domain promptgoblin.zatgeist.com" },
-      { t: "mu", v: "// engines: ChatGPT + Claude · 8 buyer queries" },
-      { t: "warn", v: "client cited: 0%  (so is the competitor)" },
-      { t: "mu", v: "// engines cite semrush, ahrefs, moz, hubspot" },
-      { t: "ok", v: "12 fixes queued: 5 schema · 5 citation · 2 content" },
-      { t: "ok", v: "re-scan in 2 wks → measured delta, not a promise" },
-    ],
-    res: "baseline captured · fixes shipping · delta to follow",
-  },
-  {
-    num: "02",
-    nm: "Schema layer",
-    tag: "method",
-    title: "Entity coverage",
-    em: "",
-    sub: "What an audit surfaces (illustrative, not a client result).",
-    term: [
-      { t: "cmd", v: "goblin audit --schema" },
-      { t: "mu", v: "// parse JSON-LD @types vs expected set" },
-      { t: "ok", v: "flag missing FAQPage / Product / Org / WebSite" },
-    ],
-    res: "hygiene gaps → paste-ready JSON-LD",
-  },
-  {
-    num: "03",
-    nm: "Citation diff",
-    tag: "method",
-    title: "Share of citations",
-    em: "",
-    sub: "Who the engines cite for your category — vs a named rival.",
-    term: [
-      { t: "cmd", v: "goblin diff --vs competitor.com" },
-      { t: "mu", v: "// ask 8 buyer prompts across 5 surfaces" },
-      { t: "ok", v: "rank the sources you're losing to" },
-    ],
-    res: "the gap, named — not a vanity score",
-  },
-  {
-    num: "04",
-    nm: "Content gaps",
-    tag: "method",
-    title: "Answer coverage",
-    em: "",
-    sub: "High-intent questions with no page that answers them.",
-    term: [
-      { t: "cmd", v: "goblin audit --content" },
-      { t: "mu", v: "// map prompts → cornerstone pages" },
-      { t: "ok", v: "answer-first briefs, FAQPage-ready" },
-    ],
-    res: "ranked by impact × effort",
-  },
-  {
-    num: "05",
-    nm: "Human gate",
-    tag: "principle",
-    span: 2,
-    title: "Nothing auto-deploys",
-    em: "— you approve every change",
-    sub: "The pipeline ranks and drafts. A human goblin reviews and ships.",
-    term: [
-      { t: "cmd", v: "goblin scan … (interrupt_before: human_review)" },
-      { t: "warn", v: "⏸ paused — awaiting human approval" },
-      { t: "ok", v: "approved fixes → reviewed PRs / CMS drafts" },
-    ],
-    res: "agentic, but accountable",
-  },
-];
-
-function Work() {
-  return (
-    <section
-      id="work"
-      className="panel"
-      data-screen-label="09 Work"
-      data-section-name="Case study + method"
-    >
-      <div className="panel-bar">
-        <span className="id">02</span>
-        <span>$ ls ./case_study</span>
-        <span className="grow"></span>
-        <span className="tk">dogfood + method · no fake clients</span>
-      </div>
-      <div className="grid-lines work-grid">
-        {WORK.map((w, i) => (
-          <WCard key={w.num} w={w} i={i} />
-        ))}
-      </div>
-    </section>
-  );
-}
-function WCard({ w, i }) {
-  const ref = useReveal();
-  return (
-    <article
-      ref={ref}
-      className={"wcard reveal" + (w.span === 2 ? " span-2" : "")}
-      style={{ transitionDelay: `${i * 0.05}s` }}
-      data-cursor-label="open case"
-    >
-      <div className="wcard-head">
-        <span className="num">{w.num}</span>
-        <span className="nm">{w.nm}</span>
-        <span className="tag">{w.tag}</span>
-      </div>
-      <div className="wterm">
-        {w.term.map((l, j) => (
-          <div className="ln" key={j}>
-            {l.t === "cmd" && (
-              <>
-                <span className="pfx">$</span> {l.v}
-              </>
-            )}
-            {l.t === "mu" && <span className="mu">{l.v}</span>}
-            {l.t === "ok" && (
-              <>
-                <span className="ok">✓</span> {l.v}
-              </>
-            )}
-            {l.t === "warn" && (
-              <>
-                <span className="warn">⚠</span> {l.v}
-              </>
-            )}
-          </div>
-        ))}
-        <div className="res">{w.res}</div>
-      </div>
-      <div className="wcard-foot">
-        <span className="ttl">
-          {w.title}
-          {w.em && <em> {w.em}</em>}
-        </span>
-        <span className="sub">{w.sub}</span>
-      </div>
-    </article>
-  );
-}
+/* Work / case-study section ($ ls ./case_study) + its WORK data removed per owner request (2026-06-02). */
 
 /* ===== SERVICES ===== */
 const SVCS = [
@@ -2142,7 +1993,6 @@ const SECTIONS = [
   { id: "06 Stats", name: "Telemetry" },
   { id: "07 Marquee", name: "Keywords" },
   { id: "08 Index", name: "Index / Now" },
-  { id: "09 Work", name: "./work" },
   { id: "10 Services", name: "./services" },
   { id: "11 Pricing", name: "Pricing" },
   { id: "12 Quotes", name: "Word on street" },
@@ -2170,7 +2020,6 @@ function App() {
           <Stats />
           <Marquee />
           <IndexNow />
-          <Work />
           <Services />
           <Pricing />
           <Quotes />
