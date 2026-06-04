@@ -16,6 +16,10 @@ export const Loader = () => {
     }
     let i = 0;
     let timer: ReturnType<typeof setTimeout>;
+    const dismiss = () => {
+      setN(100);
+      setHide(true);
+    };
     const step = () => {
       i += Math.random() * 9 + 4;
       if (i >= 100) {
@@ -27,7 +31,19 @@ export const Loader = () => {
       timer = setTimeout(step, 40 + Math.random() * 50);
     };
     step();
-    return () => clearTimeout(timer);
+    // Hard cap: never gate the page beyond 1.3s, even if the tab is backgrounded
+    // and setTimeout is throttled to >=1s per tick. Plus let a visitor skip it.
+    const cap = setTimeout(dismiss, 1300);
+    window.addEventListener("pointerdown", dismiss, { once: true });
+    window.addEventListener("keydown", dismiss, { once: true });
+    window.addEventListener("wheel", dismiss, { once: true, passive: true });
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(cap);
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", dismiss);
+      window.removeEventListener("wheel", dismiss);
+    };
   }, []);
 
   return (

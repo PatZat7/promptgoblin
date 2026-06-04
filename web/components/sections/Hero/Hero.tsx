@@ -57,11 +57,11 @@ export const Hero = () => (
           gap. Then we close it.
         </p>
         <div className={styles.cta}>
-          <a className="btn" href="#contact" data-cursor="./summon">
-            ./summon <span className="arr">→</span>
+          <a className="btn" href="#scan" data-cursor="./scan">
+            ./free_scan <span className="arr">→</span>
           </a>
-          <a className="btn ghost" href="#scan" data-cursor="./scan">
-            ./free_scan
+          <a className="btn ghost" href="#contact" data-cursor="./summon">
+            ./summon
           </a>
         </div>
       </Reveal>
