@@ -2,6 +2,16 @@
 _extracted/
 *.zip
 
+# Local archive of retired files (handoffs, old SPA, done planning docs).
+# Tracked items moved here are git-rm'd from the repo; history still has them.
+_archive/
+
+# Claude Code tooling installs — local, not project code
+.agents/
+.claude/skills/
+skills-lock.json
+.claude/scheduled_tasks.lock
+
 # The agentic AEO pipeline is a separate deployable (its own repo) — never serve it as static
 pipeline/
 
