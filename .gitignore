@@ -20,6 +20,10 @@ node_modules/
 _verify*.png
 _verify.mjs
 package-lock.json
+# …but web/ is a real Next.js app deployed via `npm ci`, which REQUIRES its
+# lockfile committed (without it the DO build fails: "package-lock.json does
+# not exist"). Keep this exception.
+!web/package-lock.json
 
 # Stray pipeline run artifacts if the CLI is ever run from the site root
 out/
