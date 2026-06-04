@@ -5,11 +5,7 @@ import styles from "./Pricing.module.css";
 
 export const Pricing = () => (
   <Panel id="pricing" cursor="./pricing">
-    <PanelBar
-      mark="07"
-      command="$ goblin --pricing"
-      note="flat fee · no credits · no sales call"
-    />
+    <PanelBar command="$ goblin --pricing" note="flat fee · no credits · no sales call" />
     <div className={clsx("grid-lines", styles.grid)}>
       {TIERS.map((tier) => (
         <div

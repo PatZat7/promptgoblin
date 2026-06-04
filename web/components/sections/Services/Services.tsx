@@ -4,7 +4,7 @@ import { SERVICES } from "./services.data";
 
 export const Services = () => (
   <Panel id="services" cursor="./services">
-    <PanelBar mark="03" command="$ man goblin" note="six services · one goblin" />
+    <PanelBar command="$ man goblin" note="six services · one goblin" />
     <ServiceAccordion services={SERVICES} />
   </Panel>
 );

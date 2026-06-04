@@ -21,7 +21,7 @@ const STATEMENT_LINES: { text: React.ReactNode; delay: string }[] = [
 
 export const IndexNow = () => (
   <Panel id="index" cursor="./now">
-    <PanelBar mark="01" command="index · now" note="$ goblin status" />
+    <PanelBar command="index · now" note="$ goblin status" />
     <div className={clsx("grid-lines", styles.grid)}>
       <div className={styles.left}>
         <div className={styles.heading}>// now</div>

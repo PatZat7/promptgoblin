@@ -5,11 +5,7 @@ import styles from "./Contact.module.css";
 
 export const Contact = () => (
   <Panel id="contact" cursor="./summon">
-    <PanelBar
-      mark="06"
-      command="$ goblin --summon"
-      note="3 slots · Q3–Q4 2026"
-    />
+    <PanelBar command="$ goblin --summon" note="3 slots · Q3–Q4 2026" />
     <div className={clsx("grid-lines", styles.grid)}>
       <div className={styles.main}>
         <div className={styles.big}>
