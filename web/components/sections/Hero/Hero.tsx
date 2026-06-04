@@ -60,13 +60,10 @@ export const Hero = () => (
           <a className="btn" href="#contact" data-cursor="./summon">
             ./summon <span className="arr">→</span>
           </a>
-          <a className="btn ghost" href="#work" data-cursor="./work">
-            ./see_work
+          <a className="btn ghost" href="#scan" data-cursor="./scan">
+            ./free_scan
           </a>
         </div>
-        <p className={clsx(styles.note, styles.noteTight)}>
-          <b>✓ Free scan, no card.</b> Paid work backed by a 100% money-back guarantee.
-        </p>
       </Reveal>
 
       <div className={styles.side}>

@@ -137,9 +137,9 @@ export const SummonForm = () => {
         <a
           className="btn ghost"
           href={STRIPE_LINKS.scout}
-          data-cursor="./reserve"
+          data-cursor="./summon"
         >
-          reserve a Scout audit
+          summon a goblin
         </a>
       </div>
       {err && <div className={styles.error}>⚠ {err}</div>}
