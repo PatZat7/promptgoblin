@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { captureEvent, identifyLead, leadDomain, submitWeb3Form } from "@/lib/analytics";
+import {
+  captureEvent,
+  identifyLead,
+  leadDomain,
+  submitWeb3Form,
+} from "@/lib/analytics";
 import { STRIPE_LINKS } from "@/components/sections/Pricing/pricing.data";
 import styles from "./Contact.module.css";
 
@@ -13,7 +18,9 @@ export const SummonForm = () => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErr("");
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries()) as Record<string, string>;
+    const data = Object.fromEntries(
+      new FormData(e.currentTarget).entries(),
+    ) as Record<string, string>;
     if (data.botcheck) return; // honeypot
     identifyLead(data);
     captureEvent("summon_submitted", {
@@ -27,10 +34,15 @@ export const SummonForm = () => {
       requested_surface: data.target || "",
     });
     setSending(true);
-    const ok = await submitWeb3Form(`New goblin summon ✦ ${data.domain || ""}`, data);
+    const ok = await submitWeb3Form(
+      `New goblin summon ✦ ${data.domain || ""}`,
+      data,
+    );
     if (ok) setSent(true);
     else
-      setErr("A goblin fumbled that send. Try again, or email hi@promptgoblin.io and we'll run it by hand.");
+      setErr(
+        "A goblin fumbled that send. Try again, or email goblins@promptgoblin.com and we'll run it by hand.",
+      );
     setSending(false);
   };
 
@@ -39,10 +51,12 @@ export const SummonForm = () => {
       <div className={styles.success}>
         <div className={styles.successMark}>✓</div>
         <div>
-          <div className={styles.successTitle}>summon received — invisibility cloak: BREAKING</div>
+          <div className={styles.successTitle}>
+            summon received — invisibility cloak: BREAKING
+          </div>
           <div className={styles.successDesc}>
-            A real software engineer replies within a working day with your free scan. Check your
-            inbox (and spam — goblins lurk there too).
+            A real software engineer replies within a working day with your free
+            scan. Check your inbox (and spam — goblins lurk there too).
           </div>
           <button
             type="button"
@@ -65,16 +79,33 @@ export const SummonForm = () => {
       <div className={styles.formGrid}>
         <label className={styles.field}>
           <span className={styles.fieldLabel}>$ domain</span>
-          <input name="domain" required placeholder="yourbrand.com" autoComplete="url" data-cursor="./type" />
+          <input
+            name="domain"
+            required
+            placeholder="yourbrand.com"
+            autoComplete="url"
+            data-cursor="./type"
+          />
         </label>
         <label className={styles.field}>
           <span className={styles.fieldLabel}>$ email</span>
-          <input name="email" type="email" required placeholder="you@brand.com" autoComplete="email" data-cursor="./type" />
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="you@brand.com"
+            autoComplete="email"
+            data-cursor="./type"
+          />
         </label>
       </div>
       <label className={styles.field}>
         <span className={styles.fieldLabel}>$ get_cited_for</span>
-        <input name="target" placeholder={'e.g. "best fleet software"'} data-cursor="./type" />
+        <input
+          name="target"
+          placeholder={'e.g. "best fleet software"'}
+          data-cursor="./type"
+        />
       </label>
       <input
         type="text"
@@ -85,10 +116,20 @@ export const SummonForm = () => {
         aria-hidden="true"
       />
       <div className={styles.actions}>
-        <button className="btn" type="submit" disabled={sending} data-cursor="./summon">
-          {sending ? "casting…" : "run my free scan"} <span className="arr">→</span>
+        <button
+          className="btn"
+          type="submit"
+          disabled={sending}
+          data-cursor="./summon"
+        >
+          {sending ? "casting…" : "run my free scan"}{" "}
+          <span className="arr">→</span>
         </button>
-        <a className="btn ghost" href={STRIPE_LINKS.scout} data-cursor="./reserve">
+        <a
+          className="btn ghost"
+          href={STRIPE_LINKS.scout}
+          data-cursor="./reserve"
+        >
           reserve a Scout audit
         </a>
       </div>

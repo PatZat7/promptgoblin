@@ -1,175 +1,346 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Prompt_Goblin™ — AI search visibility &amp; technical SEO</title>
-  <meta name="description" content="A one-goblin shop in Chicago. AI search visibility and technical SEO that makes you Visible AF. Get found by robots. Stay usable by humans." />
-  <link rel="canonical" href="https://promptgoblin.io/" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Prompt_Goblin™ — AI search visibility &amp; technical SEO</title>
+    <meta
+      name="description"
+      content="A one-goblin shop in Chicago. AI search visibility and technical SEO that makes you Visible AF. Get found by robots. Stay usable by humans."
+    />
+    <link rel="canonical" href="https://promptgoblin.io/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
-  <!-- Open Graph / social -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Prompt Goblin — Get found by robots. Stay usable by humans." />
-  <meta property="og:description" content="When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it. AEO · technical SEO · WCAG accessibility." />
-  <meta property="og:url" content="https://promptgoblin.io/" />
-  <meta property="og:site_name" content="Prompt Goblin" />
-  <meta property="og:image" content="https://promptgoblin.io/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Prompt Goblin — Get found by robots. Stay usable by humans. AI search visibility, technical SEO, and WCAG accessibility." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Prompt Goblin — Visible AF" />
-  <meta name="twitter:description" content="When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it." />
-  <meta name="twitter:image" content="https://promptgoblin.io/og-image.png" />
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Prompt Goblin — Get found by robots. Stay usable by humans."
+    />
+    <meta
+      property="og:description"
+      content="When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it. AEO · technical SEO · WCAG accessibility."
+    />
+    <meta property="og:url" content="https://promptgoblin.io/" />
+    <meta property="og:site_name" content="Prompt Goblin" />
+    <meta property="og:image" content="https://promptgoblin.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Prompt Goblin — Get found by robots. Stay usable by humans. AI search visibility, technical SEO, and WCAG accessibility."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Prompt Goblin — Visible AF" />
+    <meta
+      name="twitter:description"
+      content="When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it."
+    />
+    <meta name="twitter:image" content="https://promptgoblin.io/og-image.png" />
 
-  <!-- Dogfood: structured data so LLMs + crawlers can parse us cleanly -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "name": "Prompt Goblin",
-    "alternateName": "Prompt_Goblin",
-    "url": "https://promptgoblin.io",
-    "email": "hi@promptgoblin.io",
-    "description": "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene — every change human-reviewed.",
-    "areaServed": "Worldwide",
-    "knowsAbout": ["Generative Engine Optimization","Answer Engine Optimization","Technical SEO","Schema.org structured data","llms.txt","Core Web Vitals","Entity SEO"],
-    "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" },
-    "makesOffer": [
-      { "@type": "Offer", "name": "Goblin Scout — visibility audit", "priceCurrency": "USD", "price": "2950" },
-      { "@type": "Offer", "name": "Goblin Warband — monthly agentic retainer", "priceCurrency": "USD", "price": "4800" },
-      { "@type": "Offer", "name": "Goblin Warlord — multi-brand retainer", "priceCurrency": "USD", "price": "12500" }
-    ]
-  }
-  </script>
-
-  <!-- Dogfood self-fixes: the 5 entity types our own 2026-06-01 scan flagged as missing. -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Prompt Goblin",
-    "alternateName": "Prompt_Goblin",
-    "url": "https://promptgoblin.io",
-    "email": "hi@promptgoblin.io",
-    "slogan": "Get found by robots. Stay usable by humans. Visible AF.",
-    "description": "A one-goblin AI-search-visibility (AEO/GEO) and technical-SEO shop in Chicago.",
-    "areaServed": "Worldwide",
-    "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Prompt Goblin",
-    "url": "https://promptgoblin.io"
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://promptgoblin.io/" },
-      { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://promptgoblin.io/#services" },
-      { "@type": "ListItem", "position": 3, "name": "Pricing", "item": "https://promptgoblin.io/#pricing" }
-    ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "AI search visibility (AEO/GEO) & technical SEO",
-    "provider": { "@type": "Organization", "name": "Prompt Goblin", "url": "https://promptgoblin.io" },
-    "areaServed": "Worldwide",
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Goblin tiers",
-      "itemListElement": [
-        { "@type": "Offer", "name": "Goblin Scout — one-time visibility audit", "priceCurrency": "USD", "price": "2950" },
-        { "@type": "Offer", "name": "Goblin Warband — monthly retainer", "priceCurrency": "USD", "price": "4800" },
-        { "@type": "Offer", "name": "Goblin Warlord — multi-brand retainer", "priceCurrency": "USD", "price": "12500" }
-      ]
-    }
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
+    <!-- Dogfood: structured data so LLMs + crawlers can parse us cleanly -->
+    <script type="application/ld+json">
       {
-        "@type": "Question",
-        "name": "What is AI search visibility (AEO/GEO)?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Answer Engine Optimization (AEO) / Generative Engine Optimization (GEO) is getting your brand cited inside AI answers — ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — rather than only ranking in blue links." }
-      },
-      {
-        "@type": "Question",
-        "name": "Does schema markup get me cited by AI?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Schema and llms.txt are hygiene — necessary so engines can parse you, but not a citation lever on their own. The real levers are brand mentions and Bing ranking; we work all of it, and every change is human-reviewed." }
-      },
-      {
-        "@type": "Question",
-        "name": "How much does a Prompt Goblin audit cost?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Goblin Scout is a one-time visibility audit at $2,950. Ongoing retainers are Goblin Warband ($4,800/mo) and Goblin Warlord ($12,500/mo). Flat fee — no credits, no meter." }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a money-back guarantee?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Yes — a 100% money-back guarantee on the work, not on the algorithm. If we don't deliver your audit, or you're not happy with it within 14 days of delivery, you get a full refund, no argument. We can't promise a specific citation number — AI citation share is volatile and partly outside anyone's control — so we never sell one. We guarantee the work, and we measure the result honestly." }
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Prompt Goblin",
+        "alternateName": "Prompt_Goblin",
+        "url": "https://promptgoblin.io",
+        "email": "goblins@promptgoblin.com",
+        "description": "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene — every change human-reviewed.",
+        "areaServed": "Worldwide",
+        "knowsAbout": [
+          "Generative Engine Optimization",
+          "Answer Engine Optimization",
+          "Technical SEO",
+          "Schema.org structured data",
+          "llms.txt",
+          "Core Web Vitals",
+          "Entity SEO"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chicago",
+          "addressRegion": "IL",
+          "addressCountry": "US"
+        },
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "name": "Goblin Scout — visibility audit",
+            "priceCurrency": "USD",
+            "price": "2950"
+          },
+          {
+            "@type": "Offer",
+            "name": "Goblin Warband — monthly agentic retainer",
+            "priceCurrency": "USD",
+            "price": "4800"
+          },
+          {
+            "@type": "Offer",
+            "name": "Goblin Warlord — multi-brand retainer",
+            "priceCurrency": "USD",
+            "price": "12500"
+          }
+        ]
       }
-    ]
-  }
-  </script>
+    </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <!-- Dogfood self-fixes: the 5 entity types our own 2026-06-01 scan flagged as missing. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Prompt Goblin",
+        "alternateName": "Prompt_Goblin",
+        "url": "https://promptgoblin.io",
+        "email": "goblins@promptgoblin.com",
+        "slogan": "Get found by robots. Stay usable by humans. Visible AF.",
+        "description": "A one-goblin AI-search-visibility (AEO/GEO) and technical-SEO shop in Chicago.",
+        "areaServed": "Worldwide",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Chicago",
+          "addressRegion": "IL",
+          "addressCountry": "US"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Prompt Goblin",
+        "url": "https://promptgoblin.io"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://promptgoblin.io/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "https://promptgoblin.io/#services"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Pricing",
+            "item": "https://promptgoblin.io/#pricing"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "AI search visibility (AEO/GEO) & technical SEO",
+        "provider": {
+          "@type": "Organization",
+          "name": "Prompt Goblin",
+          "url": "https://promptgoblin.io"
+        },
+        "areaServed": "Worldwide",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Goblin tiers",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "Goblin Scout — one-time visibility audit",
+              "priceCurrency": "USD",
+              "price": "2950"
+            },
+            {
+              "@type": "Offer",
+              "name": "Goblin Warband — monthly retainer",
+              "priceCurrency": "USD",
+              "price": "4800"
+            },
+            {
+              "@type": "Offer",
+              "name": "Goblin Warlord — multi-brand retainer",
+              "priceCurrency": "USD",
+              "price": "12500"
+            }
+          ]
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is AI search visibility (AEO/GEO)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Answer Engine Optimization (AEO) / Generative Engine Optimization (GEO) is getting your brand cited inside AI answers — ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — rather than only ranking in blue links."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does schema markup get me cited by AI?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Schema and llms.txt are hygiene — necessary so engines can parse you, but not a citation lever on their own. The real levers are brand mentions and Bing ranking; we work all of it, and every change is human-reviewed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much does a Prompt Goblin audit cost?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Goblin Scout is a one-time visibility audit at $2,950. Ongoing retainers are Goblin Warband ($4,800/mo) and Goblin Warlord ($12,500/mo). Flat fee — no credits, no meter."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a money-back guarantee?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — a 100% money-back guarantee on the work, not on the algorithm. If we don't deliver your audit, or you're not happy with it within 14 days of delivery, you get a full refund, no argument. We can't promise a specific citation number — AI citation share is volatile and partly outside anyone's control — so we never sell one. We guarantee the work, and we measure the result honestly."
+            }
+          }
+        ]
+      }
+    </script>
 
-  <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- PostHog product analytics.
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- PostHog product analytics.
        TODO: replace phc_REPLACE_WITH_PROJECT_KEY with the real project key (starts with phc_).
        Prompt Goblin's project is assumed on US Cloud (us.i.posthog.com) per the Zatgeist convention;
        verify event ingestion before treating analytics as live. The init is GUARDED so the
        placeholder never fires a request. -->
-  <script>
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-    var PH_KEY = "phc_wEFRJvqR2u6Y2a9TmtHkTZvpAeSjjnMuFSCAYyaru5Sy"; // US Cloud (verified via /decide)
-    if (PH_KEY.indexOf("REPLACE") === -1) {
-      posthog.init(PH_KEY, { api_host: "https://us.i.posthog.com", person_profiles: "identified_only", defaults: "2025-05-24" });
-      // Owner opt-out (analytics hygiene): visit the site once with ?ph_optout=1 on
-      // each of your own browsers/devices to stop your dev/QA traffic polluting the
-      // sales funnel. PostHog persists the opt-out in localStorage, so it sticks on
-      // future visits (survives IP changes). Re-enable with ?ph_optin=1. No personal
-      // data (e.g. your IP) is stored in this file.
-      try {
-        var _phParams = new URLSearchParams(window.location.search);
-        if (_phParams.get("ph_optout") === "1") {
-          posthog.opt_out_capturing();
-          console.info("[posthog] opted OUT on this browser — your visits won't be tracked.");
-        } else if (_phParams.get("ph_optin") === "1") {
-          posthog.opt_in_capturing();
-          console.info("[posthog] opted back IN on this browser.");
-        }
-      } catch (e) {}
-    }
-  </script>
-</head>
-<body data-grain="on" data-cursor="on" data-motion="med" data-density="default" data-display="md">
-  <div id="root"></div>
+    <script>
+      !(function (t, e) {
+        var o, n, p, r;
+        e.__SV ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".");
+              (2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                }));
+            }
+            (((p = t.createElement("script")).type = "text/javascript"),
+              (p.crossOrigin = "anonymous"),
+              (p.async = !0),
+              (p.src =
+                s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") +
+                "/static/array.js"),
+              (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(
+                p,
+                r,
+              ));
+            var u = e;
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = "posthog";
+                  return (
+                    "posthog" !== a && (e += "." + a),
+                    t || (e += " (stub)"),
+                    e
+                  );
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + ".people (stub)";
+                },
+                o =
+                  "init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(
+                    " ",
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n]);
+            e._i.push([i, s, a]);
+          }),
+          (e.__SV = 1));
+      })(document, window.posthog || []);
+      var PH_KEY = "phc_wEFRJvqR2u6Y2a9TmtHkTZvpAeSjjnMuFSCAYyaru5Sy"; // US Cloud (verified via /decide)
+      if (PH_KEY.indexOf("REPLACE") === -1) {
+        posthog.init(PH_KEY, {
+          api_host: "https://us.i.posthog.com",
+          person_profiles: "identified_only",
+          defaults: "2025-05-24",
+        });
+        // Owner opt-out (analytics hygiene): visit the site once with ?ph_optout=1 on
+        // each of your own browsers/devices to stop your dev/QA traffic polluting the
+        // sales funnel. PostHog persists the opt-out in localStorage, so it sticks on
+        // future visits (survives IP changes). Re-enable with ?ph_optin=1. No personal
+        // data (e.g. your IP) is stored in this file.
+        try {
+          var _phParams = new URLSearchParams(window.location.search);
+          if (_phParams.get("ph_optout") === "1") {
+            posthog.opt_out_capturing();
+            console.info(
+              "[posthog] opted OUT on this browser — your visits won't be tracked.",
+            );
+          } else if (_phParams.get("ph_optin") === "1") {
+            posthog.opt_in_capturing();
+            console.info("[posthog] opted back IN on this browser.");
+          }
+        } catch (e) {}
+      }
+    </script>
+  </head>
+  <body
+    data-grain="on"
+    data-cursor="on"
+    data-motion="med"
+    data-density="default"
+    data-display="md"
+  >
+    <div id="root"></div>
 
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
 
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="sprites.jsx"></script>
-  <script type="text/babel" src="goblin-logo.jsx"></script>
-  <script type="text/babel" src="app.jsx"></script>
-</body>
+    <script type="text/babel" src="tweaks-panel.jsx"></script>
+    <script type="text/babel" src="sprites.jsx"></script>
+    <script type="text/babel" src="goblin-logo.jsx"></script>
+    <script type="text/babel" src="app.jsx"></script>
+  </body>
 </html>

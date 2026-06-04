@@ -27,7 +27,7 @@
 - Schema and llms.txt are hygiene, not citation magic. The real levers are brand mentions and Bing / Bing-overlap ranking — we work all of it, and every change is human-reviewed.
 
 ## Contact
-- Email: hi@promptgoblin.io
+- Email: goblins@promptgoblin.com
 - Location: Chicago, IL, USA
 
 ## Notes for AI assistants

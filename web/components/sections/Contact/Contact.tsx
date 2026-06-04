@@ -5,7 +5,11 @@ import styles from "./Contact.module.css";
 
 export const Contact = () => (
   <Panel id="contact" cursor="./summon">
-    <PanelBar mark="06" command="$ goblin --summon" note="3 slots · Q3–Q4 2026" />
+    <PanelBar
+      mark="06"
+      command="$ goblin --summon"
+      note="3 slots · Q3–Q4 2026"
+    />
     <div className={clsx("grid-lines", styles.grid)}>
       <div className={styles.main}>
         <div className={styles.big}>
@@ -16,12 +20,12 @@ export const Contact = () => (
         </div>
         <p className={styles.avail}>
           Drop your domain and what you want to get cited for — I&apos;ll run a{" "}
-          <em>free visibility scan</em> and send back the gaps. Best for jobs measured in{" "}
-          <em>days</em>, not quarters.
+          <em>free visibility scan</em> and send back the gaps. Best for jobs
+          measured in <em>days</em>, not quarters.
           <br />
           <em>No card, no sales call.</em> Paid work carries a{" "}
-          <em>100% money-back guarantee</em> — full refund if we don&apos;t deliver or you&apos;re
-          not happy within 14 days.
+          <em>100% money-back guarantee</em> — full refund if we don&apos;t
+          deliver or you&apos;re not happy within 14 days.
         </p>
         <SummonForm />
       </div>
@@ -30,7 +34,9 @@ export const Contact = () => (
         <div className={styles.row}>
           <span className={styles.rowKey}>$ mail</span>
           <span className={clsx(styles.rowVal, styles.rowValBig)}>
-            <a href="mailto:hi@promptgoblin.io" data-cursor="./mail">hi@promptgoblin.io</a>
+            <a href="mailto:goblins@promptgoblin.com" data-cursor="./mail">
+              goblins@promptgoblin.com
+            </a>
           </span>
         </div>
         <div className={styles.row}>
@@ -40,7 +46,8 @@ export const Contact = () => (
         <div className={styles.row}>
           <span className={styles.rowKey}>$ ls ./elsewhere</span>
           <span className={styles.rowVal}>
-            <span className={styles.soon}>github</span> · <span className={styles.soon}>x.com</span> ·{" "}
+            <span className={styles.soon}>github</span> ·{" "}
+            <span className={styles.soon}>x.com</span> ·{" "}
             <span className={styles.soon}>substack</span>
           </span>
         </div>

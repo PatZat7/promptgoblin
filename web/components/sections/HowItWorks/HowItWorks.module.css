@@ -5,11 +5,13 @@
   background: var(--bg);
 }
 @media (min-width: 900px) {
-  .grid { gap: 48px; }
+  .grid {
+    gap: 48px;
+  }
 }
 
 .intro {
-  max-width: 760px;
+  inline-size: min(100%, clamp(34rem, 58vw, 42rem));
 }
 .kicker {
   display: block;
@@ -125,7 +127,11 @@
   position: relative;
 }
 @media (min-width: 760px) {
-  .stages { flex-direction: row; align-items: stretch; gap: 0; }
+  .stages {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+  }
 }
 
 .stage {
@@ -136,15 +142,21 @@
   padding: 16px 14px;
   position: relative;
   min-height: 116px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 .stageActive {
   border-color: var(--lime);
-  box-shadow: 0 0 0 1px var(--lime), 0 0 22px color-mix(in srgb, var(--lime) 22%, transparent);
+  box-shadow:
+    0 0 0 1px var(--lime),
+    0 0 22px color-mix(in srgb, var(--lime) 22%, transparent);
 }
 .stageFail {
   border-color: var(--fire);
-  box-shadow: 0 0 0 1px var(--fire), 0 0 22px color-mix(in srgb, var(--fire) 28%, transparent);
+  box-shadow:
+    0 0 0 1px var(--fire),
+    0 0 22px color-mix(in srgb, var(--fire) 28%, transparent);
 }
 .stageNum {
   font-family: var(--pixel-tiny);
@@ -203,11 +215,17 @@
   height: 22px;
 }
 @media (max-width: 759px) {
-  .connH { display: none; }
+  .connH {
+    display: none;
+  }
 }
 @media (min-width: 760px) {
-  .conn { width: 40px; }
-  .connV { display: none; }
+  .conn {
+    width: 40px;
+  }
+  .connV {
+    display: none;
+  }
 }
 
 .packet {
@@ -228,7 +246,9 @@
   border-radius: 2px;
   pointer-events: none;
   box-shadow: 0 0 16px color-mix(in srgb, var(--lime) 50%, transparent);
-  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+  transition:
+    transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s;
   white-space: nowrap;
 }
 .packetFail {
@@ -281,9 +301,16 @@
   vertical-align: middle;
   border-radius: 1px;
 }
-.legendActive { background: var(--lime); }
-.legendFail { background: var(--fire); }
-.legendHuman { background: var(--ink); border: 1px solid var(--line-2); }
+.legendActive {
+  background: var(--lime);
+}
+.legendFail {
+  background: var(--fire);
+}
+.legendHuman {
+  background: var(--ink);
+  border: 1px solid var(--line-2);
+}
 
 .rmNote {
   display: none;
@@ -292,7 +319,9 @@
   color: var(--lime);
 }
 @media (prefers-reduced-motion: reduce) {
-  .packet { transition: none !important; }
+  .packet {
+    transition: none !important;
+  }
   .rmNote {
     display: block;
     margin-top: 10px;

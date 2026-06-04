@@ -12,36 +12,37 @@ export const HowItWorks = () => (
     />
     <div className={clsx("grid-lines", styles.grid)}>
       <Reveal className={styles.intro}>
-        <span className={styles.kicker}>how it works · the engine under the hood</span>
+        <span className={styles.kicker}>
+          how it works · the engine under the hood
+        </span>
         <h2 className={styles.heading}>How we actually move the needle</h2>
         <p className={styles.monoNote}>
           // automated system · software-engineer judgment · measurable results
         </p>
         <p className={styles.p}>
-          Most SEO shops send you a PDF. <span className={styles.accent}>We run a system.</span>
+          Most SEO shops send you a PDF.{" "}
+          <span className={styles.accent}>We run a system.</span>
         </p>
         <p className={styles.p}>
-          Under the hood: one automated pipeline that finds gaps across answer-engine visibility,
-          technical SEO, and accessibility — with bounded self-healing loops and an eval gate that
-          proves a fix actually works before any engineer sees it. Then a software engineer reviews
-          every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a
-          schedule and measures the delta.
+          Under the hood: one automated pipeline that finds gaps across
+          answer-engine visibility, technical SEO, and accessibility — with
+          bounded self-healing loops and an eval gate that proves a fix actually
+          works before any engineer sees it. Then a software engineer reviews
+          every recommended change. Then it ships to your repo or CMS. Then the
+          system re-runs on a schedule and measures the delta.
         </p>
-        <p className={styles.punch}>You see the gap. Then you watch it close.</p>
+        <p className={styles.punch}>
+          You see the gap. Then you watch it close.
+        </p>
         <p className={styles.tech}>
-          &quot;RAG pipeline&quot; and &quot;CI/CD eval gate&quot; are the accurate technical names
-          for what runs. We surface them once for credibility, then translate them for everyone else.
+          &quot;RAG pipeline&quot; and &quot;CI/CD eval gate&quot; are the
+          accurate technical names for what runs. We surface them once for
+          credibility, then translate them for everyone else.
         </p>
       </Reveal>
       <div>
         <EngineDiagram />
       </div>
     </div>
-    <p className={styles.close}>
-      The technical name for the system is a{" "}
-      <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The plain-language version: an automated
-      system finds the gaps, proves fixes work, a software engineer ships them, and you watch the
-      numbers move.
-    </p>
   </Panel>
 );

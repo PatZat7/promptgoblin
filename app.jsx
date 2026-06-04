@@ -18,14 +18,17 @@ const STRIPE_SCOUT_LINK = STRIPE_LINKS.scout; // back-compat alias used by the S
 // (dormant until PERPLEXITY_API_KEY is set on the tier2 function). Helpers below
 // degrade silently to the scripted demo if these are unreachable.
 const SCAN_API = {
-  tier1: "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier1",
-  tier2: "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier2",
+  tier1:
+    "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier1",
+  tier2:
+    "https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-d4c19df5-3777-4a5d-9843-92f3ebf1f8e7/scan/tier2",
 };
 
 // Live Tier-1 hygiene scan. Returns the parsed report, or null to fall back to
 // the scripted demo (network error, non-200, or unconfigured endpoint).
 async function runHygieneScan(url) {
-  if (!SCAN_API.tier1 || SCAN_API.tier1.includes("<your-namespace>")) return null;
+  if (!SCAN_API.tier1 || SCAN_API.tier1.includes("<your-namespace>"))
+    return null;
   try {
     const r = await fetch(SCAN_API.tier1, {
       method: "POST",
@@ -41,7 +44,8 @@ async function runHygieneScan(url) {
 // Email-gated Tier-2 citation teaser. 200 even on the honest no-key path; 429 when
 // the per-IP+email cap is hit. Returns null on network failure / unconfigured.
 async function runCitationTeaser({ email, domain, competitor }) {
-  if (!SCAN_API.tier2 || SCAN_API.tier2.includes("<your-namespace>")) return null;
+  if (!SCAN_API.tier2 || SCAN_API.tier2.includes("<your-namespace>"))
+    return null;
   try {
     const r = await fetch(SCAN_API.tier2, {
       method: "POST",
@@ -68,7 +72,9 @@ function leadDomain(data) {
 }
 
 function identifyLead(data) {
-  const email = String((data && data.email) || "").trim().toLowerCase();
+  const email = String((data && data.email) || "")
+    .trim()
+    .toLowerCase();
   const domain = leadDomain(data);
   if (!window.posthog || !email) return;
   const props = {
@@ -188,7 +194,8 @@ function Cursor() {
   const [label, setLabel] = useState("");
   useEffect(() => {
     // No custom cursor on touch / coarse-pointer devices — skip the rAF + listeners.
-    if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches)
+      return;
     let x = innerWidth / 2,
       y = innerHeight / 2,
       tx = x,
@@ -447,9 +454,24 @@ function Hero() {
 
 /* ===== SPELLBOOK — the three disciplines (AEO · SEO · Accessibility) ===== */
 const SPELLS = [
-  { ico: "fire", nm: "AEO", lv: "answer-engine visibility", sub: "Get cited inside ChatGPT, Claude, Gemini, Perplexity & AI Overviews." },
-  { ico: "bolt", nm: "SEO", lv: "technical foundation", sub: "Crawl, index, schema, Core Web Vitals — the base AEO stands on." },
-  { ico: "ice", nm: "A11Y", lv: "WCAG 2.1 AA + Section 508", sub: "Accessible to people and parseable by machines. Required for gov." },
+  {
+    ico: "fire",
+    nm: "AEO",
+    lv: "answer-engine visibility",
+    sub: "Get cited inside ChatGPT, Claude, Gemini, Perplexity & AI Overviews.",
+  },
+  {
+    ico: "bolt",
+    nm: "SEO",
+    lv: "technical foundation",
+    sub: "Crawl, index, schema, Core Web Vitals — the base AEO stands on.",
+  },
+  {
+    ico: "ice",
+    nm: "A11Y",
+    lv: "WCAG 2.1 AA + Section 508",
+    sub: "Accessible to people and parseable by machines. Required for gov.",
+  },
 ];
 function Spellbook() {
   const ref = useReveal();
@@ -461,9 +483,7 @@ function Spellbook() {
     >
       <div className="spellbook reveal" ref={ref}>
         <div className="sb-head">
-          <span className="sb-title">
-            Visibility Spellbook
-          </span>
+          <span className="sb-title">Visibility Spellbook</span>
           <span className="sb-count">3 schools · 1 goblin</span>
         </div>
         <div className="sb-cards">
@@ -483,7 +503,9 @@ function Spellbook() {
           ))}
         </div>
         <div className="sb-foot">
-          <span className="path">&gt; one stack: get found, stay legible, stay compliant</span>
+          <span className="path">
+            &gt; one stack: get found, stay legible, stay compliant
+          </span>
           <span className="pct">v2</span>
         </div>
       </div>
@@ -800,11 +822,11 @@ function Contact() {
       if (res.ok) setSent(true);
       else
         setErr(
-          "A goblin fumbled that send. Try again, or email hi@promptgoblin.io and we'll run it by hand.",
+          "A goblin fumbled that send. Try again, or email goblins@promptgoblin.com and we'll run it by hand.",
         );
     } catch (_) {
       setErr(
-        "Couldn't reach the server — check your connection and retry, or email hi@promptgoblin.io.",
+        "Couldn't reach the server — check your connection and retry, or email goblins@promptgoblin.com.",
       );
     }
     setSending(false);
@@ -907,9 +929,9 @@ function Contact() {
                   summon received — invisibility cloak: BREAKING
                 </div>
                 <div className="sf-ok-d">
-                  A real software engineer replies within a working day with your
-                  free scan. Check your inbox (and spam — goblins lurk there
-                  too).
+                  A real software engineer replies within a working day with
+                  your free scan. Check your inbox (and spam — goblins lurk
+                  there too).
                 </div>
                 <button
                   type="button"
@@ -930,7 +952,9 @@ function Contact() {
           <div className="cside-row">
             <span className="k">$ mail</span>
             <span className="v big">
-              <a href="mailto:hi@promptgoblin.io">hi@promptgoblin.io</a>
+              <a href="mailto:goblins@promptgoblin.com">
+                goblins@promptgoblin.com
+              </a>
             </span>
           </div>
           <div className="cside-row">
@@ -963,15 +987,78 @@ function Contact() {
 const RM = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const ENGINE_PHASES = [
-  { stage: 0, gate: null,    pk: "fix packet · a11y", pkFail: false, rd: "scan → gap found: contrast on .cta (sample)", tick: "ok" },
-  { stage: 1, gate: "eval",  pk: "→ eval gate",       pkFail: false, rd: "eval gate · running 201 tests + eval…", tick: "ok" },
-  { stage: 1, gate: "fail",  pk: "RED · regression",  pkFail: true,  rd: "eval: RED — patch broke 2 tests. bounce back.", tick: "bad" },
-  { stage: 0, gate: null,    pk: "self-heal · re-patch", pkFail: false, rd: "self-heal loop · retrieval re-tries the fix", tick: "ok" },
-  { stage: 1, gate: "eval",  pk: "→ eval gate",       pkFail: false, rd: "eval gate · re-running…", tick: "ok" },
-  { stage: 1, gate: "pass",  pk: "PASS",              pkFail: false, rd: "eval: PASS · 201 tests + eval green (2026-06-02)", tick: "ok" },
-  { stage: 2, gate: "pass",  pk: "→ engineer review", pkFail: false, rd: "halt · awaiting engineer approval — nothing auto-ships", tick: "ok" },
-  { stage: 2, gate: "pass",  pk: "approved ✓",        pkFail: false, rd: "engineer approved → reviewed PR opened on your repo", tick: "ok" },
-  { stage: 2, gate: "pass",  pk: "re-scan → Δ",       pkFail: false, rd: "re-run on cadence · measured before/after delta (sample)", tick: "ok" },
+  {
+    stage: 0,
+    gate: null,
+    pk: "fix packet · a11y",
+    pkFail: false,
+    rd: "scan → gap found: contrast on .cta (sample)",
+    tick: "ok",
+  },
+  {
+    stage: 1,
+    gate: "eval",
+    pk: "→ eval gate",
+    pkFail: false,
+    rd: "eval gate · running 201 tests + eval…",
+    tick: "ok",
+  },
+  {
+    stage: 1,
+    gate: "fail",
+    pk: "RED · regression",
+    pkFail: true,
+    rd: "eval: RED — patch broke 2 tests. bounce back.",
+    tick: "bad",
+  },
+  {
+    stage: 0,
+    gate: null,
+    pk: "self-heal · re-patch",
+    pkFail: false,
+    rd: "self-heal loop · retrieval re-tries the fix",
+    tick: "ok",
+  },
+  {
+    stage: 1,
+    gate: "eval",
+    pk: "→ eval gate",
+    pkFail: false,
+    rd: "eval gate · re-running…",
+    tick: "ok",
+  },
+  {
+    stage: 1,
+    gate: "pass",
+    pk: "PASS",
+    pkFail: false,
+    rd: "eval: PASS · 201 tests + eval green (2026-06-02)",
+    tick: "ok",
+  },
+  {
+    stage: 2,
+    gate: "pass",
+    pk: "→ engineer review",
+    pkFail: false,
+    rd: "halt · awaiting engineer approval — nothing auto-ships",
+    tick: "ok",
+  },
+  {
+    stage: 2,
+    gate: "pass",
+    pk: "approved ✓",
+    pkFail: false,
+    rd: "engineer approved → reviewed PR opened on your repo",
+    tick: "ok",
+  },
+  {
+    stage: 2,
+    gate: "pass",
+    pk: "re-scan → Δ",
+    pkFail: false,
+    rd: "re-run on cadence · measured before/after delta (sample)",
+    tick: "ok",
+  },
 ];
 
 function EngineDiagram() {
@@ -985,56 +1072,99 @@ function EngineDiagram() {
   const reduced = RM();
 
   useEffect(() => {
-    if (reduced) { setP(6); return; }
+    if (reduced) {
+      setP(6);
+      return;
+    }
     let alive = true;
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      let i = 0;
-      const tick = () => {
-        if (!alive) return;
-        setP(i % ENGINE_PHASES.length);
-        i++;
-        timer = setTimeout(tick, i % ENGINE_PHASES.length === 0 ? 1700 : 1500);
-      };
-      let timer = setTimeout(tick, 600);
-      io.disconnect();
-      cleanup = () => { alive = false; clearTimeout(timer); };
-    }, { threshold: 0.35 });
-    let cleanup = () => { alive = false; };
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        let i = 0;
+        const tick = () => {
+          if (!alive) return;
+          setP(i % ENGINE_PHASES.length);
+          i++;
+          timer = setTimeout(
+            tick,
+            i % ENGINE_PHASES.length === 0 ? 1700 : 1500,
+          );
+        };
+        let timer = setTimeout(tick, 600);
+        io.disconnect();
+        cleanup = () => {
+          alive = false;
+          clearTimeout(timer);
+        };
+      },
+      { threshold: 0.35 },
+    );
+    let cleanup = () => {
+      alive = false;
+    };
     if (wrapRef.current) io.observe(wrapRef.current);
-    return () => { io.disconnect(); cleanup(); };
+    return () => {
+      io.disconnect();
+      cleanup();
+    };
   }, [reduced]);
 
   const place = useCallback(() => {
-    const wrap = wrapRef.current, pk = packetRef.current;
+    const wrap = wrapRef.current,
+      pk = packetRef.current;
     if (!wrap || !pk) return;
     const target = stageRefs[ENGINE_PHASES[p].stage].current;
     if (!target) return;
-    const w = wrap.getBoundingClientRect(), t = target.getBoundingClientRect();
+    const w = wrap.getBoundingClientRect(),
+      t = target.getBoundingClientRect();
     const x = t.left - w.left + t.width / 2 - pk.offsetWidth / 2;
     const y = t.top - w.top - pk.offsetHeight - 6;
     pk.style.transform = `translate(${Math.max(2, x)}px, ${Math.max(2, y)}px)`;
   }, [p]);
 
-  useEffect(() => { place(); }, [p, place]);
+  useEffect(() => {
+    place();
+  }, [p, place]);
   useEffect(() => {
     const r = () => place();
     window.addEventListener("resize", r);
     const t = setTimeout(place, 120);
-    return () => { window.removeEventListener("resize", r); clearTimeout(t); };
+    return () => {
+      window.removeEventListener("resize", r);
+      clearTimeout(t);
+    };
   }, [place]);
 
   const ph = ENGINE_PHASES[p];
   const ENGINE_STAGES = [
-    { num: "01 · diagnose", name: "Find the gap", desc: "RAG pipeline samples engines + audits SEO / a11y, surfaces a scoped fix." },
-    { num: "02 · eval gate", name: "Prove it passes", desc: "CI/CD eval gate runs the suite. Red on regression → the fix bounces back to self-heal." },
-    { num: "03 · engineer", name: "An engineer approves", desc: "Every change halts here. A software engineer approves → reviewed PR. Nothing auto-deploys." },
+    {
+      num: "01 · diagnose",
+      name: "Find the gap",
+      desc: "RAG pipeline samples engines + audits SEO / a11y, surfaces a scoped fix.",
+    },
+    {
+      num: "02 · eval gate",
+      name: "Prove it passes",
+      desc: "CI/CD eval gate runs the suite. Red on regression → the fix bounces back to self-heal.",
+    },
+    {
+      num: "03 · engineer",
+      name: "An engineer approves",
+      desc: "Every change halts here. A software engineer approves → reviewed PR. Nothing auto-deploys.",
+    },
   ];
 
   return (
     <div className="panel engine" ref={wrapRef}>
       <div className="panel-bar engine-panel-bar">
-        <span className="lhs"><span className="lights"><i className="on"></i><i className="on"></i><i></i></span>goblin-engine · self-healing · eval-gated</span>
+        <span className="lhs">
+          <span className="lights">
+            <i className="on"></i>
+            <i className="on"></i>
+            <i></i>
+          </span>
+          goblin-engine · self-healing · eval-gated
+        </span>
         <span className="sample-tag">sample run</span>
       </div>
 
@@ -1046,43 +1176,106 @@ function EngineDiagram() {
             const gateState = isGate ? ph.gate : null;
             return (
               <React.Fragment key={i}>
-                <div ref={stageRefs[i]}
-                  className={"stage" + (isGate ? " gate" : "") + (active ? " active" : "") + (gateState === "fail" ? " fail" : "")}>
+                <div
+                  ref={stageRefs[i]}
+                  className={
+                    "stage" +
+                    (isGate ? " gate" : "") +
+                    (active ? " active" : "") +
+                    (gateState === "fail" ? " fail" : "")
+                  }
+                >
                   <div className="stage-num">{s.num}</div>
                   <div className="stage-name">{s.name}</div>
                   <div className="stage-desc">{s.desc}</div>
-                  {isGate && gateState === "pass" && <span className="stage-badge pass">● eval PASS</span>}
-                  {isGate && gateState === "fail" && <span className="stage-badge failb">● eval RED</span>}
-                  {isGate && (gateState === "eval" || gateState === null) && <span className="stage-badge">○ idle</span>}
+                  {isGate && gateState === "pass" && (
+                    <span className="stage-badge pass">● eval PASS</span>
+                  )}
+                  {isGate && gateState === "fail" && (
+                    <span className="stage-badge failb">● eval RED</span>
+                  )}
+                  {isGate && (gateState === "eval" || gateState === null) && (
+                    <span className="stage-badge">○ idle</span>
+                  )}
                   {i === 2 && (
                     <span className="stage-badge">
-                      <svg className="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                      <svg
+                        className="lock"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.4"
+                      >
+                        <rect x="5" y="11" width="14" height="9" rx="1.5" />
+                        <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                      </svg>
                       engineer-gated
                     </span>
                   )}
                 </div>
-                {i < 2 && <div className="conn"><svg className="h" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h15M14 7l5 5-5 5"/></svg><svg className="v" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 4v15M7 14l5 5 5-5"/></svg></div>}
+                {i < 2 && (
+                  <div className="conn">
+                    <svg
+                      className="h"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M4 12h15M14 7l5 5-5 5" />
+                    </svg>
+                    <svg
+                      className="v"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M12 4v15M7 14l5 5 5-5" />
+                    </svg>
+                  </div>
+                )}
               </React.Fragment>
             );
           })}
         </div>
         {!reduced && (
-          <div ref={packetRef} className={"packet" + (ph.pkFail ? " fail" : "")}>
-            <span className="pk-dot"></span>{ph.pk}
+          <div
+            ref={packetRef}
+            className={"packet" + (ph.pkFail ? " fail" : "")}
+          >
+            <span className="pk-dot"></span>
+            {ph.pk}
           </div>
         )}
       </div>
 
       <div className="engine-readout">
-        <span className={"rd-tick" + (ph.tick === "bad" ? " bad" : "")}>{ph.tick === "bad" ? "⚠" : "▸"}</span>
+        <span className={"rd-tick" + (ph.tick === "bad" ? " bad" : "")}>
+          {ph.tick === "bad" ? "⚠" : "▸"}
+        </span>
         <span>{ph.rd}</span>
       </div>
       <div className="engine-legend">
-        <span><i className="lg-active"></i>active path</span>
-        <span><i className="lg-fail"></i>failed gate → self-heal</span>
-        <span><i className="lg-human"></i>engineer review gate</span>
+        <span>
+          <i className="lg-active"></i>active path
+        </span>
+        <span>
+          <i className="lg-fail"></i>failed gate → self-heal
+        </span>
+        <span>
+          <i className="lg-human"></i>engineer review gate
+        </span>
       </div>
-      <p className="engine-rm-note">▸ One pipeline: <b style={{ color: "var(--lime)" }}>diagnose → eval gate → engineer approve</b>. A failed gate bounces the fix back to the self-healing loop; nothing ships until a software engineer approves. SEO + accessibility proven on the gate (2026-06-02); schema scaffolded.</p>
+      <p className="engine-rm-note">
+        ▸ One pipeline:{" "}
+        <b style={{ color: "var(--lime)" }}>
+          diagnose → eval gate → engineer approve
+        </b>
+        . A failed gate bounces the fix back to the self-healing loop; nothing
+        ships until a software engineer approves. SEO + accessibility proven on
+        the gate (2026-06-02); schema scaffolded.
+      </p>
     </div>
   );
 }
@@ -1100,23 +1293,49 @@ function HowItWorks() {
         <span className="id">▸</span>
         <span>$ goblin engine --explain</span>
         <span className="grow"></span>
-        <span className="tk">self-healing · eval-gated · engineer-approved</span>
+        <span className="tk">
+          self-healing · eval-gated · engineer-approved
+        </span>
       </div>
       <div className="grid-lines how-grid">
         <div className="how-intro reveal" ref={ref}>
-          <span className="kicker">how it works · the engine under the hood</span>
+          <span className="kicker">
+            how it works · the engine under the hood
+          </span>
           <h2 className="h-sec">How we actually move the needle</h2>
-          <p className="mono-note" style={{ marginTop: 10, marginBottom: 32 }}>// automated system · software-engineer judgment · measurable results</p>
-          <p className="how-p">Most SEO shops send you a PDF. <span style={{ color: "var(--lime)" }}>We run a system.</span></p>
-          <p className="how-p">Under the hood: one automated pipeline that finds gaps across answer-engine visibility, technical SEO, and accessibility — with bounded self-healing loops and an eval gate that proves a fix actually works before any engineer sees it. Then a software engineer reviews every recommended change. Then it ships to your repo or CMS. Then the system re-runs on a schedule and measures the delta.</p>
+          <p className="mono-note" style={{ marginTop: 10, marginBottom: 32 }}>
+            // automated system · software-engineer judgment · measurable
+            results
+          </p>
+          <p className="how-p">
+            Most SEO shops send you a PDF.{" "}
+            <span style={{ color: "var(--lime)" }}>We run a system.</span>
+          </p>
+          <p className="how-p">
+            Under the hood: one automated pipeline that finds gaps across
+            answer-engine visibility, technical SEO, and accessibility — with
+            bounded self-healing loops and an eval gate that proves a fix
+            actually works before any engineer sees it. Then a software engineer
+            reviews every recommended change. Then it ships to your repo or CMS.
+            Then the system re-runs on a schedule and measures the delta.
+          </p>
           <p className="how-punch">You see the gap. Then you watch it close.</p>
-          <p className="how-tech">"RAG pipeline" and "CI/CD eval gate" are the accurate technical names for what runs. We surface them once for credibility, then translate them for everyone else.</p>
+          <p className="how-tech">
+            "RAG pipeline" and "CI/CD eval gate" are the accurate technical
+            names for what runs. We surface them once for credibility, then
+            translate them for everyone else.
+          </p>
         </div>
         <div className="how-diagram">
           <EngineDiagram />
         </div>
       </div>
-      <p className="how-close">The technical name for the system is a <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The plain-language version: an automated system finds the gaps, proves fixes work, a software engineer ships them, and you watch the numbers move.</p>
+      <p className="how-close">
+        The technical name for the system is a{" "}
+        <b>self-healing RAG pipeline on a CI/CD eval gate</b>. The
+        plain-language version: an automated system finds the gaps, proves fixes
+        work, a software engineer ships them, and you watch the numbers move.
+      </p>
     </section>
   );
 }
@@ -1149,11 +1368,18 @@ const SAMPLE_LINES = [
   { t: "phase", k: "score hygiene", v: "64 / 100", tone: "warn" },
   { t: "sep" },
   { t: "issue", sev: "HIGH", text: "missing FAQPage + Product JSON-LD" },
-  { t: "issue", sev: "MED", text: "no llms.txt — hygiene, not a citation lever" },
+  {
+    t: "issue",
+    sev: "MED",
+    text: "no llms.txt — hygiene, not a citation lever",
+  },
   { t: "issue", sev: "LOW", text: "2 <h1> tags — pick one" },
   { t: "sep" },
   { t: "ok", text: "goblin.recommend → structured data + crawl welcome mat" },
-  { t: "sample", text: "↑ illustrative sample — not your site · enter your domain above for a real scan" },
+  {
+    t: "sample",
+    text: "↑ illustrative sample — not your site · enter your domain above for a real scan",
+  },
 ];
 
 function scanHost(url) {
@@ -1181,16 +1407,22 @@ function phaseValues(r) {
       : crawl.welcomesAiBots
         ? "welcomes AI crawlers"
         : "blocks AI crawlers",
-    llms: llms.present ? (llms.valid ? "found · on-spec" : "found · off-spec") : "not found",
+    llms: llms.present
+      ? llms.valid
+        ? "found · on-spec"
+        : "found · off-spec"
+      : "not found",
     schema: foundN + (total ? " of " + total : "") + " entity types",
     score: (r.hygieneScore != null ? r.hygieneScore : "?") + " / 100",
   };
 }
 function phaseTone(r, key) {
   r = r || {};
-  if (key === "robots") return r.crawlability && r.crawlability.welcomesAiBots ? "ok" : "warn";
+  if (key === "robots")
+    return r.crawlability && r.crawlability.welcomesAiBots ? "ok" : "warn";
   if (key === "llms") return r.llmsTxt && r.llmsTxt.present ? "ok" : "warn";
-  if (key === "schema") return r.schema && (r.schema.missing || []).length === 0 ? "ok" : "warn";
+  if (key === "schema")
+    return r.schema && (r.schema.missing || []).length === 0 ? "ok" : "warn";
   if (key === "score") {
     const s = r.hygieneScore;
     return s >= 80 ? "ok" : s >= 50 ? "warn" : "bad";
@@ -1267,7 +1499,10 @@ function LiveScan() {
     const competitor = (data.competitor || "").trim();
     const host = scanHost(domain);
     const scanId =
-      "scan_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+      "scan_" +
+      Date.now().toString(36) +
+      "_" +
+      Math.random().toString(36).slice(2, 8);
     data.scan_id = scanId;
     captureLead("free_scan_requested", {
       domain,
@@ -1284,9 +1519,22 @@ function LiveScan() {
     setReport(null);
     setErrorMsg("");
     setSummary("");
-    setLines([mkLine({ t: "cmd", text: "goblin scan --surface hygiene --domain " + host })]);
+    setLines([
+      mkLine({
+        t: "cmd",
+        text: "goblin scan --surface hygiene --domain " + host,
+      }),
+    ]);
     setPct(8);
-    setSteps(SCAN_PHASES.map((p) => ({ key: p.key, label: p.label, status: "pending", value: null, tone: "ok" })));
+    setSteps(
+      SCAN_PHASES.map((p) => ({
+        key: p.key,
+        label: p.label,
+        status: "pending",
+        value: null,
+        tone: "ok",
+      })),
+    );
 
     // Fire the REAL Tier-1 request immediately, then narrate the genuine
     // operations (labels only — values come from the real report) while it runs.
@@ -1294,7 +1542,9 @@ function LiveScan() {
     for (let idx = 0; idx < SCAN_PHASES.length; idx++) {
       if (!alive()) return;
       setScanLabel(SCAN_PHASES[idx].label);
-      setSteps((prev) => prev.map((s, i) => (i <= idx ? { ...s, status: "active" } : s)));
+      setSteps((prev) =>
+        prev.map((s, i) => (i <= idx ? { ...s, status: "active" } : s)),
+      );
       setPct(Math.min(78, 12 + (idx + 1) * 13));
       await scanSleep(420 + Math.random() * 160);
     }
@@ -1312,12 +1562,19 @@ function LiveScan() {
     // Honest failure path — a real submit NEVER falls back to demo theater.
     if (!resp || !resp.ok || !resp.report) {
       const why = (resp && resp.error) || "host unreachable or not public";
-      setLines((p) => [...p, mkLine({ t: "err", text: "scan failed · " + why })]);
+      setLines((p) => [
+        ...p,
+        mkLine({ t: "err", text: "scan failed · " + why }),
+      ]);
       setErrorMsg(why);
       setScanLabel("");
       setPct(100);
       setMode("error");
-      captureEvent("scan_failed", { scan_id: scanId, domain, reason: "tier1_unreachable" });
+      captureEvent("scan_failed", {
+        scan_id: scanId,
+        domain,
+        reason: "tier1_unreachable",
+      });
       return;
     }
 
@@ -1346,7 +1603,9 @@ function LiveScan() {
         mkLine({ t: "phase", k: p.label, v: pv[p.key], tone }),
       ]);
       setSteps((prev) =>
-        prev.map((s, i) => (i === j ? { ...s, status: "done", value: pv[p.key], tone } : s)),
+        prev.map((s, i) =>
+          i === j ? { ...s, status: "done", value: pv[p.key], tone } : s,
+        ),
       );
       setPct((prev) => Math.min(94, prev + 4));
     }
@@ -1388,45 +1647,52 @@ function LiveScan() {
     if (!competitor) {
       captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
     } else {
-      runCitationTeaser({ email: data.email, domain, competitor }).then((tier2) => {
-        if (!tier2) {
-          captureEvent("tier2_error", {
-            scan_id: scanId,
-            domain,
-            competitor,
-            reason: "network_or_unreachable",
-          });
-          return;
-        }
-        if (tier2.ok && tier2.configured && tier2.teaser) {
-          const results = tier2.teaser.results || [];
-          captureEvent("tier2_result_shown", {
-            scan_id: scanId,
-            domain,
-            competitor,
-            engine: tier2.teaser.engine || "perplexity",
-            queries: results.length,
-            client_cited_count: results.filter((r2) => r2.clientCited).length,
-            competitor_cited_count: results.filter((r2) => r2.competitorCited).length,
-          });
-        } else if (tier2.ok && tier2.configured === false) {
-          captureEvent("tier2_no_key", { scan_id: scanId, domain, competitor });
-        } else if (tier2.retryAfterHours) {
-          captureEvent("tier2_rate_limited", {
-            scan_id: scanId,
-            domain,
-            competitor,
-            retry_after_hours: tier2.retryAfterHours,
-          });
-        } else {
-          captureEvent("tier2_error", {
-            scan_id: scanId,
-            domain,
-            competitor,
-            status: tier2.error || "unknown",
-          });
-        }
-      });
+      runCitationTeaser({ email: data.email, domain, competitor }).then(
+        (tier2) => {
+          if (!tier2) {
+            captureEvent("tier2_error", {
+              scan_id: scanId,
+              domain,
+              competitor,
+              reason: "network_or_unreachable",
+            });
+            return;
+          }
+          if (tier2.ok && tier2.configured && tier2.teaser) {
+            const results = tier2.teaser.results || [];
+            captureEvent("tier2_result_shown", {
+              scan_id: scanId,
+              domain,
+              competitor,
+              engine: tier2.teaser.engine || "perplexity",
+              queries: results.length,
+              client_cited_count: results.filter((r2) => r2.clientCited).length,
+              competitor_cited_count: results.filter((r2) => r2.competitorCited)
+                .length,
+            });
+          } else if (tier2.ok && tier2.configured === false) {
+            captureEvent("tier2_no_key", {
+              scan_id: scanId,
+              domain,
+              competitor,
+            });
+          } else if (tier2.retryAfterHours) {
+            captureEvent("tier2_rate_limited", {
+              scan_id: scanId,
+              domain,
+              competitor,
+              retry_after_hours: tier2.retryAfterHours,
+            });
+          } else {
+            captureEvent("tier2_error", {
+              scan_id: scanId,
+              domain,
+              competitor,
+              status: tier2.error || "unknown",
+            });
+          }
+        },
+      );
     }
   };
 
@@ -1446,7 +1712,8 @@ function LiveScan() {
           : "cursed";
   const statusText =
     mode === "results" && band
-      ? (band.key === "ok" ? "✓ " : band.key === "warn" ? "⚡ " : "✕ ") + band.label
+      ? (band.key === "ok" ? "✓ " : band.key === "warn" ? "⚡ " : "✕ ") +
+        band.label
       : mode === "scanning"
         ? "… scanning"
         : mode === "error"
@@ -1584,7 +1851,11 @@ function LiveScan() {
                 Couldn't complete a real scan of <b>{target}</b>.
               </div>
               <div className="scan-err-why">{errorMsg}</div>
-              <button className="btn" onClick={resetToIdle} data-cursor-label="retry">
+              <button
+                className="btn"
+                onClick={resetToIdle}
+                data-cursor-label="retry"
+              >
                 try another domain <span className="arr">→</span>
               </button>
             </div>
@@ -1638,9 +1909,9 @@ function LiveScan() {
                 Live, real result: a technical-<b>hygiene</b> scan of your live
                 page — structured data, crawl welcome mat, head tags & Core Web
                 Vitals proxies. Hygiene is table stakes, <b>not</b> a citation
-                guarantee. The full multi-engine citation audit (ChatGPT · Claude
-                · Gemini · Perplexity · AI Overviews) plus SEO &amp; accessibility
-                ships with a paid Scout audit.
+                guarantee. The full multi-engine citation audit (ChatGPT ·
+                Claude · Gemini · Perplexity · AI Overviews) plus SEO &amp;
+                accessibility ships with a paid Scout audit.
               </div>
               <ul className="scan-checks">
                 <li>structured data / JSON-LD entities</li>
@@ -1716,15 +1987,17 @@ function ScanResult({ report, email, target, band, steps, onReset }) {
               ✕ {t}
             </span>
           ))}
-          {!found.length && !missing.length && <span className="sr-chip">—</span>}
+          {!found.length && !missing.length && (
+            <span className="sr-chip">—</span>
+          )}
         </div>
       </div>
       <p className="sr-disc">{report.disclaimer}</p>
       <div className="sr-cta">
         <div className="sr-ok-t">
           ✓ Real hygiene result delivered above. A software engineer (me) will
-          personally review it and email {email || "you"} about the full citation
-          &amp; accessibility audit — no automated report.
+          personally review it and email {email || "you"} about the full
+          citation &amp; accessibility audit — no automated report.
         </div>
         <a className="btn" href="#pricing" data-cursor-label="audit">
           see the full Scout audit <span className="arr">→</span>
@@ -1739,13 +2012,31 @@ function ScanResult({ report, email, target, band, steps, onReset }) {
 
 /* ===== VISIBILITY MESH — agentic graph (ported from handoff, dark+lime) ===== */
 const MESH_NODES = [
-  { id: "intent", x: 2, y: 16, t: "user.intent", v: '"best fleet software"' },
-  { id: "llm", x: 30, y: 4, t: "llm.query.expand", v: "GPT · Claude · Gemini · Pplx · AIO" },
-  { id: "rag", x: 28, y: 56, t: "rag.retrieve", v: "k=24 sources" },
-  { id: "cite", x: 54, y: 34, t: "citation.weave", v: "you vs. 6 competitors" },
-  { id: "schema", x: 52, y: 74, t: "audit.schema·seo·a11y", v: "12 gaps · 4 a11y" },
-  { id: "fix", x: 72, y: 16, t: "goblin.recommend", v: "12 ranked fixes" },
-  { id: "ship", x: 72, y: 62, t: "engineer.review → PR", v: "queued · 3 pending" },
+  { id: "intent", x: 4, y: 18, t: "user.intent", v: '"best fleet software"' },
+  {
+    id: "llm",
+    x: 30,
+    y: 6,
+    t: "llm.query.expand",
+    v: "GPT · Claude · Gemini · Pplx · AIO",
+  },
+  { id: "rag", x: 30, y: 60, t: "rag.retrieve", v: "k=24 sources" },
+  { id: "cite", x: 56, y: 36, t: "citation.weave", v: "you vs. 6 competitors" },
+  {
+    id: "schema",
+    x: 56,
+    y: 76,
+    t: "audit.schema·seo·a11y",
+    v: "12 gaps · 4 a11y",
+  },
+  { id: "fix", x: 82, y: 20, t: "goblin.recommend", v: "12 ranked fixes" },
+  {
+    id: "ship",
+    x: 82,
+    y: 64,
+    t: "engineer.review → PR",
+    v: "queued · 3 pending",
+  },
 ];
 const MESH_EDGES = [
   ["intent", "llm"],
@@ -1805,7 +2096,7 @@ function VisibilityMesh() {
     VB_H = 480;
   const pos = (id) => {
     const n = MESH_NODES.find((x) => x.id === id);
-    return { x: (n.x / 100) * VB_W + 92, y: (n.y / 100) * VB_H + 30 };
+    return { x: (n.x / 100) * VB_W + 92, y: (n.y / 100) * VB_H + 22 };
   };
 
   return (
@@ -1819,7 +2110,9 @@ function VisibilityMesh() {
         <span className="id">▸</span>
         <span>$ goblin graph --run</span>
         <span className="grow"></span>
-        <span className="tk">langgraph workflow · engineer-gated · sample run</span>
+        <span className="tk">
+          langgraph workflow · engineer-gated · sample run
+        </span>
       </div>
       <div className="grid-lines mesh-grid">
         <div className="mesh-stage">
@@ -2026,8 +2319,8 @@ function Pricing() {
       </div>
       <div className="penterprise">
         <span>
-          <b style={{ color: "var(--lime)" }}>✓ 100% money-back guarantee</b>{" "}
-          — on the work, not the algorithm. If we don't deliver your audit, or
+          <b style={{ color: "var(--lime)" }}>✓ 100% money-back guarantee</b> —
+          on the work, not the algorithm. If we don't deliver your audit, or
           you're not happy with it within 14 days, you get every dollar back. We
           won't promise a citation number (nobody honestly can) — we guarantee
           the work and measure the rest straight.
@@ -2040,7 +2333,7 @@ function Pricing() {
         </span>
         <a
           className="btn ghost"
-          href="mailto:hi@promptgoblin.io"
+          href="mailto:goblins@promptgoblin.com"
           data-cursor-label="talk"
         >
           talk to a goblin <span className="arr">→</span>
