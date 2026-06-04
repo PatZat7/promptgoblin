@@ -7,6 +7,8 @@
  * unit-testable with `node test/*.test.js` and zero keys.
  */
 
+const dns = require("dns").promises;
+
 /**
  * CORS headers. DigitalOcean web actions already emit Access-Control-Allow-Origin
  * at the edge. Returning our own origin as well makes browsers see two values
@@ -107,6 +109,53 @@ function toUrl(input) {
   return u;
 }
 
+// --- DNS-resolution SSRF guard ----------------------------------------------
+// toUrl() blocks IP *literals*, but a public-looking hostname can still resolve
+// to an internal address (DNS-rebinding: e.g. an A record pointing at
+// 169.254.169.254 cloud metadata or 10.x). So before fetching we resolve the
+// host and confirm EVERY answer is a public address. Unlike _isBlockedIpLiteral
+// (which rejects all raw IPv6 in a URL), this allows globally-routable IPv6 —
+// it only blocks loopback / link-local / ULA / IPv4-mapped-private.
+
+function _ipv4StringBlocked(s) {
+  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(s)) return true;
+  const parts = s.split(".").map(Number);
+  if (parts.some((n) => n > 255)) return true;
+  return _ipv4PartsPrivate(parts);
+}
+
+function ipIsBlocked(addr) {
+  const a = String(addr || "").toLowerCase();
+  if (!a) return true;
+  if (a.includes(":")) {
+    if (a === "::1" || a === "::") return true; // loopback / unspecified
+    if (a.startsWith("fe80")) return true; // link-local
+    if (a.startsWith("fc") || a.startsWith("fd")) return true; // unique-local (ULA)
+    if (a.startsWith("::ffff:")) {
+      // IPv4-mapped IPv6 — judge the embedded v4
+      const v4 = a.split(":").pop();
+      return v4 && v4.includes(".") ? _ipv4StringBlocked(v4) : true;
+    }
+    return false; // any other (globally-routable) IPv6 is allowed
+  }
+  return _ipv4StringBlocked(a);
+}
+
+/** Resolve `hostname` and return true only if EVERY resolved address is public.
+ *  Returns false on lookup failure (fail closed). */
+async function assertPublicHost(hostname) {
+  const h = String(hostname || "").trim().toLowerCase();
+  if (!h) return false;
+  let addrs;
+  try {
+    addrs = await dns.lookup(h, { all: true });
+  } catch {
+    return false; // unresolvable → don't fetch
+  }
+  if (!addrs || !addrs.length) return false;
+  return addrs.every((a) => !ipIsBlocked(a.address));
+}
+
 function isEmail(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(s || "").trim());
 }
@@ -116,5 +165,7 @@ module.exports = {
   reply,
   normalizeDomain,
   toUrl,
+  assertPublicHost,
+  ipIsBlocked,
   isEmail,
 };

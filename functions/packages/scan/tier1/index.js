@@ -13,23 +13,53 @@
  * NOT a citation claim — see report.disclaimer.
  */
 
-const { reply, toUrl } = require("./lib/util");
+const { reply, toUrl, assertPublicHost } = require("./lib/util");
 const { buildHygieneReport } = require("./lib/hygiene");
 const { tier1Summary } = require("./lib/voice");
 
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_BYTES = 3 * 1024 * 1024; // 3 MB cap on fetched HTML
+const MAX_REDIRECTS = 4;
 
-async function fetchText(url, { asBytes = false } = {}) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const resp = await fetch(url, {
-      redirect: "follow",
-      signal: controller.signal,
-      headers: { "User-Agent": "PromptGoblinScanBot/1.0 (+https://promptgoblin.io)" },
-    });
+// SSRF-safe fetch: follow redirects MANUALLY and re-validate EVERY hop's host
+// (toUrl literal-guard + assertPublicHost DNS-guard), so a 30x response can't
+// bounce the scan onto an internal target (localhost, 169.254.169.254, 10.x…).
+// `blocked: true` means some hop failed the guard.
+async function fetchText(initialUrl, { asBytes = false } = {}) {
+  let current = initialUrl;
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const u = toUrl(current);
+    if (!u) return { ok: false, status: 0, text: null, bytes: 0, blocked: true };
+    if (!(await assertPublicHost(u.hostname)))
+      return { ok: false, status: 0, text: null, bytes: 0, blocked: true };
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    let resp;
+    try {
+      resp = await fetch(u.href, {
+        redirect: "manual",
+        signal: controller.signal,
+        headers: { "User-Agent": "PromptGoblinScanBot/1.0 (+https://promptgoblin.io)" },
+      });
+    } catch (e) {
+      clearTimeout(timer);
+      return { ok: false, status: 0, text: null, bytes: 0, error: e.name };
+    }
+    clearTimeout(timer);
+
+    if (resp.status >= 300 && resp.status < 400) {
+      const loc = resp.headers.get("location");
+      if (!loc) return { ok: false, status: resp.status, text: null, bytes: 0 };
+      try {
+        current = new URL(loc, u.href).href; // resolve relative redirects, then re-validate
+      } catch {
+        return { ok: false, status: resp.status, text: null, bytes: 0 };
+      }
+      continue;
+    }
     if (!resp.ok) return { ok: false, status: resp.status, text: null, bytes: 0 };
+
     const text = await resp.text();
     const bytes = Buffer.byteLength(text, "utf8");
     return {
@@ -38,11 +68,8 @@ async function fetchText(url, { asBytes = false } = {}) {
       text: asBytes ? text.slice(0, MAX_BYTES) : text,
       bytes,
     };
-  } catch (e) {
-    return { ok: false, status: 0, text: null, bytes: 0, error: e.name };
-  } finally {
-    clearTimeout(timer);
   }
+  return { ok: false, status: 0, text: null, bytes: 0, error: "too_many_redirects" };
 }
 
 async function main(args) {
@@ -59,6 +86,16 @@ async function main(args) {
     );
 
   const page = await fetchText(target.href, { asBytes: true });
+  if (page.blocked)
+    return reply(
+      400,
+      {
+        ok: false,
+        error:
+          "That host (or a redirect from it) resolves to a non-public address. We only scan public sites.",
+      },
+      origin
+    );
   if (!page.ok)
     return reply(
       502,

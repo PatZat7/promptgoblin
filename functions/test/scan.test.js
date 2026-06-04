@@ -19,7 +19,7 @@ const { buildHygieneReport } = require(path.join(libDir, "hygiene"));
 const { tier1Summary, tier2Summary } = require(path.join(libDir, "voice"));
 const { askOne, runTeaser, buildQueries, extractCitations } = require(path.join(libDir, "perplexity"));
 const ratelimit = require(path.join(libDir, "ratelimit"));
-const { toUrl, normalizeDomain, isEmail } = require(path.join(libDir, "util"));
+const { toUrl, normalizeDomain, isEmail, ipIsBlocked } = require(path.join(libDir, "util"));
 
 let passed = 0;
 function ok(name, cond) {
@@ -86,6 +86,23 @@ ok("toUrl rejects RFC1918", toUrl("http://10.0.0.5") === null);
 ok("normalizeDomain strips www", normalizeDomain("https://www.Acme.com/x") === "acme.com");
 ok("isEmail accepts good", isEmail("a@b.co"));
 ok("isEmail rejects bad", !isEmail("nope"));
+
+// SSRF guard — literal + encoded-IP rejection in toUrl, and the resolved-IP
+// classifier ipIsBlocked() used by the DNS-resolution guard (assertPublicHost).
+console.log("ssrf guard");
+ok("toUrl rejects decimal-encoded IP (127.0.0.1)", toUrl("http://2130706433") === null);
+ok("toUrl rejects hex-encoded IP", toUrl("http://0x7f000001") === null);
+ok("toUrl rejects cloud metadata literal", toUrl("http://169.254.169.254/latest/meta-data") === null);
+ok("toUrl rejects .internal hostnames", toUrl("https://db.internal") === null);
+ok("toUrl rejects non-http(s) scheme", toUrl("file:///etc/passwd") === null);
+ok("toUrl allows a public host", toUrl("https://example.com").hostname === "example.com");
+ok("ipIsBlocked: v4 loopback", ipIsBlocked("127.0.0.1"));
+ok("ipIsBlocked: RFC1918", ipIsBlocked("10.1.2.3") && ipIsBlocked("192.168.0.1") && ipIsBlocked("172.20.0.1"));
+ok("ipIsBlocked: cloud metadata 169.254.169.254", ipIsBlocked("169.254.169.254"));
+ok("ipIsBlocked: v6 loopback/link-local/ULA", ipIsBlocked("::1") && ipIsBlocked("fe80::1") && ipIsBlocked("fd00::1"));
+ok("ipIsBlocked: v4-mapped private v6", ipIsBlocked("::ffff:10.0.0.1"));
+ok("ipIsBlocked: allows public v4", !ipIsBlocked("8.8.8.8"));
+ok("ipIsBlocked: allows public v6", !ipIsBlocked("2606:4700:4700::1111"));
 
 // ---------------------------------------------------------------------------
 // Tier-1 hygiene
