@@ -67,8 +67,8 @@ export const ScanResult = ({ report, email, target, band, steps, onReset }: Scan
       <div className={styles.srCta}>
         <div className={styles.srOkT}>
           ✓ Real hygiene result delivered above. A software engineer (me) will personally review it
-          and email {email || "you"} about the full citation &amp; accessibility audit — no automated
-          report.
+          and email {email || "you"}{" "}
+          about the full citation &amp; accessibility audit — no automated report.
         </div>
         <a className="btn" href="#pricing" data-cursor="./audit">
           see the full Scout audit <span className="arr">→</span>

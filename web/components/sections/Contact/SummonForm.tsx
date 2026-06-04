@@ -8,6 +8,7 @@ import {
   submitWeb3Form,
 } from "@/lib/analytics";
 import { STRIPE_LINKS } from "@/components/sections/Pricing/pricing.data";
+import { isValidDomain, isValidEmail } from "@/lib/validate";
 import styles from "./Contact.module.css";
 
 export const SummonForm = () => {
@@ -22,6 +23,14 @@ export const SummonForm = () => {
       new FormData(e.currentTarget).entries(),
     ) as Record<string, string>;
     if (data.botcheck) return; // honeypot
+    if (!isValidDomain(data.domain || "")) {
+      setErr("Enter a valid domain — e.g. yourbrand.com (no http://, no path).");
+      return;
+    }
+    if (!isValidEmail(data.email || "")) {
+      setErr("Enter a valid email so a goblin can send your scan back.");
+      return;
+    }
     identifyLead(data);
     captureEvent("summon_submitted", {
       domain: leadDomain(data),

@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Panel, PanelBar } from "@/components/ui/Panel/Panel";
 import { captureEvent, captureLead } from "@/lib/analytics";
 import { runCitationTeaser, runHygieneScan, type ScanReport } from "@/lib/scan-api";
+import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
 import { phaseTone, phaseValues, scanHost, scoreBand } from "./scan-report";
 import { ScanResult } from "./ScanResult";
@@ -102,6 +103,7 @@ export const LiveScan = () => {
   const [email, setEmail] = useState("");
   const [target, setTarget] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [formErr, setFormErr] = useState("");
   const runRef = useRef(0);
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -145,6 +147,7 @@ export const LiveScan = () => {
     runRef.current += 1;
     setReport(null);
     setErrorMsg("");
+    setFormErr("");
     setTarget("");
     setEmail("");
     setMode("idle");
@@ -156,6 +159,19 @@ export const LiveScan = () => {
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
     const competitor = (data.competitor || "").trim();
+    if (!isValidDomain(domain)) {
+      setFormErr("Enter a valid domain — e.g. yourbrand.com (no http://, no path).");
+      return;
+    }
+    if (!isValidEmail(data.email || "")) {
+      setFormErr("Enter a valid email so we can send your results.");
+      return;
+    }
+    if (competitor && !isValidDomain(competitor)) {
+      setFormErr("That competitor doesn't look like a domain — try acme.com, or leave it blank.");
+      return;
+    }
+    setFormErr("");
     const host = scanHost(domain);
     const scanId = `scan_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
     captureLead("free_scan_requested", { domain, email: data.email, competitor, scan_id: scanId });
@@ -364,6 +380,11 @@ export const LiveScan = () => {
               <button type="submit" className="btn" data-cursor="./scan">
                 run my free scan <span className="arr">→</span>
               </button>
+              {formErr ? (
+                <div className={styles.formErr} role="alert">
+                  ⚠ {formErr}
+                </div>
+              ) : null}
               <div className={styles.disclaimer}>
                 Live, real result: a technical-<b>hygiene</b> scan of your live page — structured data,
                 crawl welcome mat, head tags &amp; Core Web Vitals proxies. Hygiene is table stakes,{" "}

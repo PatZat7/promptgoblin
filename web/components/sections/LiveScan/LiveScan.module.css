@@ -251,6 +251,18 @@
 .errMsg b { color: var(--fire); font-weight: 600; }
 .errWhy { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.5; }
 
+/* inline form-validation message (invalid domain/email before a scan runs).
+   Text stays --fg for AA contrast; --fire carries the error identity via the
+   left rule, same approach as .errCard. */
+.formErr {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg);
+  border-left: 2px solid var(--fire);
+  padding-left: 10px;
+}
+
 /* ---- results card ---- */
 .result {
   display: flex;

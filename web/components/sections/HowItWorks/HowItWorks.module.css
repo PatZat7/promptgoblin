@@ -2,7 +2,10 @@
 .grid {
   gap: 34px;
   padding: calc(var(--pad) + 26px) var(--pad);
-  background: var(--bg);
+  /* Drop the .grid-lines welded frame: intro + engine diagram read as open
+     content on the page, no enclosing border / hairline divider. */
+  border: 0;
+  background: transparent;
 }
 @media (min-width: 900px) {
   .grid {
