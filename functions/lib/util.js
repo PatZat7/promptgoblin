@@ -7,24 +7,17 @@
  * unit-testable with `node test/*.test.js` and zero keys.
  */
 
-const ALLOWED_ORIGIN = "https://promptgoblin.io";
-
 /**
- * CORS headers. We allow the live site origin plus localhost for dev. DO
- * Functions web actions can't read the request Origin header reliably across
- * runtimes, so we echo a single trusted origin and let the browser enforce it.
+ * CORS headers. DigitalOcean web actions already emit Access-Control-Allow-Origin
+ * at the edge. Returning our own origin as well makes browsers see two values
+ * (for example "*, https://promptgoblin.io"), which is invalid CORS.
  */
 function corsHeaders(origin) {
-  const allow =
-    origin && /^https?:\/\/(localhost|127\.0\.0\.1)(?::\d+)?$/.test(origin)
-      ? origin
-      : ALLOWED_ORIGIN;
+  void origin;
   return {
-    "Access-Control-Allow-Origin": allow,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
-    Vary: "Origin",
   };
 }
 
@@ -119,7 +112,6 @@ function isEmail(s) {
 }
 
 module.exports = {
-  ALLOWED_ORIGIN,
   corsHeaders,
   reply,
   normalizeDomain,

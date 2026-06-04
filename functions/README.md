@@ -130,8 +130,9 @@ doctl serverless functions get scan/tier2 --url
 syncs `lib/` into each action and zips it. To rotate the key later, re-export and redeploy,
 or set it in the DO control panel (Functions → namespace → Settings → Environment Variables).
 
-CORS is locked to `https://promptgoblin.io` (localhost allowed for dev) in
-`lib/util.js → corsHeaders`.
+DigitalOcean's web-action edge supplies `Access-Control-Allow-Origin`. `lib/util.js`
+intentionally does **not** emit that header, because returning a second origin makes
+browsers reject the scan response as invalid CORS.
 
 ## Wiring to the site
 
