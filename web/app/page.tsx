@@ -2,7 +2,6 @@ import { Hero } from "@/components/sections/Hero/Hero";
 import { Spellbook } from "@/components/sections/Spellbook/Spellbook";
 import { HowItWorks } from "@/components/sections/HowItWorks/HowItWorks";
 import { GoblinMesh } from "@/components/sections/GoblinMesh/GoblinMesh";
-import { LiveScan } from "@/components/sections/LiveScan/LiveScan";
 import { Stats } from "@/components/sections/Stats/Stats";
 import { Marquee } from "@/components/sections/Marquee/Marquee";
 import { IndexNow } from "@/components/sections/IndexNow/IndexNow";
@@ -15,7 +14,6 @@ import { Contact } from "@/components/sections/Contact/Contact";
 const HomePage = () => (
   <div className="os" id="top">
     <Hero />
-    <LiveScan />
     <Spellbook />
     <HowItWorks />
     <GoblinMesh />

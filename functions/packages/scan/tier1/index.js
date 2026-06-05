@@ -21,6 +21,45 @@ const FETCH_TIMEOUT_MS = 12000;
 const MAX_BYTES = 3 * 1024 * 1024; // 3 MB cap on fetched HTML
 const MAX_REDIRECTS = 4;
 
+// Browser-like headers reduce NAIVE user-agent blocks. They do NOT and CANNOT
+// defeat datacenter-IP reputation blocks (e.g. Akamai/Cloudflare scoring this
+// function's egress IP) — those need a residential/proxy IP we intentionally do
+// not use. We keep the PromptGoblinScanBot token appended so we stay honestly
+// self-identifying (not impersonating a human). When the upstream still
+// 4xx/5xx-blocks us, we classify it as bot_protection and report it honestly.
+const BROWSER_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 " +
+    "PromptGoblinScanBot/1.0 (+https://promptgoblin.io)",
+  Accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif," +
+    "image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+};
+
+// Upstream statuses that signal bot/WAF protection rather than a real outage.
+const BOT_PROTECTION_STATUSES = new Set([401, 403, 406, 409, 429, 503]);
+
+// WAF challenge interstitials answer 200 with a CAPTCHA/JS-challenge body. Treat
+// a page as a bot wall only when it BOTH matches a signature AND is implausibly
+// small for a real homepage — avoids false-positiving pages that merely mention
+// "captcha" in body copy.
+const WAF_BODY_SIGNATURES = [
+  /just a moment/i,
+  /cf-browser-verification|cf-challenge|challenge-platform/i,
+  /__cf_chl_|cf_chl_opt/i,
+  /ak_bmsc|_abck|bm_sz|akamai/i,
+  /captcha|are you a human|verify you are human/i,
+  /distil_r_(?:captcha|blocked)|imperva|incapsula/i,
+  /access denied|request unsuccessful|reference\s*#?\d/i,
+];
+function looksLikeBotWall(html, contentBytes) {
+  if (!html) return false;
+  const tiny = contentBytes < 12 * 1024;
+  return tiny && WAF_BODY_SIGNATURES.some((re) => re.test(html));
+}
+
 // SSRF-safe fetch: follow redirects MANUALLY and re-validate EVERY hop's host
 // (toUrl literal-guard + assertPublicHost DNS-guard), so a 30x response can't
 // bounce the scan onto an internal target (localhost, 169.254.169.254, 10.x…).
@@ -40,7 +79,7 @@ async function fetchText(initialUrl, { asBytes = false } = {}) {
       resp = await fetch(u.href, {
         redirect: "manual",
         signal: controller.signal,
-        headers: { "User-Agent": "PromptGoblinScanBot/1.0 (+https://promptgoblin.io)" },
+        headers: BROWSER_HEADERS,
       });
     } catch (e) {
       clearTimeout(timer);
@@ -58,7 +97,14 @@ async function fetchText(initialUrl, { asBytes = false } = {}) {
       }
       continue;
     }
-    if (!resp.ok) return { ok: false, status: resp.status, text: null, bytes: 0 };
+    if (!resp.ok)
+      return {
+        ok: false,
+        status: resp.status,
+        text: null,
+        bytes: 0,
+        botProtected: BOT_PROTECTION_STATUSES.has(resp.status),
+      };
 
     const text = await resp.text();
     const bytes = Buffer.byteLength(text, "utf8");
@@ -86,21 +132,55 @@ async function main(args) {
     );
 
   const page = await fetchText(target.href, { asBytes: true });
+
+  // SSRF guard tripped (private/internal host or a redirect hop to one). This is
+  // a scope refusal, not a hygiene verdict. Kept first and unchanged.
   if (page.blocked)
     return reply(
       400,
       {
         ok: false,
+        outcome: "non_public",
         error:
           "That host (or a redirect from it) resolves to a non-public address. We only scan public sites.",
       },
       origin
     );
-  if (!page.ok)
+
+  // Upstream bot/WAF protection: a 4xx/5xx block (403/429/503…) OR a 200 served
+  // with a CAPTCHA/challenge interstitial. This is NOT a hygiene failure and is
+  // NEVER scored — same category as the SPA static-fetch blind spot. We say so
+  // honestly and return 200 (our function succeeded; the block is the upstream's,
+  // and a 200 body survives any client that early-returns on !r.ok).
+  const botWalled =
+    (!page.ok && page.botProtected) ||
+    (page.ok && looksLikeBotWall(page.text, page.bytes));
+  if (botWalled)
     return reply(
-      502,
+      200,
       {
         ok: false,
+        blocked: true,
+        outcome: "blocked_by_waf",
+        reason: "bot_protection",
+        status: page.status || 200,
+        error:
+          `${target.href} is behind bot/WAF protection that blocks automated ` +
+          `requests (HTTP ${page.status || 200}). This is NOT a problem with your ` +
+          `site's hygiene — our server-side fetch can't reach it the way a browser ` +
+          `can. The full Scout audit reads protected sites a different way.`,
+      },
+      origin
+    );
+
+  // Genuine fetch failure (DNS, timeout, real 5xx outage, non-WAF 4xx).
+  if (!page.ok)
+    return reply(
+      200,
+      {
+        ok: false,
+        outcome: "unreachable",
+        status: page.status || 0,
         error: `Couldn't fetch ${target.href}${
           page.status ? ` (HTTP ${page.status})` : ""
         }. Is it public and reachable?`,

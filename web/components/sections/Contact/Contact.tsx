@@ -15,9 +15,9 @@ export const Contact = () => (
           </a>
         </div>
         <p className={styles.avail}>
-          Drop your domain and what you want to get cited for. I&apos;ll run a{" "}
-          <em>free visibility scan</em> and send back the gaps. Best for jobs
-          measured in <em>days</em>, not quarters.
+          Want the scan in your inbox? Drop your domain, email, and what you
+          want to get cited for. I&apos;ll send back the gaps and the next
+          useful moves. Best for jobs measured in <em>days</em>, not quarters.
           <br />
           <em>No card, no sales call.</em> Paid work carries a{" "}
           <em>100% money-back guarantee</em>: full refund if we don&apos;t

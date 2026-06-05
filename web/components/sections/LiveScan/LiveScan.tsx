@@ -7,7 +7,7 @@ import { captureEvent, captureLead } from "@/lib/analytics";
 import { runCitationTeaser, runHygieneScan, type ScanReport } from "@/lib/scan-api";
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
-import { phaseTone, phaseValues, scanHost, scoreBand } from "./scan-report";
+import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "./scan-report";
 import { ScanResult, type Tier2State } from "./ScanResult";
 import { ScanStepper } from "./ScanStepper";
 import styles from "./LiveScan.module.css";
@@ -216,15 +216,16 @@ export const LiveScan = () => {
     }
     if (!alive()) return;
 
-    // Honest failure path — a real submit NEVER falls back to demo theater.
+    // Honest failure path — a real submit NEVER falls back to demo theater, and
+    // a blocked/unreachable/private host is never scored 0 (honest-broker).
     if (!resp || !resp.ok || !resp.report) {
-      const why = resp?.error || "host unreachable or not public";
-      setLines((prev) => [...prev, mkLine({ t: "err", text: `scan failed · ${why}` })]);
-      setErrorMsg(why);
+      const fail = scanFailureCopy(resp);
+      setLines((prev) => [...prev, mkLine({ t: fail.soft ? "warn" : "err", text: fail.line })]);
+      setErrorMsg(fail.card);
       setScanLabel("");
       setPct(100);
       setMode("error");
-      captureEvent("scan_failed", { scan_id: scanId, domain, reason: "tier1_unreachable" });
+      captureEvent("scan_failed", { scan_id: scanId, domain, reason: fail.outcome ?? "unknown" });
       return;
     }
 

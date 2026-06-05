@@ -1,7 +1,6 @@
-import clsx from "clsx";
 import { Panel } from "@/components/ui/Panel/Panel";
 import { Reveal } from "@/components/ui/Reveal";
-import { GoblinArt } from "./GoblinArt";
+import { HeroScan } from "./HeroScan";
 import styles from "./Hero.module.css";
 
 export const Hero = () => (
@@ -38,7 +37,7 @@ export const Hero = () => (
       </Reveal>
 
       <div className={styles.side}>
-        <GoblinArt />
+        <HeroScan />
       </div>
     </div>
   </Panel>

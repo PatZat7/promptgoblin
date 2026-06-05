@@ -106,9 +106,9 @@
 .side {
   position: relative;
   overflow: hidden;
-  display: grid;
-  place-items: center;
-  padding: 32px;
+  display: flex;
+  min-height: clamp(560px, 72vh, 760px);
+  padding: clamp(22px, 3vw, 38px);
   color: var(--lime);
   background: repeating-linear-gradient(
     to bottom,
@@ -173,6 +173,290 @@
   animation: heroBlink 1.06s steps(2, end) infinite;
 }
 
+.scanShell {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 18px;
+  color: var(--fg);
+}
+.scanLogoStage {
+  position: absolute;
+  inset: 22px 12px 120px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.scanLogo {
+  width: min(68%, 330px);
+  height: auto;
+  color: var(--lime);
+  filter: drop-shadow(0 0 18px var(--glow)) drop-shadow(0 0 42px var(--glow));
+  transition: opacity 0.16s ease-out;
+}
+/* full logo dissolves out the instant a scan starts; the canvas takes over */
+.scanLogoOut {
+  opacity: 0;
+}
+/* canvas that runs the particle dissolve (DPR-scaled in JS) */
+.scanCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+}
+.scanCanvasActive {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(163, 230, 53, 0.55));
+}
+/* crisp static mini-logo that takes over once the particles land top-right */
+.scanLogoPinned {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: calc(min(68%, 330px) * 0.32);
+  height: auto;
+  color: var(--lime);
+  opacity: 0;
+  filter: drop-shadow(0 0 10px var(--glow));
+  transition: opacity 0.3s ease-out;
+}
+.scanLogoPinnedIn {
+  opacity: 0.85;
+}
+.scanHud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.scanHudName {
+  min-width: 0;
+  max-width: 72%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--lime);
+}
+.heroScanForm,
+.heroTerminal,
+.heroResult {
+  position: relative;
+  z-index: 3;
+}
+.heroScanForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 280px;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.25s ease;
+}
+.heroScanFormGone {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
+.heroScanLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.heroScanLine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+}
+.heroScanLine input {
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: clamp(18px, 2vw, 28px);
+  color: var(--fg);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-2);
+  padding: 9px 0 12px;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+.heroScanLine input::placeholder {
+  color: var(--faint);
+}
+.heroScanLine input:focus {
+  border-color: var(--lime);
+  box-shadow: 0 1px 0 var(--lime);
+}
+.heroScanLine button,
+.heroReset {
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--lime);
+  border: 1px solid var(--lime);
+  padding: 13px 16px;
+  transition: background 0.18s, color 0.18s, opacity 0.18s;
+}
+.heroScanLine button:hover,
+.heroReset:hover {
+  color: var(--fg);
+  background: transparent;
+}
+.heroScanLine button:disabled {
+  opacity: 0.55;
+}
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.heroTerminal {
+  max-height: 230px;
+  min-height: 145px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-top: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.heroLine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: scanLineIn 0.2s ease-out both;
+}
+@keyframes scanLineIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.lineCmd,
+.lineOk {
+  color: var(--lime);
+}
+.lineWarn {
+  color: var(--fire-2);
+}
+.lineBad,
+.heroScanError {
+  color: var(--fire);
+}
+.heroResult {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 16px;
+  align-items: center;
+  padding-top: 4px;
+}
+.heroScore {
+  grid-row: span 2;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  border: 1px solid var(--lime);
+  color: var(--lime);
+  padding: 14px 16px 12px;
+  font-family: var(--pixel);
+  line-height: 1;
+}
+.heroScore span {
+  font-size: clamp(30px, 4vw, 48px);
+}
+.heroScore small {
+  font-family: var(--mono);
+  color: var(--muted);
+}
+.heroResultTitle {
+  font-family: var(--pixel-tiny);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+.heroResultMeta {
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.heroFindings {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.heroFindings li {
+  padding-left: 14px;
+  position: relative;
+}
+.heroFindings li::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: var(--lime);
+}
+.heroResult :global(.btn) {
+  grid-column: 1 / -1;
+  justify-content: center;
+}
+.heroReset {
+  align-self: flex-start;
+  padding: 9px 0;
+  color: var(--faint);
+  background: transparent;
+  border: 0;
+}
+.heroScanError {
+  position: relative;
+  z-index: 3;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+/* Blocked / blind-spot outcomes are caution, not failure — amber, not red. */
+.heroScanError[data-soft] {
+  color: var(--fire-2);
+}
+
 @media (max-width: 980px) {
   .grid {
     grid-template-columns: 1fr;
@@ -180,6 +464,30 @@
   .side {
     border-left: 0;
     border-top: 1px solid var(--line);
-    min-height: 60vh;
+    min-height: 620px;
+  }
+}
+@media (max-width: 560px) {
+  .heroScanLine {
+    grid-template-columns: 1fr;
+  }
+  .heroScanLine button {
+    width: 100%;
+  }
+  .heroTerminal {
+    max-height: 190px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scanLogo,
+  .scanLogoPinned,
+  .scanCanvas,
+  .heroScanForm,
+  .heroLine {
+    transition: none;
+  }
+  /* no particle storm: JS skips the canvas entirely; crossfade is instant */
+  .scanCanvas {
+    display: none;
   }
 }
