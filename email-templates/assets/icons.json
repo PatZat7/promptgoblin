@@ -1,0 +1,345 @@
+[
+  {
+    "slug": "nextdotjs",
+    "keywords": [
+      "nextjs",
+      "next.js",
+      "next"
+    ]
+  },
+  {
+    "slug": "react",
+    "keywords": [
+      "react"
+    ]
+  },
+  {
+    "slug": "vuedotjs",
+    "keywords": [
+      "vuejs",
+      "vue.js",
+      "vue"
+    ]
+  },
+  {
+    "slug": "nuxt",
+    "keywords": [
+      "nuxt"
+    ]
+  },
+  {
+    "slug": "angular",
+    "keywords": [
+      "angular"
+    ]
+  },
+  {
+    "slug": "svelte",
+    "keywords": [
+      "sveltekit",
+      "svelte"
+    ]
+  },
+  {
+    "slug": "astro",
+    "keywords": [
+      "astro"
+    ]
+  },
+  {
+    "slug": "remix",
+    "keywords": [
+      "remix"
+    ]
+  },
+  {
+    "slug": "gatsby",
+    "keywords": [
+      "gatsby"
+    ]
+  },
+  {
+    "slug": "vite",
+    "keywords": [
+      "vite"
+    ]
+  },
+  {
+    "slug": "hugo",
+    "keywords": [
+      "hugo"
+    ]
+  },
+  {
+    "slug": "jekyll",
+    "keywords": [
+      "jekyll"
+    ]
+  },
+  {
+    "slug": "eleventy",
+    "keywords": [
+      "eleventy",
+      "11ty"
+    ]
+  },
+  {
+    "slug": "solid",
+    "keywords": [
+      "solidjs",
+      "solid.js",
+      "solid"
+    ]
+  },
+  {
+    "slug": "qwik",
+    "keywords": [
+      "qwik"
+    ]
+  },
+  {
+    "slug": "preact",
+    "keywords": [
+      "preact"
+    ]
+  },
+  {
+    "slug": "alpinedotjs",
+    "keywords": [
+      "alpine.js",
+      "alpinejs",
+      "alpine"
+    ]
+  },
+  {
+    "slug": "emberdotjs",
+    "keywords": [
+      "ember"
+    ]
+  },
+  {
+    "slug": "wordpress",
+    "keywords": [
+      "wordpress",
+      "wp"
+    ]
+  },
+  {
+    "slug": "wix",
+    "keywords": [
+      "wix"
+    ]
+  },
+  {
+    "slug": "squarespace",
+    "keywords": [
+      "squarespace"
+    ]
+  },
+  {
+    "slug": "webflow",
+    "keywords": [
+      "webflow"
+    ]
+  },
+  {
+    "slug": "framer",
+    "keywords": [
+      "framer"
+    ]
+  },
+  {
+    "slug": "ghost",
+    "keywords": [
+      "ghost"
+    ]
+  },
+  {
+    "slug": "drupal",
+    "keywords": [
+      "drupal"
+    ]
+  },
+  {
+    "slug": "joomla",
+    "keywords": [
+      "joomla"
+    ]
+  },
+  {
+    "slug": "contentful",
+    "keywords": [
+      "contentful"
+    ]
+  },
+  {
+    "slug": "sanity",
+    "keywords": [
+      "sanity"
+    ]
+  },
+  {
+    "slug": "strapi",
+    "keywords": [
+      "strapi"
+    ]
+  },
+  {
+    "slug": "hubspot",
+    "keywords": [
+      "hubspot"
+    ]
+  },
+  {
+    "slug": "notion",
+    "keywords": [
+      "notion"
+    ]
+  },
+  {
+    "slug": "shopify",
+    "keywords": [
+      "shopify"
+    ]
+  },
+  {
+    "slug": "woocommerce",
+    "keywords": [
+      "woocommerce",
+      "woo"
+    ]
+  },
+  {
+    "slug": "bigcommerce",
+    "keywords": [
+      "bigcommerce"
+    ]
+  },
+  {
+    "slug": "prestashop",
+    "keywords": [
+      "prestashop"
+    ]
+  },
+  {
+    "slug": "nodedotjs",
+    "keywords": [
+      "nodejs",
+      "node.js",
+      "node"
+    ]
+  },
+  {
+    "slug": "express",
+    "keywords": [
+      "express"
+    ]
+  },
+  {
+    "slug": "laravel",
+    "keywords": [
+      "laravel"
+    ]
+  },
+  {
+    "slug": "django",
+    "keywords": [
+      "django"
+    ]
+  },
+  {
+    "slug": "rubyonrails",
+    "keywords": [
+      "rubyonrails",
+      "ruby on rails",
+      "rails"
+    ]
+  },
+  {
+    "slug": "flask",
+    "keywords": [
+      "flask"
+    ]
+  },
+  {
+    "slug": "php",
+    "keywords": [
+      "php"
+    ]
+  },
+  {
+    "slug": "python",
+    "keywords": [
+      "python"
+    ]
+  },
+  {
+    "slug": "ruby",
+    "keywords": [
+      "ruby"
+    ]
+  },
+  {
+    "slug": "dotnet",
+    "keywords": [
+      "asp.net",
+      ".net",
+      "dotnet"
+    ]
+  },
+  {
+    "slug": "symfony",
+    "keywords": [
+      "symfony"
+    ]
+  },
+  {
+    "slug": "spring",
+    "keywords": [
+      "spring"
+    ]
+  },
+  {
+    "slug": "vercel",
+    "keywords": [
+      "vercel"
+    ]
+  },
+  {
+    "slug": "netlify",
+    "keywords": [
+      "netlify"
+    ]
+  },
+  {
+    "slug": "cloudflare",
+    "keywords": [
+      "cloudflare"
+    ]
+  },
+  {
+    "slug": "firebase",
+    "keywords": [
+      "firebase"
+    ]
+  },
+  {
+    "slug": "tailwindcss",
+    "keywords": [
+      "tailwindcss",
+      "tailwind"
+    ]
+  },
+  {
+    "slug": "bootstrap",
+    "keywords": [
+      "bootstrap"
+    ]
+  },
+  {
+    "slug": "jquery",
+    "keywords": [
+      "jquery"
+    ]
+  }
+]

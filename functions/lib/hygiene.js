@@ -242,7 +242,7 @@ function detectTechStack(html) {
     note:
       detected.length > 0
         ? "Detected from public HTML fingerprints. Confirm the stack before implementation."
-        : "No obvious stack fingerprint found in the public HTML. Enter your CMS/framework so we can map the fixes to it.",
+        : "No obvious stack fingerprint found in the public HTML. We auto-detect your stack during the audit and ship stack-specific fixes with Scout.",
   };
 }
 

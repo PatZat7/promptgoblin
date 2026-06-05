@@ -115,7 +115,10 @@ const Tier2Card = ({
     return (
       <div className={styles.tier2Card}>
         <div className={styles.srK}>tier 2 citation teaser</div>
-        <p className={styles.tier2Muted}>Add a competitor domain to run the live Perplexity citation teaser.</p>
+        <p className={styles.tier2Muted}>
+          The live competitor citation diff is part of a paid Scout — we surface the rivals we
+          infer are your closest and check who the answer engines actually cite.
+        </p>
       </div>
     );
   }
@@ -230,7 +233,7 @@ const TechStackCard = ({ report, entered }: { report: ScanReport; entered: strin
 
       <p className={styles.stackText}>
         {report.techStack?.note ||
-          "The free scan only sees public HTML. If the stack is hidden behind a CDN or custom build, enter it so the repair plan can target the right files, CMS fields, or plugin settings."}
+          "The free scan fingerprints your stack from public HTML. If it's hidden behind a CDN or custom build, we'll confirm it during your Scout audit so the repair plan targets the right files, CMS fields, or plugin settings."}
       </p>
       <div className={styles.stackSteps}>
         <span>copy fixes</span>

@@ -4,7 +4,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { GoblinArt } from "./GoblinArt";
 import styles from "./Hero.module.css";
 
-
 export const Hero = () => (
   <Panel id="top" className={styles.hero} cursor="~/home">
     <div className={styles.grid}>
@@ -28,13 +27,10 @@ export const Hero = () => (
         <p className={styles.note}>
           A one-goblin shop that makes you <b>Visible AF</b>: we measure who the
           answer engines actually cite for your category, then ship the schema,
-          crawl, and content fixes (software-engineer-reviewed, never
-          auto-deployed) to close the gap. Days, not quarters.
+          crawl, and content fixes (software-engineer-reviewed) to close the
+          gap. Days, not quarters.
         </p>
         <div className={styles.cta}>
-          <a className="btn" href="#scan" data-cursor="./scan">
-            ./free_scan <span className="arr">→</span>
-          </a>
           <a className="btn ghost" href="#contact" data-cursor="./summon">
             ./summon
           </a>

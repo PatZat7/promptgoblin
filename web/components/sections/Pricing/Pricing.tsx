@@ -5,7 +5,7 @@ import styles from "./Pricing.module.css";
 
 export const Pricing = () => (
   <Panel id="pricing" cursor="./pricing">
-    <PanelBar command="$ goblin --pricing" note="flat fee · no credits · no sales call" />
+    <PanelBar command="$ goblin --pricing" note="monthly · cancel anytime · no sales call" />
     <div className={clsx("grid-lines", styles.grid)}>
       {TIERS.map((tier) => (
         <div
@@ -46,19 +46,6 @@ export const Pricing = () => (
         We won&apos;t promise a citation number (nobody honestly can). We
         guarantee the work and measure the rest straight.
       </span>
-    </div>
-    <div className={styles.enterprise}>
-      <span>
-        ◆ enterprise · multi-region · regulated: on-prem retrieval, custom
-        auth, a goblin embedded in your team.
-      </span>
-      <a
-        className="btn ghost"
-        href="mailto:goblins@promptgoblin.io"
-        data-cursor="./talk"
-      >
-        talk to a goblin <span className="arr">→</span>
-      </a>
     </div>
   </Panel>
 );

@@ -71,8 +71,22 @@ data file and sends via **Resend** (default) or **Postmark**.
 - An unreadable / JS-rendered (SPA) site is never scored 0: flag the static-fetch
   blind spot and ask them to confirm their stack instead.
 
-### Logo
+### Images (logo + stack icon)
 
-Loads from `https://promptgoblin.io/promptgoblinlogo.png` (the file lives in
-`web/public/` and ships with the next site deploy). Until that deploys, the logo
-shows as alt text in previews; that's expected.
+Email clients strip inline `<svg>`, so `send.mjs` attaches images **inline as CID
+attachments** (not hosted) — they render even when the recipient blocks remote
+images, and need no deploy. It inlines `assets/logo.png` (`cid:logo`) and, when
+`TECH_STACK` matches a known brand, that brand's icon (`cid:stackicon`).
+
+Regenerate the assets after a logo change or to add/update brand icons:
+
+```
+cd web && node scripts/gen-email-icons.mjs   # needs the `sharp` devDependency
+```
+
+This writes `email-templates/assets/` (logo.png, one PNG per curated brand icon,
+and `icons.json` for matching). Icons render in their brand color, falling back to
+lime for near-black marks so they stay visible on the dark card.
+
+> The template still references the hosted logo URL for the browser/copy-paste
+> preview path; `send.mjs` swaps it to `cid:logo` automatically at send time.

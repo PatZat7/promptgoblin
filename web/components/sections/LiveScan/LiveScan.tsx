@@ -164,18 +164,17 @@ export const LiveScan = () => {
     const data = Object.fromEntries(new FormData(e.currentTarget).entries()) as Record<string, string>;
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
-    const competitor = (data.competitor || "").trim();
-    const techStack = (data.techStack || "").trim();
+    // Competitor + tech stack are now auto-discovered (recon node / HTML fingerprint),
+    // so the form only asks for the domain. Kept as empty here so the downstream
+    // Tier-2-skip and stack-detect paths stay intact.
+    const competitor = "";
+    const techStack = "";
     if (!isValidDomain(domain)) {
       setFormErr("Enter a valid domain, e.g. yourbrand.com (no http://, no path).");
       return;
     }
     if (!isValidEmail(data.email || "")) {
       setFormErr("Enter a valid email so we can send your results.");
-      return;
-    }
-    if (competitor && !isValidDomain(competitor)) {
-      setFormErr("That competitor doesn't look like a domain. Try acme.com, or leave it blank.");
       return;
     }
     setFormErr("");
@@ -407,8 +406,6 @@ export const LiveScan = () => {
               <div className={styles.lbl}>$ run a free scan</div>
               <input name="domain" required placeholder="yourbrand.com" autoComplete="url" data-cursor="./type" />
               <input name="email" type="email" required placeholder="you@brand.com" autoComplete="email" data-cursor="./type" />
-              <input name="competitor" placeholder="a competitor (optional)" autoComplete="off" data-cursor="./type" />
-              <input name="techStack" placeholder="tech stack / CMS (optional)" autoComplete="off" data-cursor="./type" />
               <input type="text" name="botcheck" className={styles.honeypot} tabIndex={-1} autoComplete="off" aria-hidden="true" />
               <button type="submit" className="btn" data-cursor="./scan">
                 run my free scan <span className="arr">→</span>
@@ -419,10 +416,11 @@ export const LiveScan = () => {
                 </div>
               ) : null}
               <div className={styles.disclaimer}>
-                Live, real <b>hygiene</b>{" "}check: structured data, crawl welcome mat, head tags, Core
-                Web Vitals proxies, plus a public tech-stack fingerprint (enter yours if the scanner
-                can&apos;t see it). Hygiene is table stakes, <b>not</b>{" "}a citation guarantee. The full
-                multi-engine citation audit plus SEO &amp; accessibility ships with a paid Scout.
+                Just your domain — we fingerprint your tech stack automatically. Live, real{" "}
+                <b>hygiene</b>{" "}check: structured data, crawl welcome mat, head tags, and Core Web
+                Vitals proxies. Hygiene is table stakes, <b>not</b>{" "}a citation guarantee. The full
+                multi-engine citation audit — including auto-identified competitors you confirm, SEO
+                &amp; accessibility — ships with a paid Scout.
               </div>
               <ul className={styles.checks}>
                 <li>structured data / JSON-LD entities</li>

@@ -148,6 +148,42 @@ const to = (opt.to || data.to || "").trim();
 if (!isEmail(to)) fail(`Recipient "to" is not a valid email: ${to || "(empty)"}`);
 
 // ---------------------------------------------------------------------------
+// inline images (CID): logo always, plus the matched stack brand icon. Inlining
+// beats hosted <img> for cold email — it renders even when the client blocks
+// remote images (Gmail does by default), and needs no deploy. Assets come from
+// ./assets (regenerate with web/scripts/gen-email-icons.mjs).
+// ---------------------------------------------------------------------------
+const ASSETS = path.join(HERE, "assets");
+const inlineImages = []; // { filename, cid, b64 }
+function attachImage(file, cid) {
+  const p = path.join(ASSETS, file);
+  if (!fs.existsSync(p)) return false;
+  inlineImages.push({ filename: file, cid, b64: fs.readFileSync(p).toString("base64") });
+  return true;
+}
+const hasLogo = attachImage("logo.png", "logo");
+
+// Match the entered/detected stack to a brand icon (longest keyword wins, same
+// as the site's TechIcon), then attach it as cid:stackicon.
+const norm = (s) => String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+let stackIconTag = "";
+try {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ASSETS, "icons.json"), "utf8"));
+  const index = manifest
+    .flatMap((ic) => ic.keywords.map((kw) => ({ kw: norm(kw), slug: ic.slug })))
+    .filter((e) => e.kw)
+    .sort((a, b) => b.kw.length - a.kw.length);
+  const n = norm(data.TECH_STACK);
+  const hit = n && index.find((e) => n.includes(e.kw));
+  if (hit && attachImage(`${hit.slug}.png`, "stackicon")) {
+    stackIconTag =
+      '<img src="cid:stackicon" width="16" height="16" alt="" style="display:inline-block; vertical-align:middle; margin-right:5px;" />';
+  }
+} catch {
+  /* no icons.json — skip the stack icon, leave {{STACK_ICON}} empty */
+}
+
+// ---------------------------------------------------------------------------
 // fill placeholders (HTML-escaped) and validate
 // ---------------------------------------------------------------------------
 const TOKEN = /\{\{\s*([A-Z0-9_]+)\s*\}\}/g;
@@ -155,9 +191,10 @@ const TOKEN = /\{\{\s*([A-Z0-9_]+)\s*\}\}/g;
 // {{PLACEHOLDER}} usage example and the SPA-guard reminder, which the code below
 // enforces) and shouldn't ship in the outgoing email.
 const source = template.replace(/<!--[\s\S]*?-->/g, "");
-const html = source.replace(TOKEN, (m, key) =>
-  key in data ? escapeHtml(data[key]) : m,
-);
+let html = source.replace(TOKEN, (m, key) => {
+  if (key === "STACK_ICON") return stackIconTag; // raw HTML img (or ""), not escaped
+  return key in data ? escapeHtml(data[key]) : m;
+});
 
 const leftover = [...new Set([...html.matchAll(TOKEN)].map((x) => x[1]))];
 if (leftover.length) {
@@ -167,6 +204,10 @@ if (leftover.length) {
       .join("\n  ")}\nAdd them to ${opt.data}.`,
   );
 }
+
+// Inline the logo: swap the hosted URL (which 404s until the site deploys) for
+// the CID attachment so it always renders.
+if (hasLogo) html = html.replace(/https:\/\/promptgoblin\.io\/promptgoblinlogo\.png/g, "cid:logo");
 
 // honest-broker: never send a 0 / blank / non-numeric score as fact
 const score = String(data.SCORE ?? "").trim();
@@ -191,6 +232,11 @@ const provider = (process.env.EMAIL_PROVIDER || "resend").toLowerCase();
 // ---------------------------------------------------------------------------
 async function sendResend() {
   const key = need("RESEND_API_KEY");
+  const attachments = inlineImages.map((im) => ({
+    filename: im.filename,
+    content: im.b64,
+    content_id: im.cid,
+  }));
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -200,6 +246,7 @@ async function sendResend() {
       subject,
       html,
       ...(replyTo ? { reply_to: replyTo } : {}),
+      ...(attachments.length ? { attachments } : {}),
     }),
   });
   const body = await res.json().catch(() => ({}));
@@ -209,6 +256,12 @@ async function sendResend() {
 
 async function sendPostmark() {
   const token = need("POSTMARK_API_TOKEN");
+  const attachments = inlineImages.map((im) => ({
+    Name: im.filename,
+    Content: im.b64,
+    ContentType: "image/png",
+    ContentID: `cid:${im.cid}`,
+  }));
   const res = await fetch("https://api.postmarkapp.com/email", {
     method: "POST",
     headers: {
@@ -223,6 +276,7 @@ async function sendPostmark() {
       HtmlBody: html,
       MessageStream: "outbound",
       ...(replyTo ? { ReplyTo: replyTo } : {}),
+      ...(attachments.length ? { Attachments: attachments } : {}),
     }),
   });
   const body = await res.json().catch(() => ({}));
@@ -240,6 +294,7 @@ const summary = [
   `  to       : ${to}`,
   `  subject  : ${subject}`,
   `  size     : ${Buffer.byteLength(html, "utf8")} bytes`,
+  `  inline   : ${inlineImages.map((i) => i.cid).join(", ") || "none"}`,
 ].join("\n");
 
 if (!opt.send) {

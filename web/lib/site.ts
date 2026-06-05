@@ -25,7 +25,7 @@ export const NAV: NavLink[] = [
 
 /** Flat-fee tiers — also feed the Offer / OfferCatalog structured data. */
 export const TIERS = [
-  { name: "Goblin Scout — one-time visibility audit", price: "2950" },
-  { name: "Goblin Warband — monthly retainer", price: "4800" },
-  { name: "Goblin Warlord — multi-brand retainer", price: "12500" },
+  { name: "Goblin Scout — monthly visibility audit", price: "997" },
+  { name: "Goblin Warband — monthly retainer", price: "3500" },
+  { name: "Goblin Warlord — multi-brand retainer", price: "9500" },
 ] as const;

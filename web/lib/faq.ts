@@ -17,7 +17,7 @@ export const FAQ: FaqItem[] = [
   },
   {
     q: "How much does a Prompt Goblin audit cost?",
-    a: "Goblin Scout is a one-time visibility audit at $2,950. Ongoing retainers are Goblin Warband ($4,800/mo) and Goblin Warlord ($12,500/mo). Flat fee, no credits, no meter.",
+    a: "Goblin Scout is a monthly visibility audit at $997/mo. Warband is $3,500/mo and Warlord $9,500/mo. Monthly, cancel anytime, no credits, no meter.",
   },
   {
     q: "Is there a money-back guarantee?",
