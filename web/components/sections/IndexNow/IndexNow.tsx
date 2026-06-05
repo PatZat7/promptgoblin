@@ -14,7 +14,7 @@ const NOW_ROWS = [
 
 const STATEMENT_LINES: { text: React.ReactNode; delay: string }[] = [
   { text: <>I make sites <em>legible</em></>, delay: "0s" },
-  { text: "to crawlers and LLMs —", delay: ".07s" },
+  { text: "to crawlers and LLMs,", delay: ".07s" },
   { text: <>so you show up <em>where</em></>, delay: ".14s" },
   { text: "the answer gets written.", delay: ".21s" },
 ];
@@ -44,7 +44,7 @@ export const IndexNow = () => (
         <div className={styles.body}>
           Two years deep in technical SEO and the new world of answer engines. I ship{" "}
           <em>schema</em>, fix <em>crawl paths</em>, write the <em>llms.txt</em>, and harden Core Web
-          Vitals — small, urgent jobs that a big agency would scope into a quarter. I move in days
+          Vitals: small, urgent jobs that a big agency would scope into a quarter. I move in days
           and leave you a test suite.
         </div>
       </Reveal>

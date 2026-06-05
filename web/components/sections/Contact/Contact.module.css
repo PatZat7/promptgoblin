@@ -39,7 +39,6 @@
 
 /* ---- contact side rail ---- */
 .side {
-  border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
 }
@@ -101,7 +100,7 @@
 .formGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px 24px;
 }
 .field {
   display: flex;
@@ -119,21 +118,19 @@
   font-family: var(--mono);
   font-size: 14px;
   color: var(--fg);
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--line-2);
-  padding: 12px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-2);
+  padding: 10px 0 9px;
   outline: none;
-  transition: border-color 0.15s, background 0.15s;
-}
-:global([data-palette="bone"]) .field input {
-  background: rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .field input::placeholder {
   color: var(--faint);
 }
 .field input:focus {
   border-color: var(--lime);
-  background: rgba(163, 230, 53, 0.05);
+  box-shadow: 0 1px 0 var(--lime);
 }
 .honeypot {
   position: absolute;

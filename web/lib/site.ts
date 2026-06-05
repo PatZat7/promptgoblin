@@ -4,7 +4,7 @@ export const SITE = {
   name: "Prompt Goblin",
   altName: "Prompt_Goblin",
   url: "https://promptgoblin.io",
-  email: "goblins@promptgoblin.com",
+  email: "goblins@promptgoblin.io",
   tagline: "Get found by robots. Stay usable by humans. Visible AF.",
   description:
     "A one-goblin shop in Chicago. AI search visibility and technical SEO that makes you Visible AF. Get found by robots. Stay usable by humans.",

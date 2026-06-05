@@ -1,0 +1,10 @@
+# Secrets (also covered by the root .gitignore, repeated here for safety)
+.env
+
+# Filled emails contain real lead data (PII) — never commit them.
+*.filled.html
+
+# A real lead's data file (keep only lead.example.json in git)
+lead.json
+lead.*.json
+!lead.example.json

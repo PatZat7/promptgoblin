@@ -1,0 +1,18 @@
+{
+  "_comment": "Illustrative SAMPLE data — copy to lead.json and replace with REAL, MEASURED values from the scan. Never send these example numbers.",
+  "to": "jane@acme.com",
+  "subject": "Your Prompt Goblin scan for acme.com",
+  "FIRST_NAME": "Jane",
+  "DOMAIN": "acme.com",
+  "SCORE": "64",
+  "HIGH": "2",
+  "MEDIUM": "3",
+  "LOW": "1",
+  "FINDING_1": "No Organization or FAQPage JSON-LD, so engines can't parse who you are without guessing.",
+  "FINDING_2": "robots.txt does not welcome AI crawlers (no llms.txt either).",
+  "FINDING_3": "Two <h1> tags on the homepage; pick one primary heading.",
+  "TECH_STACK": "WordPress",
+  "FIX_1": "Add Organization + FAQPage JSON-LD via the theme header (I'll send the exact block).",
+  "FIX_2": "Publish llms.txt and open robots.txt to the major AI crawlers.",
+  "FIX_3": "Collapse to a single <h1> and re-flow the heading outline."
+}

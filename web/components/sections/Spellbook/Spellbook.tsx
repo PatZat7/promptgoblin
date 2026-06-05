@@ -17,7 +17,7 @@ const SPELLS: Spell[] = [
     icon: "bolt",
     name: "SEO",
     level: "technical foundation",
-    sub: "Crawl, index, schema, Core Web Vitals — the base AEO stands on.",
+    sub: "Crawl, index, schema, Core Web Vitals. The base AEO stands on.",
   },
   {
     icon: "ice",

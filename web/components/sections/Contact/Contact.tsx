@@ -15,12 +15,12 @@ export const Contact = () => (
           </a>
         </div>
         <p className={styles.avail}>
-          Drop your domain and what you want to get cited for — I&apos;ll run a{" "}
+          Drop your domain and what you want to get cited for. I&apos;ll run a{" "}
           <em>free visibility scan</em> and send back the gaps. Best for jobs
           measured in <em>days</em>, not quarters.
           <br />
           <em>No card, no sales call.</em> Paid work carries a{" "}
-          <em>100% money-back guarantee</em> — full refund if we don&apos;t
+          <em>100% money-back guarantee</em>: full refund if we don&apos;t
           deliver or you&apos;re not happy within 14 days.
         </p>
         <SummonForm />
@@ -30,8 +30,8 @@ export const Contact = () => (
         <div className={styles.row}>
           <span className={styles.rowKey}>$ mail</span>
           <span className={clsx(styles.rowVal, styles.rowValBig)}>
-            <a href="mailto:goblins@promptgoblin.com" data-cursor="./mail">
-              goblins@promptgoblin.com
+            <a href="mailto:goblins@promptgoblin.io" data-cursor="./mail">
+              goblins@promptgoblin.io
             </a>
           </span>
         </div>

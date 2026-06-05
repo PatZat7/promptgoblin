@@ -1,5 +1,8 @@
 .grid {
   grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  border: 0;
+  background: transparent;
 }
 
 .tier {
@@ -7,6 +10,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  border: 1px solid var(--line);
+  background: var(--bg);
   transition: background 0.2s;
 }
 .tier:hover {

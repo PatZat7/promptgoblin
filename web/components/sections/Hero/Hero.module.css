@@ -12,20 +12,6 @@
   font-size: 11px;
   color: var(--muted);
 }
-.dots {
-  display: inline-flex;
-  gap: 6px;
-}
-.dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--line-2);
-  display: inline-block;
-}
-.dots i:first-child {
-  background: var(--lime);
-}
 .grow {
   flex: 1;
 }
@@ -118,7 +104,6 @@
 
 /* right column — goblin terminal */
 .side {
-  border-left: 1px solid var(--line);
   position: relative;
   overflow: hidden;
   display: grid;

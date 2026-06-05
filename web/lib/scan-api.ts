@@ -1,8 +1,9 @@
 /**
  * Prompt Goblin scan backend (DigitalOcean Functions). Tier-1 = free no-key
  * hygiene scan; Tier-2 = email-gated Perplexity citation teaser. These run from
- * the browser; CORS only allows the deployed origin, so on localhost they return
- * null and the UI shows the honest error/sample path (never demo theater).
+ * the browser; the deployed functions send `Access-Control-Allow-Origin: *`, so
+ * they work from localhost too. On a network failure these helpers return null
+ * and the UI shows the honest error path (never demo theater).
  */
 
 const SCAN_API = {
@@ -16,6 +17,10 @@ export type ScanReport = {
   disclaimer?: string;
   findings?: ScanFinding[];
   schema?: { found?: string[]; missing?: string[] };
+  techStack?: {
+    detected?: { name?: string; confidence?: string; evidence?: string }[];
+    note?: string;
+  };
   crawlability?: { present?: boolean; welcomesAiBots?: boolean };
   llmsTxt?: { present?: boolean; valid?: boolean };
   coreWebVitalsProxies?: { htmlKilobytes?: number };
@@ -38,12 +43,20 @@ export const runHygieneScan = async (url: string): Promise<ScanResponse | null> 
 
 export type TeaserResponse = {
   ok?: boolean;
+  tier?: number;
   configured?: boolean;
   retryAfterHours?: number;
   error?: string;
+  summary?: string;
   teaser?: {
     engine?: string;
-    results?: { clientCited?: boolean; competitorCited?: boolean }[];
+    results?: {
+      query?: string;
+      answer?: string;
+      sources?: string[];
+      clientCited?: boolean;
+      competitorCited?: boolean;
+    }[];
   };
 };
 

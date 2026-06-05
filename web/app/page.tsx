@@ -8,21 +8,23 @@ import { Marquee } from "@/components/sections/Marquee/Marquee";
 import { IndexNow } from "@/components/sections/IndexNow/IndexNow";
 import { Services } from "@/components/sections/Services/Services";
 import { Pricing } from "@/components/sections/Pricing/Pricing";
+import { Faq } from "@/components/sections/Faq/Faq";
 import { Contact } from "@/components/sections/Contact/Contact";
 
 // All page content ported — full render order.
 const HomePage = () => (
   <div className="os" id="top">
     <Hero />
+    <LiveScan />
     <Spellbook />
     <HowItWorks />
     <GoblinMesh />
-    <LiveScan />
     <Stats />
     <Marquee />
     <IndexNow />
     <Services />
     <Pricing />
+    <Faq />
     <Contact />
   </div>
 );

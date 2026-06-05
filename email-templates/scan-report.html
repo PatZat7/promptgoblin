@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<!--
+  Prompt Goblin — branded scan-report email.
+  HOW TO USE: replace every {{PLACEHOLDER}} with the lead's real, MEASURED data,
+  then send from your mail client (paste as HTML) or wire into an automation.
+  Honest-broker rules still apply: no fabricated numbers, hygiene is NOT a
+  citation guarantee, the refund covers the work and never a citation number.
+  The logo loads from https://promptgoblin.io/promptgoblinlogo.png (deploys with the site).
+  Table layout + inline styles = renders in Gmail, Outlook, Apple Mail.
+-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="supported-color-schemes" content="dark light" />
+  <title>Your Prompt Goblin scan</title>
+</head>
+<body style="margin:0; padding:0; background-color:#0a0b09;">
+  <!-- preheader: inbox preview text, hidden in the body -->
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
+    Your free hygiene scan for {{DOMAIN}}, reviewed by a real engineer. Score, what we found, and what we'd fix.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0b09" style="background-color:#0a0b09;">
+    <tr>
+      <td align="center" style="padding:28px 16px;">
+
+        <!-- ===== card ===== -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#111310; border:1px solid #2a2d26;">
+
+          <!-- header -->
+          <tr>
+            <td style="padding:26px 28px 18px 28px; border-bottom:1px solid #2a2d26;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right:12px;" valign="middle">
+                    <img src="https://promptgoblin.io/promptgoblinlogo.png" width="48" height="48" alt="Prompt Goblin" style="display:block; width:48px; height:48px; border:0;" />
+                  </td>
+                  <td valign="middle">
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; color:#e9e7dc;">Prompt&nbsp;Goblin</div>
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; color:#a3e635; margin-top:3px;">Get found by robots. Stay usable by humans.</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- greeting -->
+          <tr>
+            <td style="padding:26px 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#e9e7dc; font-size:15px; line-height:1.6;">
+              Hi {{FIRST_NAME}}, here's the free scan you asked for on
+              <span style="color:#a3e635;">{{DOMAIN}}</span>.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 28px 22px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#a8a89c; font-size:13px; line-height:1.65;">
+              I ran it by hand and read every line. Here's where you stand and what I'd fix first.
+            </td>
+          </tr>
+
+          <!-- SPA GUARD: if the lead's site is JS-rendered and the static fetch came back thin,
+               do NOT report "no h1 / no schema" or a near-zero {{SCORE}} as fact. That is the
+               static-fetch blind spot, not a real absence. State the blind spot and what a
+               rendered scan would resolve. Never send a 0 for a site we could not render. -->
+          <!-- score -->
+          <tr>
+            <td style="padding:0 28px 22px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #2a2d26; background-color:#0d0f0c;">
+                <tr>
+                  <td style="padding:20px 22px;" valign="middle">
+                    <span style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:44px; font-weight:700; color:#a3e635; line-height:1;">{{SCORE}}</span>
+                    <span style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:16px; color:#a8a89c;">/100</span>
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; color:#a8a89c; margin-top:8px;">
+                      hygiene score &middot; {{HIGH}} high &middot; {{MEDIUM}} medium &middot; {{LOW}} low
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- what we found -->
+          <tr>
+            <td style="padding:0 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#a3e635;">
+              What we found
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 28px 22px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:13px; line-height:1.7; color:#cfcfc4;">
+              <!-- Replace with the REAL findings. Keep it plain. -->
+              &bull; {{FINDING_1}}<br />
+              &bull; {{FINDING_2}}<br />
+              &bull; {{FINDING_3}}
+            </td>
+          </tr>
+
+          <!-- tech stack -->
+          <tr>
+            <td style="padding:0 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#a3e635;">
+              Mapped to your stack
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 28px 22px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:13px; line-height:1.7; color:#cfcfc4;">
+              Your site looks like it runs on <span style="color:#e9e7dc;">{{TECH_STACK}}</span>, so every fix below is written for that: the right files, CMS fields, or plugin settings, not generic advice.
+            </td>
+          </tr>
+
+          <!-- recommended fixes -->
+          <tr>
+            <td style="padding:0 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#a3e635;">
+              What I'd fix first
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 28px 24px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:13px; line-height:1.7; color:#cfcfc4;">
+              1. {{FIX_1}}<br />
+              2. {{FIX_2}}<br />
+              3. {{FIX_3}}
+            </td>
+          </tr>
+
+          <!-- CTA (bulletproof button) -->
+          <tr>
+            <td style="padding:0 28px 26px 28px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td bgcolor="#a3e635" style="background-color:#a3e635;">
+                    <a href="https://promptgoblin.io/#pricing" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#0a0b09; text-decoration:none;">
+                      See the full Scout audit &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- honest-broker note -->
+          <tr>
+            <td style="padding:18px 28px; border-top:1px solid #2a2d26; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; line-height:1.65; color:#8f8f84;">
+              This is a real hygiene result, reviewed by a software engineer (me), not an automated PDF. Hygiene is table stakes, not a citation guarantee: nobody can honestly promise a citation number. The full multi-engine citation audit plus SEO and accessibility ships with a paid Scout, and the refund covers the work, never a number.
+            </td>
+          </tr>
+
+          <!-- footer -->
+          <tr>
+            <td style="padding:18px 28px 24px 28px; border-top:1px solid #2a2d26; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; line-height:1.7; color:#6f6f66;">
+              Prompt Goblin &middot; Chicago, IL<br />
+              <a href="https://promptgoblin.io" style="color:#a3e635; text-decoration:none;">promptgoblin.io</a>
+              &nbsp;&middot;&nbsp;
+              <a href="mailto:goblins@promptgoblin.io" style="color:#a3e635; text-decoration:none;">goblins@promptgoblin.io</a>
+              <br /><br />
+              You're getting this because you asked for a free scan at promptgoblin.io. Reply &ldquo;stop&rdquo; and a goblin won't email you again.
+            </td>
+          </tr>
+
+        </table>
+        <!-- ===== /card ===== -->
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -165,14 +165,18 @@ svg { display: block; max-width: 100%; }
 .os {
   max-width: var(--maxw);
   margin: 0 auto;
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
   position: relative;
 }
 main { padding-top: var(--hud-h); padding-bottom: var(--hud-h); }
 
 /* hairline grid via a colored gap — children sit on the page bg */
-.grid-lines { display: grid; gap: var(--gap); background: var(--line); border: 1px solid var(--line); }
+.grid-lines {
+  display: grid;
+  gap: var(--gap);
+  background: var(--line);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
 .grid-lines > * { background: var(--bg); }
 
 /* ---- reveal-on-scroll (motion-reactive; <Reveal> adds .in) ---------- */

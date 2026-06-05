@@ -49,7 +49,7 @@ export const MESH_STEPS: MeshStep[] = [
     num: "01",
     title: "Listen to prompt surfaces",
     description:
-      "Agents sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — not just keyword tools.",
+      "Agents sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews. Not just keyword tools.",
   },
   {
     num: "02",
@@ -61,7 +61,7 @@ export const MESH_STEPS: MeshStep[] = [
     num: "03",
     title: "Audit: schema · SEO · accessibility",
     description:
-      "One pass flags missing entities & structured data, technical-SEO leaks, thin content, AND WCAG 2.1 AA / Section 508 gaps — across real rendered component states, not a single snapshot.",
+      "One pass flags missing entities & structured data, technical-SEO leaks, thin content, AND WCAG 2.1 AA / Section 508 gaps. Across real rendered component states, not a single snapshot.",
   },
   {
     num: "04",
@@ -73,11 +73,11 @@ export const MESH_STEPS: MeshStep[] = [
     num: "05",
     title: "Engineer-reviewed PRs",
     description:
-      "A software engineer approves every change before it hits your CMS, schema, or repo. Agentic, but accountable — nothing auto-ships.",
+      "A software engineer approves every change before it hits your CMS, schema, or repo. Agentic, but accountable. Nothing auto-ships.",
   },
   {
     num: "06",
-    title: "Loop on cadence — automatically",
+    title: "Loop on cadence, automatically",
     description:
       "The graph re-runs on a schedule and reports the measured before/after delta. Visibility, citations, SEO, and a11y coverage become a tracked KPI, not a vibe.",
   },

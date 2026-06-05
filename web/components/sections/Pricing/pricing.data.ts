@@ -32,7 +32,7 @@ export const TIERS: Tier[] = [
     interval: "one-time",
     link: STRIPE_LINKS.scout,
     cta: "Hire a Scout",
-    desc: "A 5-surface visibility audit that ships reviewed fixes — not a PDF. Headlined by your citation-graph diff vs a named competitor.",
+    desc: "A 5-surface visibility audit that ships reviewed fixes, not a PDF. Headlined by your citation-graph diff vs a named competitor.",
     bullets: [
       "Full LLM citation audit · 5 surfaces",
       "Schema + entity gap report",
@@ -51,7 +51,7 @@ export const TIERS: Tier[] = [
     cta: "Summon Warband",
     featured: true,
     tag: "best value",
-    desc: "The recurring agentic loop. We run the graph and ship the reviewed PRs — you approve.",
+    desc: "The recurring agentic loop. We run the graph and ship the reviewed PRs. You approve.",
     bullets: [
       "Everything in Scout",
       "Weekly agentic re-runs",

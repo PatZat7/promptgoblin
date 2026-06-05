@@ -76,6 +76,18 @@ const COMMERCE_HTML = `<!doctype html><html lang="en"><head>
   <script type="application/ld+json">{"@type":"Organization"}</script>
 </head><body><h1>Widget</h1></body></html>`;
 
+const NEXT_HTML = `<!doctype html><html><head>
+  <title>Next app</title>
+  <script id="__NEXT_DATA__" type="application/json">{"props":{}}</script>
+  <script src="/_next/static/chunks/app.js"></script>
+</head><body><h1>Next</h1></body></html>`;
+
+const WORDPRESS_HTML = `<!doctype html><html><head>
+  <title>WP site</title>
+  <meta name="generator" content="WordPress 6.5">
+  <link rel="stylesheet" href="/wp-content/themes/acme/style.css">
+</head><body><h1>WP</h1></body></html>`;
+
 // ---------------------------------------------------------------------------
 // util
 // ---------------------------------------------------------------------------
@@ -136,6 +148,59 @@ ok("rich: welcomes AI bots", rich.crawlability.welcomesAiBots);
 ok("rich: sitemap detected", rich.crawlability.sitemap === "https://acme.com/sitemap.xml");
 ok("rich: llms.txt valid", rich.llmsTxt.valid);
 ok("rich: scores higher than thin", rich.hygieneScore > thin.hygieneScore);
+ok("rich: unknown stack asks prospect to confirm", /No obvious stack/i.test(rich.techStack.note));
+
+const nextStack = buildHygieneReport({
+  url: "https://next.example/",
+  html: NEXT_HTML,
+  contentBytes: Buffer.byteLength(NEXT_HTML),
+  robotsText: ROBOTS_WELCOMING,
+  llmsText: null,
+});
+ok("tech stack: detects Next.js", nextStack.techStack.detected.some((s) => s.name === "Next.js" && s.confidence === "high"));
+
+const wpStack = buildHygieneReport({
+  url: "https://wp.example/",
+  html: WORDPRESS_HTML,
+  contentBytes: Buffer.byteLength(WORDPRESS_HTML),
+  robotsText: ROBOTS_WELCOMING,
+  llmsText: null,
+});
+ok("tech stack: detects WordPress", wpStack.techStack.detected.some((s) => s.name === "WordPress" && s.confidence === "high"));
+
+// Expanded detection: Nuxt, Shopify, generator-meta CMS, Astro, and the
+// "drop bare React/Vite when a specific framework is found" dedup.
+const NUXT_HTML = `<!doctype html><html><head><title>Nuxt</title>
+  <link rel="preload" as="script" href="/_nuxt/entry.abc123.js">
+</head><body><div id="__nuxt"></div></body></html>`;
+const nuxtStack = buildHygieneReport({ url: "https://nuxt.example/", html: NUXT_HTML, contentBytes: Buffer.byteLength(NUXT_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: detects Nuxt", nuxtStack.techStack.detected.some((s) => s.name === "Nuxt" && s.confidence === "high"));
+
+const SHOPIFY_HTML = `<!doctype html><html><head><title>Shop</title>
+  <script src="https://cdn.shopify.com/s/files/1/0/theme.js"></script>
+</head><body><h1>Shop</h1></body></html>`;
+const shopStack = buildHygieneReport({ url: "https://shop.example/", html: SHOPIFY_HTML, contentBytes: Buffer.byteLength(SHOPIFY_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: detects Shopify", shopStack.techStack.detected.some((s) => s.name === "Shopify" && s.confidence === "high"));
+
+const DRUPAL_HTML = `<!doctype html><html><head><title>Gov</title>
+  <meta name="Generator" content="Drupal 10 (https://www.drupal.org)">
+</head><body><h1>Services</h1></body></html>`;
+const drupalStack = buildHygieneReport({ url: "https://gov.example/", html: DRUPAL_HTML, contentBytes: Buffer.byteLength(DRUPAL_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: detects Drupal via generator meta", drupalStack.techStack.detected.some((s) => s.name === "Drupal" && s.confidence === "high"));
+
+const ASTRO_HTML = `<!doctype html><html><head><title>Astro</title>
+  <link rel="stylesheet" href="/_astro/index.abc.css">
+</head><body><astro-island uid="1"></astro-island></body></html>`;
+const astroStack = buildHygieneReport({ url: "https://astro.example/", html: ASTRO_HTML, contentBytes: Buffer.byteLength(ASTRO_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: detects Astro", astroStack.techStack.detected.some((s) => s.name === "Astro" && s.confidence === "high"));
+
+const NEXT_REACT_HTML = `<!doctype html><html><head><title>App</title>
+  <script id="__NEXT_DATA__" type="application/json">{}</script>
+  <script src="/_next/static/chunks/react-dom.production.min.js"></script>
+</head><body></body></html>`;
+const nrStack = buildHygieneReport({ url: "https://nr.example/", html: NEXT_REACT_HTML, contentBytes: Buffer.byteLength(NEXT_REACT_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: Next.js detected on a React app", nrStack.techStack.detected.some((s) => s.name === "Next.js"));
+ok("tech stack: drops bare React when a framework is detected", !nrStack.techStack.detected.some((s) => s.name === "React"));
 
 // Product schema is commerce-only — service/gov sites must never be flagged for it.
 const service = buildHygieneReport({

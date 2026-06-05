@@ -40,21 +40,21 @@ export const Pricing = () => (
 
     <div className={styles.enterprise}>
       <span>
-        <b className={styles.guarantee}>✓ 100% money-back guarantee</b> — on the
+        <b className={styles.guarantee}>✓ 100% money-back guarantee</b> on the
         work, not the algorithm. If we don&apos;t deliver your audit, or
         you&apos;re not happy with it within 14 days, you get every dollar back.
-        We won&apos;t promise a citation number (nobody honestly can) — we
+        We won&apos;t promise a citation number (nobody honestly can). We
         guarantee the work and measure the rest straight.
       </span>
     </div>
     <div className={styles.enterprise}>
       <span>
-        ◆ enterprise · multi-region · regulated — on-prem retrieval, custom
+        ◆ enterprise · multi-region · regulated: on-prem retrieval, custom
         auth, a goblin embedded in your team.
       </span>
       <a
         className="btn ghost"
-        href="mailto:goblins@promptgoblin.com"
+        href="mailto:goblins@promptgoblin.io"
         data-cursor="./talk"
       >
         talk to a goblin <span className="arr">→</span>

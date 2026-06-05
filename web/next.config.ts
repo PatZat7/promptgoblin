@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   output: "export",
   images: { unoptimized: true }, // required: the default image loader needs a server
   trailingSlash: true, // emit /route/index.html — friendliest for static hosts
+  devIndicators: false, // hide the dev-only Next.js logo/route indicator (never in the export anyway)
 };
 
 export default nextConfig;

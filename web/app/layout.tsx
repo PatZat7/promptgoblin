@@ -16,7 +16,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
-    default: "Prompt_Goblin™ — AI search visibility & technical SEO",
+    default: "Prompt_Goblin™ · AI search visibility & technical SEO",
     template: "%s · Prompt Goblin",
   },
   description: SITE.description,
@@ -24,24 +24,24 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    title: "Prompt Goblin — Get found by robots. Stay usable by humans.",
+    title: "Prompt Goblin · Get found by robots. Stay usable by humans.",
     description:
-      "When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it. AEO · technical SEO · WCAG accessibility.",
+      "When an AI names the best in your category, is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it. AEO · technical SEO · WCAG accessibility.",
     url: SITE.url,
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Prompt Goblin — Get found by robots. Stay usable by humans.",
+        alt: "Prompt Goblin · Get found by robots. Stay usable by humans.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prompt Goblin — Visible AF",
+    title: "Prompt Goblin · Visible AF",
     description:
-      "When an AI names the best in your category — is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it.",
+      "When an AI names the best in your category, is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it.",
     images: ["/og-image.png"],
   },
 };

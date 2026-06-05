@@ -18,11 +18,11 @@ export type EnginePhase = {
 export const ENGINE_PHASES: EnginePhase[] = [
   { stage: 0, gate: null, pk: "fix packet · a11y", pkFail: false, rd: "scan → gap found: contrast on .cta (sample)", tick: "ok" },
   { stage: 1, gate: "eval", pk: "→ eval gate", pkFail: false, rd: "eval gate · running 201 tests + eval…", tick: "ok" },
-  { stage: 1, gate: "fail", pk: "RED · regression", pkFail: true, rd: "eval: RED — patch broke 2 tests. bounce back.", tick: "bad" },
+  { stage: 1, gate: "fail", pk: "RED · regression", pkFail: true, rd: "eval: RED. patch broke 2 tests. bounce back.", tick: "bad" },
   { stage: 0, gate: null, pk: "self-heal · re-patch", pkFail: false, rd: "self-heal loop · retrieval re-tries the fix", tick: "ok" },
   { stage: 1, gate: "eval", pk: "→ eval gate", pkFail: false, rd: "eval gate · re-running…", tick: "ok" },
   { stage: 1, gate: "pass", pk: "PASS", pkFail: false, rd: "eval: PASS · 201 tests + eval green (2026-06-02)", tick: "ok" },
-  { stage: 2, gate: "pass", pk: "→ engineer review", pkFail: false, rd: "halt · awaiting engineer approval — nothing auto-ships", tick: "ok" },
+  { stage: 2, gate: "pass", pk: "→ engineer review", pkFail: false, rd: "halt · awaiting engineer approval. nothing auto-ships.", tick: "ok" },
   { stage: 2, gate: "pass", pk: "approved ✓", pkFail: false, rd: "engineer approved → reviewed PR opened on your repo", tick: "ok" },
   { stage: 2, gate: "pass", pk: "re-scan → Δ", pkFail: false, rd: "re-run on cadence · measured before/after delta (sample)", tick: "ok" },
 ];

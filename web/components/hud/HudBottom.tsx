@@ -17,7 +17,7 @@ export const HudBottom = ({ section = 4, total = 7, name = "Visibility Mesh" }: 
       </span>
     </div>
     <div className={styles.center}>
-      <span className={styles.muted}>SECTOR —</span>
+      <span className={styles.muted}>SECTOR</span>
       <span>
         {String(section).padStart(2, "0")}/{String(total).padStart(2, "0")}
       </span>

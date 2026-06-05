@@ -38,7 +38,6 @@
 
 .right {
   padding: clamp(28px, 4vw, 56px) var(--pad);
-  border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   justify-content: center;

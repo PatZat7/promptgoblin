@@ -24,7 +24,7 @@ export const SummonForm = () => {
     ) as Record<string, string>;
     if (data.botcheck) return; // honeypot
     if (!isValidDomain(data.domain || "")) {
-      setErr("Enter a valid domain — e.g. yourbrand.com (no http://, no path).");
+      setErr("Enter a valid domain, e.g. yourbrand.com (no http://, no path).");
       return;
     }
     if (!isValidEmail(data.email || "")) {
@@ -50,7 +50,7 @@ export const SummonForm = () => {
     if (ok) setSent(true);
     else
       setErr(
-        "A goblin fumbled that send. Try again, or email goblins@promptgoblin.com and we'll run it by hand.",
+        "A goblin fumbled that send. Try again, or email goblins@promptgoblin.io and we'll run it by hand.",
       );
     setSending(false);
   };
@@ -61,11 +61,11 @@ export const SummonForm = () => {
         <div className={styles.successMark}>✓</div>
         <div>
           <div className={styles.successTitle}>
-            summon received — invisibility cloak: BREAKING
+            summon received. invisibility cloak: BREAKING
           </div>
           <div className={styles.successDesc}>
             A real software engineer replies within a working day with your free
-            scan. Check your inbox (and spam — goblins lurk there too).
+            scan. Check your inbox (and spam, goblins lurk there too).
           </div>
           <button
             type="button"

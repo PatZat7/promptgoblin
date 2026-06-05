@@ -1,8 +1,10 @@
 import clsx from "clsx";
-import type { ScanReport } from "@/lib/scan-api";
+import type { CSSProperties } from "react";
+import type { ScanReport, TeaserResponse } from "@/lib/scan-api";
 import type { ScanStep } from "./scan.data";
 import type { ScoreBand } from "./scan-report";
 import { ScanStepper } from "./ScanStepper";
+import { TechIcon } from "./TechIcon";
 import styles from "./LiveScan.module.css";
 
 const BAND: Record<string, string | undefined> = {
@@ -15,12 +17,24 @@ type ScanResultProps = {
   report: ScanReport;
   email: string;
   target: string;
+  competitor: string;
+  techStackInput: string;
   band: ScoreBand;
   steps: ScanStep[];
+  tier2: Tier2State;
   onReset: () => void;
 };
 
-export const ScanResult = ({ report, email, target, band, steps, onReset }: ScanResultProps) => {
+export type Tier2State =
+  | { status: "idle" }
+  | { status: "skipped" }
+  | { status: "loading"; competitor: string }
+  | { status: "ready"; competitor: string; data: TeaserResponse }
+  | { status: "no-key"; competitor: string; summary?: string }
+  | { status: "rate-limited"; competitor: string; retryAfterHours?: number; summary?: string }
+  | { status: "error"; competitor: string; message: string };
+
+export const ScanResult = ({ report, email, target, competitor, techStackInput, band, steps, tier2, onReset }: ScanResultProps) => {
   const found = report.schema?.found ?? [];
   const missing = report.schema?.missing ?? [];
   const findings = report.findings ?? [];
@@ -62,13 +76,17 @@ export const ScanResult = ({ report, email, target, band, steps, onReset }: Scan
         </div>
       </div>
 
+      <TechStackCard report={report} entered={techStackInput} />
+
+      <Tier2Card target={target} competitor={competitor} tier2={tier2} />
+
       <p className={styles.srDisc}>{report.disclaimer}</p>
 
       <div className={styles.srCta}>
         <div className={styles.srOkT}>
           ✓ Real hygiene result delivered above. A software engineer (me) will personally review it
           and email {email || "you"}{" "}
-          about the full citation &amp; accessibility audit — no automated report.
+          about the full citation &amp; accessibility audit. No automated report.
         </div>
         <a className="btn" href="#pricing" data-cursor="./audit">
           see the full Scout audit <span className="arr">→</span>
@@ -81,3 +99,180 @@ export const ScanResult = ({ report, email, target, band, steps, onReset }: Scan
     </div>
   );
 };
+
+const Tier2Card = ({
+  target,
+  competitor,
+  tier2,
+}: {
+  target: string;
+  competitor: string;
+  tier2: Tier2State;
+}) => {
+  if (tier2.status === "idle") return null;
+
+  if (tier2.status === "skipped") {
+    return (
+      <div className={styles.tier2Card}>
+        <div className={styles.srK}>tier 2 citation teaser</div>
+        <p className={styles.tier2Muted}>Add a competitor domain to run the live Perplexity citation teaser.</p>
+      </div>
+    );
+  }
+
+  if (tier2.status === "loading") {
+    return (
+      <div className={styles.tier2Card}>
+        <div className={styles.tier2Head}>
+          <div>
+            <div className={styles.srK}>tier 2 citation teaser</div>
+            <div className={styles.tier2Sub}>Perplexity is checking {target} vs {tier2.competitor}</div>
+          </div>
+          <span className={styles.tier2Badge}>running</span>
+        </div>
+        <div className={styles.tier2Bars} aria-hidden="true">
+          <i />
+          <i />
+        </div>
+      </div>
+    );
+  }
+
+  if (tier2.status === "no-key") {
+    return <Tier2Notice label="not configured" text={tier2.summary || "Tier 2 key is not configured."} />;
+  }
+
+  if (tier2.status === "rate-limited") {
+    return (
+      <Tier2Notice
+        label="rate limited"
+        text={tier2.summary || `Try again in ${tier2.retryAfterHours ?? "a few"} hour(s).`}
+      />
+    );
+  }
+
+  if (tier2.status === "error") {
+    return <Tier2Notice label="unavailable" text={tier2.message} />;
+  }
+
+  const results = tier2.data.teaser?.results ?? [];
+  const clientWins = results.filter((r) => r.clientCited).length;
+  const competitorWins = results.filter((r) => r.competitorCited).length;
+  const engine = tier2.data.teaser?.engine || "perplexity";
+  const total = Math.max(results.length, 1);
+
+  return (
+    <div className={styles.tier2Card}>
+      <div className={styles.tier2Head}>
+        <div>
+          <div className={styles.srK}>tier 2 citation teaser</div>
+          <div className={styles.tier2Sub}>
+            {engine} · {target} vs {tier2.competitor}
+          </div>
+        </div>
+        <span className={styles.tier2Badge}>live</span>
+      </div>
+
+      <div className={styles.tier2ScoreGrid}>
+        <CitationBar label={target} value={clientWins} total={total} tone="client" />
+        <CitationBar label={tier2.competitor} value={competitorWins} total={total} tone="competitor" />
+      </div>
+
+      <div className={styles.tier2Queries}>
+        {results.map((r, i) => (
+          <div className={styles.tier2Query} key={`${r.query || "query"}-${i}`}>
+            <span className={styles.tier2Q}>{r.query || `query ${i + 1}`}</span>
+            <span className={clsx(styles.tier2Dot, r.clientCited && styles.dotClient)} title={`${target} cited`} />
+            <span className={clsx(styles.tier2Dot, r.competitorCited && styles.dotCompetitor)} title={`${tier2.competitor} cited`} />
+            <span className={styles.tier2Sources}>{r.sources?.length ?? 0} sources</span>
+          </div>
+        ))}
+      </div>
+
+      {tier2.data.summary ? <p className={styles.tier2Summary}>{tier2.data.summary}</p> : null}
+    </div>
+  );
+};
+
+const TechStackCard = ({ report, entered }: { report: ScanReport; entered: string }) => {
+  const detected = report.techStack?.detected ?? [];
+  const primary = entered || detected[0]?.name || "";
+  const hasChips = detected.length > 0 || Boolean(entered);
+
+  return (
+    <div className={styles.stackCard}>
+      <div className={styles.stackHead}>
+        <div>
+          <div className={styles.srK}>implementation stack</div>
+          <div className={styles.stackSub}>
+            {primary ? `Fix plan can be mapped to ${primary}.` : "No stack confirmed yet."}
+          </div>
+        </div>
+        <span className={styles.stackBadge}>{entered ? "entered" : detected.length ? "detected" : "needed"}</span>
+      </div>
+
+      {hasChips ? (
+        <div className={styles.stackChips}>
+          {detected.map((s, i) => (
+            <span className={styles.stackChip} style={{ "--i": i } as CSSProperties} key={`${s.name}-${s.evidence}`}>
+              <TechIcon name={s.name} className={styles.techIcon} />
+              {s.name} · {s.confidence}
+            </span>
+          ))}
+          {entered ? (
+            <span className={styles.stackChip} style={{ "--i": detected.length } as CSSProperties} key="entered-stack">
+              <TechIcon name={entered} className={styles.techIcon} />
+              {entered}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
+      <p className={styles.stackText}>
+        {report.techStack?.note ||
+          "The free scan only sees public HTML. If the stack is hidden behind a CDN or custom build, enter it so the repair plan can target the right files, CMS fields, or plugin settings."}
+      </p>
+      <div className={styles.stackSteps}>
+        <span>copy fixes</span>
+        <span>schema placement</span>
+        <span>CMS fields</span>
+        <span>developer ticket</span>
+      </div>
+    </div>
+  );
+};
+
+const CitationBar = ({
+  label,
+  value,
+  total,
+  tone,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  tone: "client" | "competitor";
+}) => {
+  const pct = Math.round((value / Math.max(total, 1)) * 100);
+  return (
+    <div className={styles.citationBar}>
+      <div className={styles.citationMeta}>
+        <span>{label}</span>
+        <span>{value}/{total}</span>
+      </div>
+      <div className={styles.citationTrack}>
+        <i className={tone === "client" ? styles.citationClient : styles.citationCompetitor} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+};
+
+const Tier2Notice = ({ label, text }: { label: string; text: string }) => (
+  <div className={styles.tier2Card}>
+    <div className={styles.tier2Head}>
+      <div className={styles.srK}>tier 2 citation teaser</div>
+      <span className={styles.tier2Badge}>{label}</span>
+    </div>
+    <p className={styles.tier2Muted}>{text}</p>
+  </div>
+);

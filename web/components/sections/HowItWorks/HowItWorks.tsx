@@ -25,7 +25,7 @@ export const HowItWorks = () => (
         </p>
         <p className={styles.p}>
           Under the hood: one automated pipeline that finds gaps across
-          answer-engine visibility, technical SEO, and accessibility — with
+          answer-engine visibility, technical SEO, and accessibility, with
           bounded self-healing loops and an eval gate that proves a fix actually
           works before any engineer sees it. Then a software engineer reviews
           every recommended change. Then it ships to your repo or CMS. Then the

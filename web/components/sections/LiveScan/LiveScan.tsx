@@ -8,7 +8,7 @@ import { runCitationTeaser, runHygieneScan, type ScanReport } from "@/lib/scan-a
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
 import { phaseTone, phaseValues, scanHost, scoreBand } from "./scan-report";
-import { ScanResult } from "./ScanResult";
+import { ScanResult, type Tier2State } from "./ScanResult";
 import { ScanStepper } from "./ScanStepper";
 import styles from "./LiveScan.module.css";
 
@@ -102,6 +102,9 @@ export const LiveScan = () => {
   const [report, setReport] = useState<ScanReport | null>(null);
   const [email, setEmail] = useState("");
   const [target, setTarget] = useState("");
+  const [competitorTarget, setCompetitorTarget] = useState("");
+  const [techStackInput, setTechStackInput] = useState("");
+  const [tier2, setTier2] = useState<Tier2State>({ status: "idle" });
   const [errorMsg, setErrorMsg] = useState("");
   const [formErr, setFormErr] = useState("");
   const runRef = useRef(0);
@@ -149,6 +152,9 @@ export const LiveScan = () => {
     setErrorMsg("");
     setFormErr("");
     setTarget("");
+    setCompetitorTarget("");
+    setTechStackInput("");
+    setTier2({ status: "idle" });
     setEmail("");
     setMode("idle");
   };
@@ -159,8 +165,9 @@ export const LiveScan = () => {
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
     const competitor = (data.competitor || "").trim();
+    const techStack = (data.techStack || "").trim();
     if (!isValidDomain(domain)) {
-      setFormErr("Enter a valid domain — e.g. yourbrand.com (no http://, no path).");
+      setFormErr("Enter a valid domain, e.g. yourbrand.com (no http://, no path).");
       return;
     }
     if (!isValidEmail(data.email || "")) {
@@ -168,15 +175,18 @@ export const LiveScan = () => {
       return;
     }
     if (competitor && !isValidDomain(competitor)) {
-      setFormErr("That competitor doesn't look like a domain — try acme.com, or leave it blank.");
+      setFormErr("That competitor doesn't look like a domain. Try acme.com, or leave it blank.");
       return;
     }
     setFormErr("");
     const host = scanHost(domain);
     const scanId = `scan_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-    captureLead("free_scan_requested", { domain, email: data.email, competitor, scan_id: scanId });
+    captureLead("free_scan_requested", { domain, email: data.email, competitor, tech_stack: techStack, scan_id: scanId });
     setEmail(data.email || "");
     setTarget(host);
+    setCompetitorTarget(competitor ? scanHost(competitor) : "");
+    setTechStackInput(techStack);
+    setTier2({ status: "idle" });
 
     const run = ++runRef.current;
     const alive = () => runRef.current === run;
@@ -226,6 +236,8 @@ export const LiveScan = () => {
     captureEvent("scan_result_shown", {
       scan_id: scanId,
       domain,
+      tech_stack_entered: techStack,
+      tech_stack_detected: r.techStack?.detected?.map((x) => x.name).filter(Boolean).join(",") || "",
       hygiene_score: r.hygieneScore,
       findings: (r.findings || []).length,
     });
@@ -258,7 +270,7 @@ export const LiveScan = () => {
       ]);
     }
     if (!findings.length) {
-      setLines((prev) => [...prev, mkLine({ t: "ok", text: "no hygiene gaps found — clean surface" })]);
+      setLines((prev) => [...prev, mkLine({ t: "ok", text: "no hygiene gaps found · clean surface" })]);
     }
     if (!alive()) return;
     await sleep(220);
@@ -269,12 +281,19 @@ export const LiveScan = () => {
 
     // Email-gated Tier-2 citation teaser (honest no-op until a key is set).
     if (!competitor) {
+      setTier2({ status: "skipped" });
       captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
     } else {
+      const competitorHost = scanHost(competitor);
+      setTier2({ status: "loading", competitor: competitorHost });
       runCitationTeaser({ email: data.email, domain, competitor }).then((tier2) => {
-        if (!tier2) return captureEvent("tier2_error", { scan_id: scanId, domain, competitor, reason: "network_or_unreachable" });
+        if (!tier2) {
+          setTier2({ status: "error", competitor: competitorHost, message: "Tier 2 network request failed." });
+          return captureEvent("tier2_error", { scan_id: scanId, domain, competitor, reason: "network_or_unreachable" });
+        }
         if (tier2.ok && tier2.configured && tier2.teaser) {
           const results = tier2.teaser.results || [];
+          setTier2({ status: "ready", competitor: competitorHost, data: tier2 });
           captureEvent("tier2_result_shown", {
             scan_id: scanId,
             domain,
@@ -285,10 +304,18 @@ export const LiveScan = () => {
             competitor_cited_count: results.filter((x) => x.competitorCited).length,
           });
         } else if (tier2.ok && tier2.configured === false) {
+          setTier2({ status: "no-key", competitor: competitorHost, summary: tier2.summary });
           captureEvent("tier2_no_key", { scan_id: scanId, domain, competitor });
         } else if (tier2.retryAfterHours) {
+          setTier2({
+            status: "rate-limited",
+            competitor: competitorHost,
+            retryAfterHours: tier2.retryAfterHours,
+            summary: tier2.summary,
+          });
           captureEvent("tier2_rate_limited", { scan_id: scanId, domain, competitor, retry_after_hours: tier2.retryAfterHours });
         } else {
+          setTier2({ status: "error", competitor: competitorHost, message: tier2.error || "Tier 2 did not return a usable teaser." });
           captureEvent("tier2_error", { scan_id: scanId, domain, competitor, status: tier2.error || "unknown" });
         }
       });
@@ -321,11 +348,6 @@ export const LiveScan = () => {
       <div className={clsx("grid-lines", styles.grid)}>
         <div className={styles.term}>
           <div className={styles.winBar}>
-            <span className={styles.dots}>
-              <i />
-              <i />
-              <i />
-            </span>
             <span className={styles.grow}>goblin@visibility-mesh — /scan</span>
             <span>{String(pct).padStart(3, "0")}%</span>
           </div>
@@ -353,7 +375,17 @@ export const LiveScan = () => {
 
         <div className={styles.side}>
           {mode === "results" && report && band ? (
-            <ScanResult report={report} email={email} target={target} band={band} steps={steps} onReset={resetToIdle} />
+            <ScanResult
+              report={report}
+              email={email}
+              target={target}
+              competitor={competitorTarget}
+              techStackInput={techStackInput}
+              band={band}
+              steps={steps}
+              tier2={tier2}
+              onReset={resetToIdle}
+            />
           ) : mode === "error" ? (
             <div className={styles.errCard}>
               <div className={styles.lbl}>$ scan failed</div>
@@ -376,6 +408,7 @@ export const LiveScan = () => {
               <input name="domain" required placeholder="yourbrand.com" autoComplete="url" data-cursor="./type" />
               <input name="email" type="email" required placeholder="you@brand.com" autoComplete="email" data-cursor="./type" />
               <input name="competitor" placeholder="a competitor (optional)" autoComplete="off" data-cursor="./type" />
+              <input name="techStack" placeholder="tech stack / CMS (optional)" autoComplete="off" data-cursor="./type" />
               <input type="text" name="botcheck" className={styles.honeypot} tabIndex={-1} autoComplete="off" aria-hidden="true" />
               <button type="submit" className="btn" data-cursor="./scan">
                 run my free scan <span className="arr">→</span>
@@ -386,10 +419,10 @@ export const LiveScan = () => {
                 </div>
               ) : null}
               <div className={styles.disclaimer}>
-                Live, real result: a technical-<b>hygiene</b> scan of your live page — structured data,
-                crawl welcome mat, head tags &amp; Core Web Vitals proxies. Hygiene is table stakes,{" "}
-                <b>not</b> a citation guarantee. The full multi-engine citation audit (ChatGPT · Claude ·
-                Gemini · Perplexity · AI Overviews) plus SEO &amp; accessibility ships with a paid Scout audit.
+                Live, real <b>hygiene</b>{" "}check: structured data, crawl welcome mat, head tags, Core
+                Web Vitals proxies, plus a public tech-stack fingerprint (enter yours if the scanner
+                can&apos;t see it). Hygiene is table stakes, <b>not</b>{" "}a citation guarantee. The full
+                multi-engine citation audit plus SEO &amp; accessibility ships with a paid Scout.
               </div>
               <ul className={styles.checks}>
                 <li>structured data / JSON-LD entities</li>

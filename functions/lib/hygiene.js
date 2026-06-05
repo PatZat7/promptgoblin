@@ -157,6 +157,95 @@ function analyzeWeight(html, contentBytes) {
   };
 }
 
+// <meta name="generator" content="X"> substrings → canonical stack name.
+const GENERATOR_MAP = [
+  [/wordpress/i, "WordPress"],
+  [/drupal/i, "Drupal"],
+  [/joomla/i, "Joomla"],
+  [/ghost/i, "Ghost"],
+  [/hugo/i, "Hugo"],
+  [/jekyll/i, "Jekyll"],
+  [/eleventy/i, "Eleventy"],
+  [/wix\.com|wix website/i, "Wix"],
+  [/squarespace/i, "Squarespace"],
+  [/webflow/i, "Webflow"],
+  [/shopify/i, "Shopify"],
+  [/hubspot/i, "HubSpot"],
+  [/gatsby/i, "Gatsby"],
+  [/next\.js/i, "Next.js"],
+];
+
+// HTML/asset fingerprints: [regex, name, confidence, evidence].
+const TECH_RULES = [
+  [/<script[^>]+id=["']__NEXT_DATA__["']|\/_next\/static\//i, "Next.js", "high", "Next.js data or /_next/ assets"],
+  [/\/_nuxt\/|window\.__NUXT__|id=["']__nuxt["']/i, "Nuxt", "high", "Nuxt runtime or /_nuxt/ assets"],
+  [/__remixContext|__remixManifest/i, "Remix", "high", "Remix runtime context"],
+  [/\/_astro\/|data-astro-|astro-island/i, "Astro", "high", "Astro assets or islands"],
+  [/\/_app\/immutable\/|__sveltekit/i, "SvelteKit", "high", "SvelteKit immutable assets"],
+  [/___gatsby|gatsby-(?:image|plugin|script)/i, "Gatsby", "high", "Gatsby runtime markers"],
+  [/ng-version=|_nghost-|<app-root[\s>]/i, "Angular", "high", "Angular root or ng-version"],
+  [/data-v-app|data-v-[0-9a-f]{8}|window\.__VUE__/i, "Vue", "medium", "Vue scoped attributes or runtime"],
+  [/wp-content|wp-includes/i, "WordPress", "high", "WordPress asset paths"],
+  [/woocommerce|wp-content\/plugins\/woocommerce/i, "WooCommerce", "high", "WooCommerce markers"],
+  [/cdn\.shopify\.com|Shopify\.theme|\/cart\/add\.js|myshopify\.com/i, "Shopify", "high", "Shopify CDN or storefront markers"],
+  [/cdn11\.bigcommerce\.com|bigcommerce\.com\/s-/i, "BigCommerce", "high", "BigCommerce CDN"],
+  [/\/static\/version\d|Magento_|mage\/cookies/i, "Magento", "high", "Magento static or runtime markers"],
+  [/prestashop|\/modules\/ps_/i, "PrestaShop", "high", "PrestaShop modules"],
+  [/uploads-ssl\.webflow\.com|data-wf-page=|webflow\.js/i, "Webflow", "high", "Webflow attributes or assets"],
+  [/static\.wixstatic\.com|X-Wix-|wix-code-sdk|wixsite\.com/i, "Wix", "high", "Wix static assets or runtime markers"],
+  [/static1\.squarespace\.com|squarespace-cdn|Y\.Squarespace/i, "Squarespace", "high", "Squarespace CDN or runtime markers"],
+  [/framerusercontent\.com|data-framer-/i, "Framer", "high", "Framer asset host or data attributes"],
+  [/Drupal\.settings|\/sites\/default\/files|data-drupal-/i, "Drupal", "high", "Drupal settings or asset paths"],
+  [/\/media\/jui\/|\/templates\/[^"']+\/joomla/i, "Joomla", "medium", "Joomla media or template paths"],
+  [/hs-scripts\.com|js\.hs-analytics|_hsenc=/i, "HubSpot", "medium", "HubSpot scripts or tracking"],
+  [/cdn\.jsdelivr\.net\/npm\/bootstrap|\/bootstrap(?:\.min)?\.css/i, "Bootstrap", "low", "Bootstrap stylesheet"],
+  [/cdn\.tailwindcss\.com|\/tailwind(?:\.min)?\.css/i, "Tailwind CSS", "low", "Tailwind stylesheet or CDN"],
+  [/code\.jquery\.com|\/jquery(?:-\d|\.min)?\.js/i, "jQuery", "low", "jQuery script"],
+  [/data-reactroot|react-dom(?:\.production)?(?:\.min)?\.js/i, "React", "low", "React DOM markers"],
+  [/\/assets\/index-[A-Za-z0-9_]+\.js|type=["']module["'][^>]+src=["'][^"']*\/assets\//i, "Vite", "low", "Vite-bundled module assets"],
+];
+
+// Specific frameworks make a bare React/Vite low-confidence hint redundant noise.
+const SPECIFIC_FRAMEWORKS = ["Next.js", "Nuxt", "Remix", "Astro", "SvelteKit", "Gatsby", "Angular", "Vue"];
+
+function detectTechStack(html) {
+  const signals = [];
+  const add = (name, confidence, evidence) => {
+    if (!signals.some((s) => s.name === name)) signals.push({ name, confidence, evidence });
+  };
+
+  // 1) <meta name="generator"> is the most authoritative single signal.
+  const generator = firstMatch(
+    /<meta[^>]+name=["']generator["'][^>]+content=["']([^"']*)["']/i,
+    html
+  );
+  if (generator) {
+    for (const [re, name] of GENERATOR_MAP) {
+      if (re.test(generator)) add(name, "high", `generator meta: "${generator.slice(0, 48)}"`);
+    }
+  }
+
+  // 2) Framework / CMS / ecommerce fingerprints in the markup + asset paths.
+  for (const [re, name, conf, ev] of TECH_RULES) {
+    if (re.test(html)) add(name, conf, ev);
+  }
+
+  let detected = signals;
+  if (signals.some((s) => SPECIFIC_FRAMEWORKS.includes(s.name))) {
+    detected = detected.filter(
+      (s) => !((s.name === "React" || s.name === "Vite") && s.confidence === "low")
+    );
+  }
+
+  return {
+    detected: detected.slice(0, 6),
+    note:
+      detected.length > 0
+        ? "Detected from public HTML fingerprints. Confirm the stack before implementation."
+        : "No obvious stack fingerprint found in the public HTML. Enter your CMS/framework so we can map the fixes to it.",
+  };
+}
+
 /** Does robots.txt explicitly welcome (Allow / no Disallow) the AI bots? */
 function analyzeRobots(robotsText) {
   if (robotsText == null) {
@@ -246,6 +335,7 @@ function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
   const malformedJsonLd = countMalformedJsonLd(html);
   const head = analyzeHead(html);
   const weight = analyzeWeight(html, contentBytes);
+  const techStack = detectTechStack(html);
   const robots = analyzeRobots(robotsText);
   const llms = analyzeLlmsTxt(llmsText);
 
@@ -298,6 +388,7 @@ function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
     hygieneScore,
     schema: { found: schemaFound, missing: schemaMissing, malformedBlocks: malformedJsonLd },
     head,
+    techStack,
     crawlability: robots,
     llmsTxt: llms,
     coreWebVitalsProxies: weight,
@@ -318,6 +409,7 @@ module.exports = {
   countMalformedJsonLd,
   analyzeHead,
   analyzeWeight,
+  detectTechStack,
   analyzeRobots,
   analyzeLlmsTxt,
   buildHygieneReport,

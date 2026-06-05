@@ -1,4 +1,5 @@
 import { SITE, TIERS } from "@/lib/site";
+import { FAQ } from "@/lib/faq";
 
 /**
  * JSON-LD graph — the AEO payload. This is the product thesis applied to our
@@ -33,7 +34,7 @@ export const structuredData: object[] = [
     url: SITE.url,
     email: SITE.email,
     description:
-      "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene — every change human-reviewed.",
+      "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene. Every change human-reviewed.",
     areaServed: "Worldwide",
     knowsAbout: [
       "Generative Engine Optimization",
@@ -89,39 +90,10 @@ export const structuredData: object[] = [
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "What is AI search visibility (AEO/GEO)?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Answer Engine Optimization (AEO) / Generative Engine Optimization (GEO) is getting your brand cited inside AI answers — ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews — rather than only ranking in blue links.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Does schema markup get me cited by AI?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Schema and llms.txt are hygiene — necessary so engines can parse you, but not a citation lever on their own. The real levers are brand mentions and Bing ranking; we work all of it, and every change is human-reviewed.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How much does a Prompt Goblin audit cost?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Goblin Scout is a one-time visibility audit at $2,950. Ongoing retainers are Goblin Warband ($4,800/mo) and Goblin Warlord ($12,500/mo). Flat fee — no credits, no meter.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Is there a money-back guarantee?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Yes — a 100% money-back guarantee on the work, not on the algorithm. If we don't deliver your audit, or you're not happy with it within 14 days of delivery, you get a full refund, no argument. We can't promise a specific citation number — AI citation share is volatile and partly outside anyone's control — so we never sell one. We guarantee the work, and we measure the result honestly.",
-        },
-      },
-    ],
+    mainEntity: FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   },
 ];
