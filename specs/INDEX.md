@@ -13,9 +13,9 @@
 | [citation-verification-layer](citation-verification-layer.md) | pipeline + functions + supabase | graph-keeper + integrity | ◑ offline core now; live-verify + Supabase fields gated |
 | [prune-tier2-dead-branch](prune-tier2-dead-branch.md) | web | `web npm test` + build | ✅ yes |
 | [docs-methodology-and-aeo-geo](docs-methodology-and-aeo-geo.md) | web | integrity-reviewer (copy via copywriter) | ✅ yes (branch — deploy-on-push) |
-| [supabase-pgvector-schema](supabase-pgvector-schema.md) | supabase (new) | schema review + RLS tests | ⛔ needs Supabase project to test |
-| [dashboard-mvp](dashboard-mvp.md) | web + supabase | integrity + qa(axe) + schema | ⛔ needs web/ cutover + Supabase |
-| [vector-rag-ingestion](vector-rag-ingestion.md) | pipeline + supabase | graph-keeper + schema | ⛔ needs Supabase + embeddings key + schema §0 sign-off |
+| [supabase-pgvector-schema](supabase-pgvector-schema.md) | supabase (new) | schema review + RLS tests | ✅ creds in `.env` (`SUPABASE_CONNECTION_STRING` runs migrations) |
+| [dashboard-mvp](dashboard-mvp.md) | web + supabase | integrity + qa(axe) + schema | ◑ Supabase ✓ — still needs `web/` cutover + service-role-vs-connection-string call |
+| [vector-rag-ingestion](vector-rag-ingestion.md) | pipeline + supabase | graph-keeper + schema | ◑ Supabase ✓ — still needs an embeddings key (or reuse Gemini) + schema §0 sign-off |
 
 ## Implementation order (dependency-aware)
 
@@ -32,10 +32,11 @@
 2. then `dashboard-mvp` (also needs the `web/` cutover deploy) **and** `vector-rag-ingestion` (also needs an embeddings key + the schema §0 channel-vs-role reconciliation signed off).
 
 ## Owner-unblock list (these gate Wave 2)
-- Provision a **Supabase project** + keys (service-role server-side only; anon for RLS) — blocks schema, dashboard, vector.
-- An **embeddings API key** — blocks vector-rag.
-- Decide the **`web/` static→Node cutover deploy** — blocks dashboard.
-- **Rotate the leaked DO token + WORKDAY_PASSWORD** before any new service-role/secret wiring (already on PLAN).
+- ✅ **Supabase project + keys** — in root `.env` (`SUPABASE_PROJECT_URL`, `SUPABASE_KEY` = publishable, `SUPABASE_CONNECTION_STRING` = Postgres), gitignored. Unblocks `supabase-pgvector-schema`.
+- **Embeddings API key** — still needed for `vector-rag` (no OpenAI/Voyage in `.env`; could reuse the existing Gemini key — decide).
+- Decide the **`web/` static→Node cutover deploy** — blocks `dashboard-mvp`.
+- **Service-role key decision** for the dashboard server client (or: privileged writes via the pipeline using `SUPABASE_CONNECTION_STRING`, client reads via publishable key + RLS).
+- **Rotate sensitive secrets** — the `.env` screenshot exposed live values (Stripe live secret, DB connection string) into the chat transcript; rotate if it could leak. (DO token + WORKDAY_PASSWORD rotation already on PLAN.)
 
 ## Notes
 - Specs are the **contract** (file paths, signatures, data shapes, thresholds, test names); illustrative code bodies in them are not final code.
