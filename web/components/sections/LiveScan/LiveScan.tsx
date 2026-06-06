@@ -115,8 +115,11 @@ export const LiveScan = () => {
     const run = ++runRef.current;
     let i = 0;
     let timer: ReturnType<typeof setTimeout>;
+    // Reset the sample buffer each time we (re)enter idle, before the loop ticks.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setLines([]);
     setPct(0);
+    /* eslint-enable react-hooks/set-state-in-effect */
     const tick = () => {
       if (runRef.current !== run) return;
       if (i >= SAMPLE_LINES.length) {

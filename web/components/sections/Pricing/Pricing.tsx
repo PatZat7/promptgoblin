@@ -14,7 +14,7 @@ export const Pricing = () => (
         >
           {tier.tag && <span className={styles.tag}>{tier.tag}</span>}
           <div className={styles.name}>{tier.name}</div>
-          <div className={styles.who}>// {tier.who}</div>
+          <div className={styles.who}>{"// "}{tier.who}</div>
           <div className={styles.price}>
             ${tier.price}
             <small className={styles.priceUnit}>{tier.interval}</small>

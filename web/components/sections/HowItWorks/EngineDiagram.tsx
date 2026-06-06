@@ -25,8 +25,12 @@ export const EngineDiagram = () => {
   // Advance phases only once the diagram is in view (loops).
   useEffect(() => {
     if (prefersReduced()) {
+      // Post-hydration reduced-motion guard (see Loader): effect, not lazy init,
+      // so static-export HTML and the client agree. Jump straight to the end state.
+      /* eslint-disable react-hooks/set-state-in-effect */
       setReduced(true);
       setPhase(ENGINE_PHASES.length - 1);
+      /* eslint-enable react-hooks/set-state-in-effect */
       return;
     }
     let alive = true;

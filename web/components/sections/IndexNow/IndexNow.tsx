@@ -24,7 +24,7 @@ export const IndexNow = () => (
     <PanelBar command="index · now" note="$ goblin status" />
     <div className={clsx("grid-lines", styles.grid)}>
       <div className={styles.left}>
-        <div className={styles.heading}>// now</div>
+        <div className={styles.heading}>{"// now"}</div>
         {NOW_ROWS.map((row) => (
           <div className={styles.nowRow} key={row.key}>
             <span className={styles.nowKey}>{row.key}</span>

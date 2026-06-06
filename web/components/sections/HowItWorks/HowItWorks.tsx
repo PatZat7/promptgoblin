@@ -17,7 +17,7 @@ export const HowItWorks = () => (
         </span>
         <h2 className={styles.heading}>How we actually move the needle</h2>
         <p className={styles.monoNote}>
-          // automated system · software-engineer judgment · measurable results
+          {"// automated system · software-engineer judgment · measurable results"}
         </p>
         <p className={styles.p}>
           Most SEO shops send you a PDF.{" "}

@@ -19,6 +19,9 @@ export const MeshCanvas = () => {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Post-hydration reduced-motion guard (see Loader): effect, not lazy init,
+      // so static-export HTML and the client agree.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAnimate(false);
       return;
     }
