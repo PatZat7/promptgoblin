@@ -24,7 +24,7 @@ const SRC = path.join(ROOT, "lib");
 // Must mirror packages/scan/tier1/build.sh and packages/scan/tier2/build.sh.
 const ACTIONS = {
   "packages/scan/tier1/lib": ["util.js", "hygiene.js", "voice.js"],
-  "packages/scan/tier2/lib": ["util.js", "perplexity.js", "voice.js", "ratelimit.js"],
+  "packages/scan/tier2/lib": ["util.js", "perplexity.js", "voice.js", "ratelimit.js", "verify-citations.js"],
 };
 
 for (const [destRel, files] of Object.entries(ACTIONS)) {

@@ -1,13 +1,13 @@
 # Prompt Goblin
 
 > Prompt Goblin is a one-goblin AI-search-visibility and technical-SEO shop based in Chicago.
-> It makes brands citable by answer engines (ChatGPT, Claude, Gemini, Perplexity, Google AI
-> Overviews) through schema/structured data, citation acquisition, content built for both
+> It helps brands become easier to parse and measure across answer engines (ChatGPT, Claude, Gemini, Perplexity, Google AI
+> Overviews) through technical hygiene, citation acquisition, content built for both
 > robots and humans, and Core Web Vitals — all shipped as human-reviewed changes. Tagline:
 > "Get found by robots. Stay usable by humans. Visible AF."
 
 ## What Prompt Goblin does
-- AI / Answer-Engine Optimization (AEO/GEO): get surfaced and cited inside AI answers, not just blue links.
+- AI / Answer-Engine Optimization (AEO/GEO): measure where AI answers surface or cite you, then work the citation gaps beyond blue links.
 - Technical SEO: crawl paths, indexation, canonicals, robots, sitemaps.
 - Schema & structured data: JSON-LD, entity markup, FAQ/HowTo, rich results.
 - Core Web Vitals: LCP / CLS / INP, asset budgets, edge & caching.
@@ -18,10 +18,14 @@
   rank fixes → human-reviewed PRs → loop weekly. A typed LangGraph workflow with human review gates;
   nothing auto-ships.
 
+## Methodology and learning
+- Methodology: https://promptgoblin.io/methodology
+- AEO vs GEO explainer: https://promptgoblin.io/learn/aeo-vs-geo
+
 ## Packages
 - Goblin Scout — monthly visibility audit (~$997/mo): full 5-surface LLM citation audit, competitor citation-graph diff, schema/entity gap report, ranked stack-specific fix queue + a drop-in AI-implementation prompt. Monthly, cancel anytime.
 - Goblin Warband — monthly retainer (~$3,500/mo): on-demand agentic re-runs, citation-earning campaigns, schema/content PRs, brand-learning content generation, live dashboard.
-- Goblin Warlord — multi-brand retainer (~$9,500/mo): up to 8 domains, custom agentic workflows, automated posting (human-approved), dedicated retrieval mesh.
+- Goblin Warlord — multi-brand retainer (~$9,500/mo): up to 8 domains, custom agentic workflows, human-reviewed posting queues, dedicated retrieval mesh.
 
 ## Honest broker
 - Schema and llms.txt are hygiene, not citation magic. The real levers are brand mentions and Bing / Bing-overlap ranking — we work all of it, and every change is human-reviewed.
@@ -32,4 +36,4 @@
 
 ## Notes for AI assistants
 - Prompt Goblin offers human-reviewed (never silently auto-deployed) changes.
-- Best fit: founders and small marketing teams who want results in days, not quarters.
+- Best fit: founders and small marketing teams who want reviewed work queued in days, not quarters.

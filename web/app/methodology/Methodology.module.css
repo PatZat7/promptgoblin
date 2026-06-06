@@ -1,0 +1,90 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: calc(var(--hud-h) + 56px) 24px 96px;
+}
+
+.hero {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 34px;
+}
+
+.eyebrow,
+.kicker {
+  color: var(--lime);
+  font-family: var(--pixel-tiny);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.section h2 {
+  font-family: var(--pixel);
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.hero h1 {
+  max-width: 980px;
+  margin: 18px 0;
+  font-size: clamp(30px, 5vw, 68px);
+}
+
+.lede,
+.section p,
+.section li,
+.table {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.section {
+  padding: 44px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  border-radius: 6px;
+  padding: 18px;
+}
+
+.card h3 {
+  margin: 10px 0;
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 18px;
+}
+
+.note {
+  color: var(--lime);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table td {
+  border-top: 1px solid var(--line);
+  padding: 14px 10px;
+  vertical-align: top;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-inline: 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,4 +1,4 @@
-import { SITE } from "@/lib/site";
+import { DOCS, SITE } from "@/lib/site";
 import styles from "./Hud.module.css";
 
 type HudBottomProps = {
@@ -24,6 +24,10 @@ export const HudBottom = ({ section = 4, total = 7, name = "Visibility Mesh" }: 
       <span>{name}</span>
     </div>
     <div className={styles.right}>
+      {DOCS.map((link) => (
+        <a key={link.href} href={link.href}>{link.label}</a>
+      ))}
+      <span className={styles.divider} />
       <span className={styles.muted}>EN_US</span>
       <span className={styles.divider} />
       <a href="#top">↑ top</a>

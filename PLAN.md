@@ -15,7 +15,7 @@
 - ✅ **Agent team** — 8 specialists in `.claude/agents/` + this PLAN + project `CLAUDE.md`.
 - ✅ **Multi-agent coordination board** — `COORDINATION.md` is now the visibility board for Codex / Claude / Hermes lanes, context preflight, status stamping, and merge gates. `PLAN.md` remains the execution contract; Codex integrates.
 - ✅ **Feedback inbox** — Claude/Hermes review notes land in `feedback/claude/` and `feedback/hermes/`; Codex records integration decisions in `feedback/codex/` before updating `PLAN.md`, specs, migrations, or code.
-- ⚠️ **Current verification snapshot (2026-06-06)** — `functions npm test` PASS (112 checks), `web npm run build` PASS, `web npm test` PASS (23 tests), `pipeline .venv\Scripts\python.exe -m goblin.eval` PASS (3/3 cases + global checks), but full pipeline pytest is **not green**: 272 pass / 1 fail (`tests/test_schema_audit.py::test_fetch_degrades_gracefully_on_network_error`, expected note contains `fetch failed`, actual note says `could not read acme.com...`). Treat pipeline changes as blocked from "fully green" claims until this wording/contract mismatch is fixed.
+- ⚠️ **Current verification snapshot (2026-06-06, Wave 1 branch)** — `pipeline .venv\Scripts\python.exe -m pytest -q` PASS (287 tests) and `pipeline .venv\Scripts\python.exe -m goblin.eval.run_eval` PASS (3/3 cases + global checks); `functions npm test` PASS; `web npm test` PASS (32 tests); `web npm run build` PASS and emits `/methodology` + `/learn/aeo-vs-geo`. `web npm run lint` is still red on baseline lint issues outside the Wave 1 docs/prune slice; do not claim lint green until separately fixed. Integrity-reviewer APPROVED; graph-keeper final APPROVE is still pending/unavailable after the final redirect-SSRF fix.
 
 ## In flight
 

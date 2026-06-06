@@ -1,0 +1,99 @@
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: calc(var(--hud-h) + 56px) 24px 96px;
+}
+
+.hero,
+.section {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 34px;
+}
+
+.section {
+  padding-top: 44px;
+}
+
+.eyebrow,
+.sourceTag {
+  color: var(--lime);
+  font-family: var(--pixel-tiny);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.hero h1,
+.section h2 {
+  font-family: var(--pixel);
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.hero h1 {
+  max-width: 980px;
+  margin: 18px 0;
+  font-size: clamp(30px, 5vw, 64px);
+}
+
+.lede,
+.section p,
+.section li,
+.sourceTable {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.defs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.def,
+.sourceTable {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+}
+
+.def {
+  padding: 18px;
+}
+
+.def h2 {
+  margin: 8px 0;
+  font-size: 22px;
+}
+
+.sourceTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sourceTable th,
+.sourceTable td {
+  border-top: 1px solid var(--line);
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.sourceTable th {
+  color: var(--fg);
+  font-family: var(--mono);
+}
+
+.sourceTable a {
+  color: var(--lime);
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-inline: 16px;
+  }
+
+  .defs {
+    grid-template-columns: 1fr;
+  }
+}

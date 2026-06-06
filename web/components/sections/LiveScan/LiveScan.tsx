@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Panel, PanelBar } from "@/components/ui/Panel/Panel";
 import { captureEvent, captureLead } from "@/lib/analytics";
-import { runCitationTeaser, runCitationTeaserAuto, runHygieneScan, type ScanReport } from "@/lib/scan-api";
+import { runCitationTeaserAuto, runHygieneScan, type ScanReport } from "@/lib/scan-api";
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
 import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "./scan-report";
@@ -102,8 +102,6 @@ export const LiveScan = () => {
   const [report, setReport] = useState<ScanReport | null>(null);
   const [email, setEmail] = useState("");
   const [target, setTarget] = useState("");
-  const [competitorTarget, setCompetitorTarget] = useState("");
-  const [techStackInput, setTechStackInput] = useState("");
   const [tier2, setTier2] = useState<Tier2State>({ status: "idle" });
   const [errorMsg, setErrorMsg] = useState("");
   const [formErr, setFormErr] = useState("");
@@ -152,8 +150,6 @@ export const LiveScan = () => {
     setErrorMsg("");
     setFormErr("");
     setTarget("");
-    setCompetitorTarget("");
-    setTechStackInput("");
     setTier2({ status: "idle" });
     setEmail("");
     setMode("idle");
@@ -164,11 +160,7 @@ export const LiveScan = () => {
     const data = Object.fromEntries(new FormData(e.currentTarget).entries()) as Record<string, string>;
     if (data.botcheck) return; // honeypot
     const domain = (data.domain || "").trim();
-    // Competitor + tech stack are now auto-discovered (recon node / HTML fingerprint),
-    // so the form only asks for the domain. Kept as empty here so the downstream
-    // Tier-2-skip and stack-detect paths stay intact.
-    const competitor = "";
-    const techStack = "";
+    // Domain-only scan; competitor + stack are auto-discovered downstream.
     if (!isValidDomain(domain)) {
       setFormErr("Enter a valid domain, e.g. yourbrand.com (no http://, no path).");
       return;
@@ -180,11 +172,9 @@ export const LiveScan = () => {
     setFormErr("");
     const host = scanHost(domain);
     const scanId = `scan_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
-    captureLead("free_scan_requested", { domain, email: data.email, competitor, tech_stack: techStack, scan_id: scanId });
+    captureLead("free_scan_requested", { domain, email: data.email, scan_id: scanId });
     setEmail(data.email || "");
     setTarget(host);
-    setCompetitorTarget(competitor ? scanHost(competitor) : "");
-    setTechStackInput(techStack);
     setTier2({ status: "idle" });
 
     const run = ++runRef.current;
@@ -275,7 +265,6 @@ export const LiveScan = () => {
     captureEvent("scan_result_shown", {
       scan_id: scanId,
       domain,
-      tech_stack_entered: techStack,
       tech_stack_detected: r.techStack?.detected?.map((x) => x.name).filter(Boolean).join(",") || "",
       hygiene_score: r.hygieneScore,
       findings: (r.findings || []).length,
@@ -380,8 +369,8 @@ export const LiveScan = () => {
               report={report}
               email={email}
               target={target}
-              competitor={competitorTarget}
-              techStackInput={techStackInput}
+              competitor=""
+              techStackInput=""
               band={band}
               steps={steps}
               tier2={tier2}
@@ -395,7 +384,7 @@ export const LiveScan = () => {
               </div>
               <div className={styles.errWhy}>{errorMsg}</div>
               {tier2.status !== "idle" ? (
-                <Tier2Card target={target} competitor={competitorTarget} tier2={tier2} />
+                <Tier2Card target={target} competitor="" tier2={tier2} />
               ) : null}
               <button type="button" className="btn" onClick={resetToIdle} data-cursor="./retry">
                 try another domain <span className="arr">→</span>

@@ -1,5 +1,6 @@
 import { SITE, TIERS } from "@/lib/site";
 import { FAQ } from "@/lib/faq";
+import { SOURCES } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
 
 /**
  * JSON-LD graph — the AEO payload. This is the product thesis applied to our
@@ -96,4 +97,50 @@ export const structuredData: object[] = [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+];
+
+const breadcrumb = (...items: [string, string][]) => ({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map(([name, href], idx) => ({
+    "@type": "ListItem",
+    position: idx + 1,
+    name,
+    item: `${SITE.url}${href === "/" ? "/" : href}`,
+  })),
+});
+
+export const methodologyJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "How the Prompt Goblin scan works - methodology",
+    description: "What Prompt Goblin measures, what each finding means, where recon and human review sit, and what we do not claim.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/methodology`,
+    inLanguage: "en",
+  },
+  breadcrumb(["Home", "/"], ["Methodology", "/methodology"]),
+];
+
+export const aeoGeoJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "AEO vs GEO - the difference and what gets cited",
+    description: "Answer Engine Optimization vs Generative Engine Optimization, the zero-click shift, and the signals that make AI citations measurable.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/aeo-vs-geo`,
+    inLanguage: "en",
+    citation: SOURCES.map((s) => ({
+      "@type": "CreativeWork",
+      name: s.claim,
+      url: s.url,
+    })),
+  },
+  breadcrumb(["Home", "/"], ["Learn", "/learn/aeo-vs-geo"], ["AEO vs GEO", "/learn/aeo-vs-geo"]),
 ];

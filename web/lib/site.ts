@@ -23,6 +23,11 @@ export const NAV: NavLink[] = [
   { href: "#contact", label: "./summon" },
 ];
 
+export const DOCS: NavLink[] = [
+  { href: "/methodology", label: "./methodology" },
+  { href: "/learn/aeo-vs-geo", label: "./aeo-vs-geo" },
+];
+
 /** Flat-fee tiers — also feed the Offer / OfferCatalog structured data. */
 export const TIERS = [
   { name: "Goblin Scout — monthly visibility audit", price: "997" },

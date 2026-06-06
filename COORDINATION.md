@@ -25,9 +25,9 @@
 
 | Agent | Current task | Branch | Status | Updated |
 |---|---|---|---|---|
-| Codex | (1) integrate this file → (2) fix pytest blocker (`test_schema_audit.py::test_fetch_degrades_gracefully_on_network_error`) | `fix/pipeline-pytest-contract` | in-progress | 2026-06-06 |
-| Claude | author specs: freshness-cadence node + Supabase schema review | `specs/` (no-merge) | queued | 2026-06-06 |
-| Hermes | vault mirror of this file + GTM angles draft from Reddit/community signal | vault-only | in-progress | 2026-06-06 |
+| Codex | Wave 1 implementation from `specs/INDEX.md`: pipeline/features + functions verifier + web docs/prune | root `codex/wave1-web-docs`; pipeline `codex/wave1-pipeline` | awaiting reviewer sign-off | 2026-06-06 |
+| Claude | orchestrator/spec owner; review handoff in `feedback/claude/2026-06-06-spec-handoff.md` | `specs/` (no-merge) | in-progress | 2026-06-06 |
+| Hermes | vault mirror of this file + GTM angles draft from Reddit/community signal | external vault `C:\Users\atpat\Documents\ObsidianVault` | in-progress | 2026-06-06 |
 | Hermes | Playwright/visual gate runbook + vault note + coordination updates | vault-only | in-progress | 2026-06-06 |
 
 ## Context preflight
