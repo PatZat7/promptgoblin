@@ -1,0 +1,15 @@
+.btn {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0a0b0a;
+  background: var(--lime);
+  border: none;
+  border-radius: 2px;
+  padding: 0.375rem 0.875rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:hover {
+  opacity: 0.88;
+}

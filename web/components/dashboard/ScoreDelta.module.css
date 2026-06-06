@@ -1,0 +1,33 @@
+.noBaseline {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--faint);
+  font-style: italic;
+}
+
+.blindSpot {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--bolt);
+  font-weight: 600;
+}
+
+.up {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--lime);
+  font-weight: 600;
+}
+
+.down {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--fire);
+  font-weight: 600;
+}
+
+.flat {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--faint);
+}

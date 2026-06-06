@@ -1,0 +1,37 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 2px;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+  cursor: help;
+  text-transform: uppercase;
+}
+
+.verified {
+  color: var(--lime);
+  background: color-mix(in srgb, var(--lime) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--lime) 35%, transparent);
+}
+
+.partial {
+  color: var(--fire-2);
+  background: color-mix(in srgb, var(--fire-2) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fire-2) 30%, transparent);
+}
+
+.low {
+  color: var(--bolt);
+  background: color-mix(in srgb, var(--bolt) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bolt) 30%, transparent);
+}
+
+.notRun {
+  color: var(--faint);
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  border: 1px solid var(--line);
+}

@@ -1,0 +1,82 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 160px 1fr 52px;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.clientLabel {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.competitorLabel {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.youChip {
+  font-size: 0.6875rem;
+  color: var(--lime);
+  font-weight: 400;
+}
+
+.barWrap {
+  height: 10px;
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.clientBar {
+  height: 100%;
+  background: var(--lime);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.competitorBar {
+  height: 100%;
+  background: var(--muted);
+  opacity: 0.5;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.clientPct {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lime);
+  text-align: right;
+}
+
+.competitorPct {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+.note {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--faint);
+  font-style: italic;
+  margin: 0.25rem 0 0;
+}

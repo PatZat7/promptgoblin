@@ -1,0 +1,114 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.meta {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.modeBadge {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.1rem 0.4rem;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionTitle {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.proofGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.blindSpotNote {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--bolt);
+  background: color-mix(in srgb, var(--bolt) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bolt) 30%, transparent);
+  border-radius: 2px;
+  padding: 0.75rem 1rem;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.fixQueueLink {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--lime);
+  text-decoration: none;
+}
+.fixQueueLink:hover {
+  text-decoration: underline;
+}
+
+.backLink {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.backLink:hover {
+  color: var(--fg);
+}

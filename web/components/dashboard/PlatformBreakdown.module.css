@@ -1,0 +1,51 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 180px 1fr 90px;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.engineLabel {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barWrap {
+  height: 8px;
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: var(--ice);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.pct {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--ice);
+  font-weight: 600;
+  text-align: right;
+}
+
+.notMeasured {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--faint);
+  font-style: italic;
+  text-align: right;
+}

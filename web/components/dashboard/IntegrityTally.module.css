@@ -1,0 +1,91 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.tally {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.bucket {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 80px;
+}
+
+.bucketLabel {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: help;
+}
+
+.hint {
+  font-weight: 400;
+  font-size: 0.6875rem;
+  color: var(--faint);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.verifiedCount {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1;
+  margin: 0;
+}
+
+.unverifiableCount {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1;
+  margin: 0;
+}
+
+.fabricatedCountGood {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--lime);
+  line-height: 1;
+  margin: 0;
+}
+
+.fabricatedCountBad {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--fire);
+  line-height: 1;
+  margin: 0;
+}
+
+.noResults {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--faint);
+  margin: 0;
+  font-style: italic;
+}
+
+.honestNote {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--fire) 6%, transparent);
+  border-left: 2px solid var(--fire);
+  padding: 0.5rem 0.75rem;
+  margin: 0;
+  border-radius: 0 2px 2px 0;
+}

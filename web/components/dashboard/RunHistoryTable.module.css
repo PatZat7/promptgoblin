@@ -1,0 +1,135 @@
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+}
+
+.th {
+  text-align: left;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  background: var(--panel);
+}
+
+.colHint {
+  font-size: 0.6875rem;
+  color: var(--faint);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.row {
+  border-bottom: 1px solid var(--line);
+  transition: background 0.1s;
+}
+.row:last-child {
+  border-bottom: none;
+}
+.row:hover {
+  background: color-mix(in srgb, var(--fg) 3%, transparent);
+}
+
+.td {
+  padding: 0.75rem 1rem;
+  color: var(--fg);
+  vertical-align: middle;
+}
+
+.domain {
+  color: var(--fg);
+  margin-right: 0.5rem;
+}
+
+.modeLive {
+  color: var(--lime);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.modeSample {
+  color: var(--bolt);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.modeMock {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.share {
+  font-weight: 700;
+  color: var(--lime);
+}
+
+.blindSpot {
+  color: var(--bolt);
+  font-size: 0.75rem;
+  font-style: italic;
+  cursor: help;
+}
+
+.na {
+  color: var(--faint);
+}
+
+.conf {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.lowConf {
+  font-size: 0.75rem;
+  color: var(--fire-2);
+  font-weight: 600;
+}
+
+.detailLink {
+  color: var(--lime);
+  text-decoration: none;
+  font-size: 0.75rem;
+}
+.detailLink:hover {
+  text-decoration: underline;
+}
+
+.empty {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  padding: 2.5rem;
+  text-align: center;
+}
+.emptyCta {
+  color: var(--faint);
+  font-size: 0.8125rem;
+  margin: 0.5rem 0 0;
+}
+
+/* Accessible screen-reader only text */
+.sr-only,
+:global(.sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
