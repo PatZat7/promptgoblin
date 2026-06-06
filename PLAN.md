@@ -4,7 +4,20 @@
 
 ## ⚠️ Deploy note
 
-`main` is **deploy-on-push** — merging to `main` ships live. Owner wants to land **style changes first**, so do style work on a branch (or local) and only merge to `main` once approved. Keep uncommitted local edits in mind (see "In flight").
+`main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site** (the cutover from the old root `index.html` SPA is DONE). Gate every merge (tests + build + required reviewers) before pushing. The marketing site is currently `output:'export'` **static**; the dashboard (#5) needs it converted to **Node SSR** — do that on a branch with full verification before any cutover.
+
+## ✅ Current state — 2026-06-06 (Claude-integrator session)
+
+> Authoritative snapshot; older "In flight / Queued" entries below may lag.
+
+- **Coordination:** owner moved to **Claude as the sole integrator** for this push (Codex stood down; no shared-tree multi-writer). Hermes's vault lane unchanged.
+- **Marketing site:** `web/` Next.js cutover **DONE + live** on promptgoblin.io (DO builds `web/`→`out/` on push to `main`); old root SPA retired.
+- **Wave 1 — shipped + gated:** pipeline (freshness · topical-authority · per-platform lanes · third-party presence · citation-verification offline) — graph-keeper re-gate **APPROVE**, **289 pytest + eval 3/3**, merged to pipeline `master` + pushed (`061bbc9`). Web/functions (`/methodology` · `/learn/aeo-vs-geo` · LiveScan Tier-2 prune · functions citation-verifier) merged to `main` + deployed. Functions redeployed (Scrapfly WAF-bypass + render-diff + buildRenderDiff fix); **live walgreens.com probe honest** (real score 13, `staticWasBlocked:true`, never 0).
+- **Wave 2 — schema:** live-safe Supabase + pgvector migrations + RLS + Docker-verified isolation tests, committed (`7f9e9f1`) on `main`. **Live apply pending** the IPv4 **session-pooler** string (the direct host is IPv6-only, unreachable from Docker).
+- **Wave 2 — dashboard (#5):** IN PROGRESS on `claude/wave2-dashboard` — `web/`→Node-SSR + dashboard MVP per `specs/dashboard-mvp.md`. Not cut over (owner-gated).
+- **Wave 2 — vector-rag (#6):** deferred (owner).
+- **Verification truth:** pipeline **289 pytest + eval 3/3** · functions **138** · web **32**. (Older 186 / 272-pass-1-fail / 112 counts below are stale.)
+- **Open owner items:** session-pooler string (unblocks #4) · service-role key (#5 server access) · rotate exposed secrets (Stripe live + DB string) · embeddings key (if #6 resumes).
 
 ## Status
 

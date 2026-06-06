@@ -23,12 +23,13 @@
 
 > Each agent updates its own row before starting a task. Integrator reconciles. `git branch -a` = active work; PLAN.md ✅+hash = done work.
 
+> **2026-06-06 override:** owner moved to **Claude as sole integrator** for this push; **Codex stood down**. The Codex-integrator roster above is the default model — this override holds until the owner restores it.
+
 | Agent | Current task | Branch | Status | Updated |
 |---|---|---|---|---|
-| Codex | Wave 1 implementation from `specs/INDEX.md`: pipeline/features + functions verifier + web docs/prune | root `codex/wave1-web-docs`; pipeline `codex/wave1-pipeline` | awaiting reviewer sign-off | 2026-06-06 |
-| Claude | orchestrator/spec owner; review handoff in `feedback/claude/2026-06-06-spec-handoff.md` | `specs/` (no-merge) | in-progress | 2026-06-06 |
-| Hermes | vault mirror of this file + GTM angles draft from Reddit/community signal | external vault `C:\Users\atpat\Documents\ObsidianVault` | in-progress | 2026-06-06 |
-| Hermes | Playwright/visual gate runbook + vault note + coordination updates | vault-only | in-progress | 2026-06-06 |
+| Claude | **INTEGRATOR.** Wave 1 merged + deployed; Wave 2 schema committed (live apply pending pooler); building #5 dashboard | `main` + `claude/wave2-dashboard` | in-progress | 2026-06-06 |
+| Codex | Wave 1 implementation (done; merged + deployed + gated by Claude) | — | stood down | 2026-06-06 |
+| Hermes | vault mirror + GTM angles (vault lane unchanged) | external vault | in-progress | 2026-06-06 |
 
 ## Context preflight
 
