@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "sync": "node build-sync.js",
-    "test": "npm run sync && node test/scan.test.js",
+    "test": "npm run sync && node test/scan.test.js && node test/scan-index.test.js && node test/scan-tier2-auto.test.js",
     "invoke:tier1": "npm run sync && node test/invoke-local.js tier1",
     "invoke:tier2": "npm run sync && node test/invoke-local.js tier2"
   }

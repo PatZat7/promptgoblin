@@ -207,3 +207,9 @@ async function main(args) {
 }
 
 exports.main = main;
+
+// Named exports for unit-testing WITHOUT breaking the DO Functions handler.
+// These are internal helpers; callers should stub global fetch before using fetchText.
+exports._looksLikeBotWall = looksLikeBotWall;
+exports._fetchText = fetchText;
+exports._BOT_PROTECTION_STATUSES = BOT_PROTECTION_STATUSES;

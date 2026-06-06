@@ -17,6 +17,7 @@ Orchestration is the **main thread + `PLAN.md`** — subagents are stateless spe
 
 | Agent | Use it for |
 |---|---|
+| `promptgoblin-expert` | project-state + WAF-reality authority (Hermes); consult on scan-path / pipeline / live-site questions and any "did this regress?" claim before acting |
 | `copywriter` | site / DM / email copy in the goblin voice |
 | `design-system` | CSS, layout, responsive/mobile, design tokens |
 | `qa` | Playwright e2e + axe-core a11y + pytest; a11y/WCAG specialist |

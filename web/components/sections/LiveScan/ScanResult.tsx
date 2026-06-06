@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import type { CSSProperties } from "react";
-import type { ScanReport, TeaserResponse } from "@/lib/scan-api";
+import type { ScanReport, TeaserResponse, TeaserAutoResponse } from "@/lib/scan-api";
 import type { ScanStep } from "./scan.data";
 import type { ScoreBand } from "./scan-report";
 import { ScanStepper } from "./ScanStepper";
@@ -28,11 +28,12 @@ type ScanResultProps = {
 export type Tier2State =
   | { status: "idle" }
   | { status: "skipped" }
-  | { status: "loading"; competitor: string }
+  | { status: "loading"; competitor?: string }
   | { status: "ready"; competitor: string; data: TeaserResponse }
-  | { status: "no-key"; competitor: string; summary?: string }
-  | { status: "rate-limited"; competitor: string; retryAfterHours?: number; summary?: string }
-  | { status: "error"; competitor: string; message: string };
+  | { status: "ready-auto"; data: TeaserAutoResponse }
+  | { status: "no-key"; competitor?: string; summary?: string }
+  | { status: "rate-limited"; competitor?: string; retryAfterHours?: number; summary?: string }
+  | { status: "error"; competitor?: string; message: string };
 
 export const ScanResult = ({ report, email, target, competitor, techStackInput, band, steps, tier2, onReset }: ScanResultProps) => {
   const found = report.schema?.found ?? [];
@@ -129,7 +130,11 @@ const Tier2Card = ({
         <div className={styles.tier2Head}>
           <div>
             <div className={styles.srK}>tier 2 citation teaser</div>
-            <div className={styles.tier2Sub}>Perplexity is checking {target} vs {tier2.competitor}</div>
+            <div className={styles.tier2Sub}>
+              {tier2.competitor
+                ? `Perplexity is checking ${target} vs ${tier2.competitor}`
+                : `Perplexity is checking who cites ${target}`}
+            </div>
           </div>
           <span className={styles.tier2Badge}>running</span>
         </div>
@@ -158,6 +163,46 @@ const Tier2Card = ({
     return <Tier2Notice label="unavailable" text={tier2.message} />;
   }
 
+  // --- Auto (domain-only) result ---
+  if (tier2.status === "ready-auto") {
+    const t = tier2.data.teaser;
+    const engine = t?.engine || "perplexity";
+    const citedDomains = t?.citedDomains ?? [];
+    return (
+      <div className={styles.tier2Card}>
+        <div className={styles.tier2Head}>
+          <div>
+            <div className={styles.srK}>tier 2 citation teaser</div>
+            <div className={styles.tier2Sub}>{engine} · live citation check for {target}</div>
+          </div>
+          <span className={styles.tier2Badge}>live</span>
+        </div>
+        {t?.clientCited ? (
+          <p className={styles.tier2Summary}>
+            <strong>{target}</strong> is cited in live answer-engine results — you have a foothold.
+            The full Scout audit measures how often, on which queries, and how to widen the lead.
+          </p>
+        ) : (
+          <p className={styles.tier2Summary}>
+            <strong>{target}</strong> is not cited yet in these answer-engine results — that is the
+            opening. Ranking well here is a measurable gap we close, not a guaranteed outcome.
+          </p>
+        )}
+        {citedDomains.length > 0 && (
+          <div className={styles.srBlock}>
+            <div className={styles.srK}>who is getting cited instead</div>
+            <div className={styles.srChips}>
+              {citedDomains.map((d) => (
+                <span className={clsx(styles.srChip, styles.chipMiss)} key={d}>{d}</span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // --- Comparative result ---
   const results = tier2.data.teaser?.results ?? [];
   const clientWins = results.filter((r) => r.clientCited).length;
   const competitorWins = results.filter((r) => r.competitorCited).length;

@@ -196,9 +196,9 @@
   height: auto;
   color: var(--lime);
   filter: drop-shadow(0 0 18px var(--glow)) drop-shadow(0 0 42px var(--glow));
-  transition: opacity 0.16s ease-out;
+  transition: opacity 0.4s ease-out;
 }
-/* full logo dissolves out the instant a scan starts; the canvas takes over */
+/* full logo granulates out as the dots fade up (crossfade ~ DISSOLVE duration) */
 .scanLogoOut {
   opacity: 0;
 }
@@ -214,7 +214,6 @@
 }
 .scanCanvasActive {
   opacity: 1;
-  filter: drop-shadow(0 0 6px rgba(163, 230, 53, 0.55));
 }
 /* crisp static mini-logo that takes over once the particles land top-right */
 .scanLogoPinned {
@@ -402,6 +401,15 @@
   font-family: var(--mono);
   color: var(--muted);
 }
+/* low/medium scores must read as alarm/caution, never lime "success" */
+.heroScoreWarn {
+  border-color: var(--fire-2);
+  color: var(--fire-2);
+}
+.heroScoreBad {
+  border-color: var(--fire);
+  color: var(--fire);
+}
 .heroResultTitle {
   font-family: var(--pixel-tiny);
   font-size: 10px;
@@ -435,6 +443,148 @@
   left: 0;
   color: var(--lime);
 }
+/* restored measured-checks stepper (the 5 hygiene phases + their values) */
+.heroStepper {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.heroStep {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.heroStepDot {
+  color: var(--faint);
+  text-align: center;
+}
+.heroStepDone .heroStepDot {
+  color: var(--lime);
+}
+.heroStepLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.heroStepVal {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* restored detected tech-stack chips (brand logos via TechIcon) */
+.heroStack {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.heroStackLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.heroStackChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.heroStackChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid var(--line-2);
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--fg);
+}
+.heroTechIcon {
+  flex: none;
+}
+.heroStackConf {
+  color: var(--faint);
+}
+
+/* Citation teaser panel — Tier-2 AI visibility preview */
+.heroCitationTeaser {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--lime);
+}
+.heroCitationTeaserLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lime);
+  display: flex;
+  gap: 6px;
+}
+.heroCitationTeaserEngine {
+  color: var(--faint);
+}
+.heroCitationQuery {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.heroCitationRow {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.heroCitationCited {
+  color: var(--lime);
+}
+.heroCitationMissed {
+  color: var(--fire);
+}
+.heroCitationBlurRow {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.heroCitationBlurred {
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
+  color: var(--muted);
+}
+.heroCitationNote {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+.heroCitationLoading {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--faint);
+  animation: heroBlink 1.06s steps(2, end) infinite;
+}
+
 .heroResult :global(.btn) {
   grid-column: 1 / -1;
   justify-content: center;

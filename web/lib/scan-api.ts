@@ -102,3 +102,40 @@ export const runCitationTeaser = async (args: {
     return null;
   }
 };
+
+/** Shape of the `.teaser` object returned by the domain-only auto path. */
+export type CitationTeaserData = {
+  domain?: string;
+  engine?: string;
+  queriesRun?: number;
+  clientCited?: boolean;
+  /** Domains cited in answer-engine results, excluding the client's own domain. */
+  citedDomains?: string[];
+};
+
+export type TeaserAutoResponse = {
+  ok?: boolean;
+  tier?: number;
+  configured?: boolean;
+  teaserMode?: boolean;
+  retryAfterHours?: number;
+  error?: string;
+  teaser?: CitationTeaserData | null;
+};
+
+/**
+ * Domain-only (no competitor, no email) Tier-2 citation teaser.
+ * Returns null only on a genuine network or parse failure.
+ */
+export const runCitationTeaserAuto = async (domain: string): Promise<TeaserAutoResponse | null> => {
+  try {
+    const r = await fetch(SCAN_API.tier2, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ domain }),
+    });
+    return (await r.json()) as TeaserAutoResponse;
+  } catch {
+    return null;
+  }
+};

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Panel, PanelBar } from "@/components/ui/Panel/Panel";
 import { captureEvent, captureLead } from "@/lib/analytics";
-import { runCitationTeaser, runHygieneScan, type ScanReport } from "@/lib/scan-api";
+import { runCitationTeaser, runCitationTeaserAuto, runHygieneScan, type ScanReport } from "@/lib/scan-api";
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
 import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "./scan-report";
@@ -279,47 +279,35 @@ export const LiveScan = () => {
     setPct(100);
     setMode("results");
 
-    // Email-gated Tier-2 citation teaser (honest no-op until a key is set).
-    if (!competitor) {
-      setTier2({ status: "skipped" });
-      captureEvent("tier2_skipped_no_competitor", { scan_id: scanId, domain });
-    } else {
-      const competitorHost = scanHost(competitor);
-      setTier2({ status: "loading", competitor: competitorHost });
-      runCitationTeaser({ email: data.email, domain, competitor }).then((tier2) => {
-        if (!tier2) {
-          setTier2({ status: "error", competitor: competitorHost, message: "Tier 2 network request failed." });
-          return captureEvent("tier2_error", { scan_id: scanId, domain, competitor, reason: "network_or_unreachable" });
-        }
-        if (tier2.ok && tier2.configured && tier2.teaser) {
-          const results = tier2.teaser.results || [];
-          setTier2({ status: "ready", competitor: competitorHost, data: tier2 });
-          captureEvent("tier2_result_shown", {
-            scan_id: scanId,
-            domain,
-            competitor,
-            engine: tier2.teaser.engine || "perplexity",
-            queries: results.length,
-            client_cited_count: results.filter((x) => x.clientCited).length,
-            competitor_cited_count: results.filter((x) => x.competitorCited).length,
-          });
-        } else if (tier2.ok && tier2.configured === false) {
-          setTier2({ status: "no-key", competitor: competitorHost, summary: tier2.summary });
-          captureEvent("tier2_no_key", { scan_id: scanId, domain, competitor });
-        } else if (tier2.retryAfterHours) {
-          setTier2({
-            status: "rate-limited",
-            competitor: competitorHost,
-            retryAfterHours: tier2.retryAfterHours,
-            summary: tier2.summary,
-          });
-          captureEvent("tier2_rate_limited", { scan_id: scanId, domain, competitor, retry_after_hours: tier2.retryAfterHours });
-        } else {
-          setTier2({ status: "error", competitor: competitorHost, message: tier2.error || "Tier 2 did not return a usable teaser." });
-          captureEvent("tier2_error", { scan_id: scanId, domain, competitor, status: tier2.error || "unknown" });
-        }
-      });
-    }
+    // Tier-2 citation teaser — auto (domain-only) path runs after every Tier-1.
+    // No competitor or email needed. Degrades honestly if key absent or rate-limited.
+    setTier2({ status: "loading" });
+    runCitationTeaserAuto(domain).then((auto) => {
+      if (!auto) {
+        setTier2({ status: "error", message: "Citation teaser network request failed." });
+        return captureEvent("tier2_auto_error", { scan_id: scanId, domain, reason: "network_or_parse" });
+      }
+      if (auto.ok && auto.configured && auto.teaser) {
+        setTier2({ status: "ready-auto", data: auto });
+        captureEvent("tier2_auto_result_shown", {
+          scan_id: scanId,
+          domain,
+          engine: auto.teaser.engine || "perplexity",
+          queries_run: auto.teaser.queriesRun ?? 0,
+          client_cited: auto.teaser.clientCited ? 1 : 0,
+          cited_domains_count: auto.teaser.citedDomains?.length ?? 0,
+        });
+      } else if (auto.ok && auto.configured === false) {
+        setTier2({ status: "no-key" });
+        captureEvent("tier2_auto_no_key", { scan_id: scanId, domain });
+      } else if (auto.retryAfterHours) {
+        setTier2({ status: "rate-limited", retryAfterHours: auto.retryAfterHours });
+        captureEvent("tier2_auto_rate_limited", { scan_id: scanId, domain, retry_after_hours: auto.retryAfterHours });
+      } else {
+        setTier2({ status: "error", message: auto.error || "Citation teaser did not return a usable result." });
+        captureEvent("tier2_auto_error", { scan_id: scanId, domain, status: auto.error || "unknown" });
+      }
+    });
   };
 
   const band = report ? scoreBand(report.hygieneScore) : null;
@@ -419,9 +407,10 @@ export const LiveScan = () => {
               <div className={styles.disclaimer}>
                 Just your domain — we fingerprint your tech stack automatically. Live, real{" "}
                 <b>hygiene</b>{" "}check: structured data, crawl welcome mat, head tags, and Core Web
-                Vitals proxies. Hygiene is table stakes, <b>not</b>{" "}a citation guarantee. The full
-                multi-engine citation audit — including auto-identified competitors you confirm, SEO
-                &amp; accessibility — ships with a paid Scout.
+                Vitals proxies. Hygiene is table stakes, <b>not</b>{" "}a citation guarantee. After
+                the hygiene scan, we run a live Perplexity citation check — auto-detected from real
+                answer-engine results, measured not guaranteed, no manual confirm step. The full
+                multi-engine audit — citation gaps, SEO &amp; accessibility — ships with a paid Scout.
               </div>
               <ul className={styles.checks}>
                 <li>structured data / JSON-LD entities</li>
