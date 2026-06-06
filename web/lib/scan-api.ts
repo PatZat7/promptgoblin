@@ -37,8 +37,12 @@ export type RenderDiff = {
   schemasOnlyInStatic?: string[];
   schemasInBoth?: string[];
   hiddenSchemaCount?: number;
+  /** Schemas the DOM probe found that even the rendered-HTML snapshot missed. */
+  lateInjectedSchemas?: string[];
   isSpa?: boolean;
   staticWasBlocked?: boolean;
+  /** Microdata / RDFa found in the live DOM (alternative to JSON-LD). */
+  microdata?: { count?: number; types?: string[] } | null;
   title?: { match?: boolean; static?: string | null; browser?: string | null };
   description?: { match?: boolean; static?: string | null; browser?: string | null };
 };

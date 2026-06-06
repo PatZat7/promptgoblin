@@ -587,23 +587,39 @@ export const HeroScan = () => {
               ))}
             </ul>
           ) : null}
-          {renderDiff?.available && (renderDiff.hiddenSchemaCount ?? 0) > 0 ? (
+          {renderDiff?.available && ((renderDiff.hiddenSchemaCount ?? 0) > 0 || renderDiff.microdata) ? (
             <div className={styles.heroRenderDiff} aria-label="browser vs. crawler diff">
               <div className={styles.heroRenderDiffLabel}>
                 <span>browser vs. crawler</span>
                 {renderDiff.isSpa ? <span className={styles.heroRenderDiffTag}>js-rendered</span> : null}
               </div>
-              <div className={styles.heroRenderDiffRow}>
-                <span>hidden from crawlers:</span>
-                <span className={styles.heroRenderDiffBad}>{renderDiff.hiddenSchemaCount} schema{(renderDiff.hiddenSchemaCount ?? 0) === 1 ? "" : "s"}</span>
-              </div>
-              <div className={styles.heroRenderDiffTypes}>
-                {(renderDiff.schemasOnlyInBrowser ?? []).join(", ")}
-              </div>
+              {(renderDiff.hiddenSchemaCount ?? 0) > 0 ? (
+                <>
+                  <div className={styles.heroRenderDiffRow}>
+                    <span>hidden from crawlers:</span>
+                    <span className={styles.heroRenderDiffBad}>{renderDiff.hiddenSchemaCount} schema{(renderDiff.hiddenSchemaCount ?? 0) === 1 ? "" : "s"}</span>
+                  </div>
+                  <div className={styles.heroRenderDiffTypes}>
+                    {(renderDiff.schemasOnlyInBrowser ?? []).join(", ")}
+                  </div>
+                  {(renderDiff.lateInjectedSchemas?.length ?? 0) > 0 ? (
+                    <div className={styles.heroRenderDiffTypes}>
+                      late-injected: {renderDiff.lateInjectedSchemas?.join(", ")}
+                    </div>
+                  ) : null}
+                </>
+              ) : null}
+              {renderDiff.microdata ? (
+                <div className={styles.heroRenderDiffRow}>
+                  <span>microdata found:</span>
+                  <span className={styles.heroRenderDiffBad}>{renderDiff.microdata.count} item{(renderDiff.microdata.count ?? 0) === 1 ? "" : "s"}</span>
+                  <span className={styles.heroRenderDiffTypes}>{(renderDiff.microdata.types ?? []).slice(0, 3).join(", ")}</span>
+                </div>
+              ) : null}
               <div className={styles.heroRenderDiffNote}>
                 {renderDiff.staticWasBlocked
                   ? "WAF blocked the static crawl — answer engines see none of your structured data"
-                  : "these schema types are injected by JavaScript — answer-engine crawlers fetch static HTML and miss them"}
+                  : "these schema types are JS-injected — answer-engine crawlers fetch static HTML and miss them"}
               </div>
             </div>
           ) : null}

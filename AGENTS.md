@@ -12,7 +12,7 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 - The refund guarantees the *work*, never a citation number.
 - **Secrets** live in a gitignored `.env` only — never commit or paste `sk_live_` / `sk-ant-` / `pplx-` / `AQ.` / `lsv2_` / `dop_v1_`. (DO token + WORKDAY_PASSWORD have leaked before — rotate them.)
 
-## The agent team (`.Codex/agents/`)
+## The agent team (`.claude/agents/`)
 Orchestration is the **main thread + `PLAN.md`** — subagents are stateless specialists you dispatch, not a standing crew. There is **no "planner" subagent**: the planner role is the main thread keeping `PLAN.md` current.
 
 | Agent | Use it for |
@@ -29,6 +29,12 @@ Orchestration is the **main thread + `PLAN.md`** — subagents are stateless spe
 **Gates:** route any `pipeline/goblin/` change through `graph-keeper`; route anything a prospect will read through `integrity-reviewer`.
 
 > Note: these are *project-scoped* — they load when Codex runs from this directory. In a session rooted elsewhere, dispatch the same roles via the Agent tool with the matching prompt.
+
+## Multi-agent orchestration — READ `COORDINATION.md` FIRST
+Three agents share this repo: **Codex (you) · Claude · Hermes**. The lanes, live status board, handoff protocol, and merge gate live in **`COORDINATION.md`** (repo root) — load it before claiming work, alongside `PLAN.md` (execution contract) and `DOCS_PLAN.md` (docs authority).
+- **You (Codex) hold the integrator + implementation seat:** you merge to `PLAN.md` and `main`; you implement `functions/` · `web/` · `pipeline/goblin/` · build glue; you integrate Hermes-authored `supabase/migrations/`.
+- **`main` is deploy-on-push — a bad merge ships live. Run the full gate checklist in `COORDINATION.md` before every merge** (pipeline pytest + eval; web test + build; functions test; `graph-keeper` on `pipeline/goblin/`; `integrity-reviewer` on outbound copy; honest-broker invariants; mock/demo paths labeled).
+- **Claude** proposes specs + reviews (never merges); **Hermes** owns the vault + authors migration SQL (never merges). Before integrating, check `feedback/claude/` + `feedback/hermes/`; record your accept/reject/defer decisions in `feedback/codex/`. Silence ≠ approval.
 
 ## Verification
 - `pipeline/`: 186 pytest tests + an eval gate (`heal-loop converges` + `verify strands converge (per-discipline)`) must stay green.

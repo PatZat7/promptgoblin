@@ -15,6 +15,8 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 ## The agent team (`.claude/agents/`)
 Orchestration is the **main thread + `PLAN.md`** — subagents are stateless specialists you dispatch, not a standing crew. There is **no "planner" subagent**: the planner role is the main thread keeping `PLAN.md` current.
 
+**Multi-agent orchestration (read `COORDINATION.md` first):** three agents share this repo — **Claude (you): specs + review**; **Codex: integrator** (merges `PLAN.md` + `main`, runs the gate checklist); **Hermes: vault + migration SQL**. Lanes, the live status board, the handoff protocol, and the merge gate are in **`COORDINATION.md`**. In multi-agent mode **you (Claude) do NOT merge to `main` and do NOT implement `functions/`/`web/`/pipeline delivery code — you write specs + reviews and hand them to Codex** via `feedback/claude/`; Codex is the one who stamps `PLAN.md` on integration. Docs authority: `DOCS_PLAN.md`.
+
 | Agent | Use it for |
 |---|---|
 | `promptgoblin-expert` | project-state + WAF-reality authority (Hermes); consult on scan-path / pipeline / live-site questions and any "did this regress?" claim before acting |

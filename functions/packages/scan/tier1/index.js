@@ -61,17 +61,30 @@ function looksLikeBotWall(html, contentBytes) {
   return tiny && WAF_BODY_SIGNATURES.some((re) => re.test(html));
 }
 
-// Scrapfly fetch: always requests render_js=true so we get browser-rendered HTML
-// for both the WAF-bypass path and the render-diff comparison.
+// DOM schema probe: top-level `return` so Scrapfly captures the result in
+// result.browser_data.javascript_evaluation_result. Queries the live DOM after
+// React/JS has fully mounted — the ground truth for what schemas actually exist.
+const JS_SCHEMA_PROBE = Buffer.from(
+  "var ld=document.querySelectorAll(\"script[type='application/ld+json']\");" +
+  "var md=document.querySelectorAll(\"[itemtype]\");" +
+  "var types=Array.from(ld).flatMap(function(n){try{var d=JSON.parse(n.textContent);" +
+  "return[].concat(d[\"@type\"]||(d[\"@graph\"]||[]).map(function(g){return g[\"@type\"]})).filter(Boolean)" +
+  "}catch(e){return[]}});" +
+  "return {ldCount:ld.length,types:Array.from(new Set(types)).sort()," +
+  "mdCount:md.length,mdTypes:Array.from(new Set(Array.from(md).map(function(e){return e.getAttribute(\"itemtype\")}))).slice(0,8)};"
+).toString("base64url");
+
+// Scrapfly fetch: browser-rendered HTML + live DOM schema probe.
 // asp=true adds residential-IP + TLS-spoof (needed for Akamai; optional for open sites).
-// Returns { html, bytes } on success, null if no key / failure / still bot-walled.
+// Returns { html, bytes, domSchemas } on success, null if no key / failure / still bot-walled.
 async function fetchViaScrapfly(rawUrl, { asp = false } = {}) {
   const key = process.env.SCRAPFLY_KEY;
   if (!key) return null;
   const endpoint =
     `https://api.scrapfly.io/scrape?key=${encodeURIComponent(key)}` +
     `&url=${encodeURIComponent(rawUrl)}&render_js=true` +
-    (asp ? "&asp=true" : "");
+    (asp ? "&asp=true" : "") +
+    `&js=${JS_SCHEMA_PROBE}`;
   let resp;
   try {
     resp = await fetch(endpoint, { signal: AbortSignal.timeout(SCRAPFLY_TIMEOUT_MS) });
@@ -85,7 +98,8 @@ async function fetchViaScrapfly(rawUrl, { asp = false } = {}) {
   if (!html) return null;
   const bytes = Buffer.byteLength(html, "utf8");
   if (looksLikeBotWall(html, bytes)) return null;
-  return { html, bytes };
+  const domSchemas = json?.result?.browser_data?.javascript_evaluation_result ?? null;
+  return { html, bytes, domSchemas };
 }
 
 // SSRF-safe fetch: follow redirects MANUALLY and re-validate EVERY hop's host
@@ -186,13 +200,16 @@ async function main(args) {
 
   // renderedHtml: browser-rendered HTML from Scrapfly (null = unavailable).
   // staticHtml:   the raw HTTP response body (null when WAF-blocked).
+  // domSchemas:   live-DOM probe result capturing schemas after JS fully mounts.
   let renderedHtml = null;
   let staticHtml = page.ok ? page.text : null;
+  let domSchemas = null;
 
   if (botWalled) {
     const fallback = await fetchViaScrapfly(target.href, { asp: true });
     if (fallback) {
       renderedHtml = fallback.html;
+      domSchemas = fallback.domSchemas;
       // Scrapfly bypassed the WAF — overwrite page and fall through to hygiene.
       // staticHtml stays null (honestly: the static crawl got nothing).
       page.ok = true;
@@ -249,7 +266,10 @@ async function main(args) {
     renderPromise,
   ]);
 
-  if (renderResult) renderedHtml = renderResult.html;
+  if (renderResult) {
+    renderedHtml = renderResult.html;
+    domSchemas = renderResult.domSchemas ?? null;
+  }
 
   const report = buildHygieneReport({
     url: target.href,
@@ -259,7 +279,7 @@ async function main(args) {
     llmsText: llms.ok ? llms.text : null,
   });
 
-  const renderDiff = buildRenderDiff(staticHtml, renderedHtml);
+  const renderDiff = buildRenderDiff(staticHtml, renderedHtml, domSchemas);
 
   return reply(200, { ok: true, tier: 1, report, renderDiff, summary: tier1Summary(report) }, origin);
 }

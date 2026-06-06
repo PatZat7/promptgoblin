@@ -1,6 +1,6 @@
 # Prompt Goblin — PLAN (living)
 
-> The orchestration doc. The main thread keeps this current; subagents are dispatched from here. This is the "planner" — there is no planner subagent. Last touched: 2026-06-05.
+> The orchestration doc. The main thread keeps this current; subagents are dispatched from here. This is the "planner" — there is no planner subagent. Last touched: 2026-06-06.
 
 ## ⚠️ Deploy note
 
@@ -13,6 +13,9 @@
 - ✅ **Pipeline task (a)** — per-discipline self-healing verify strands; eval gate green (seo + a11y `fires+converges@1`, `bounded@cap`), 186 tests pass. Committed.
 - ✅ **Leads** — 27 sendable in `pipeline/sales/leads30.md`; prioritized, name-filled DMs in `pipeline/sales/dms_to_send.md`.
 - ✅ **Agent team** — 8 specialists in `.claude/agents/` + this PLAN + project `CLAUDE.md`.
+- ✅ **Multi-agent coordination board** — `COORDINATION.md` is now the visibility board for Codex / Claude / Hermes lanes, context preflight, status stamping, and merge gates. `PLAN.md` remains the execution contract; Codex integrates.
+- ✅ **Feedback inbox** — Claude/Hermes review notes land in `feedback/claude/` and `feedback/hermes/`; Codex records integration decisions in `feedback/codex/` before updating `PLAN.md`, specs, migrations, or code.
+- ⚠️ **Current verification snapshot (2026-06-06)** — `functions npm test` PASS (112 checks), `web npm run build` PASS, `web npm test` PASS (23 tests), `pipeline .venv\Scripts\python.exe -m goblin.eval` PASS (3/3 cases + global checks), but full pipeline pytest is **not green**: 272 pass / 1 fail (`tests/test_schema_audit.py::test_fetch_degrades_gracefully_on_network_error`, expected note contains `fetch failed`, actual note says `could not read acme.com...`). Treat pipeline changes as blocked from "fully green" claims until this wording/contract mismatch is fixed.
 
 ## In flight
 
@@ -53,14 +56,49 @@
 ## Queued
 
 - ✅ **Scout price — DECIDED + WIRED** (2026-06-05): aggressive land-grab — **$997/mo** (Warband $3,500, Warlord $9,500). Below the research band ($1,500–$1,997 for founders) on purpose: win first clients + case studies now, raise later. Stripe links **regenerated (live, monthly) + old links deactivated** — checkout matches the displayed prices.
+- 🚨 **Fix current pipeline pytest blocker** — update either `_fetch_jsonld_types`/schema-audit fetch-note wording or the test expectation so the network-error path has a stable honest contract. Required verification: from `pipeline/`, run `.venv\Scripts\python.exe -m pytest -q` and `.venv\Scripts\python.exe -m goblin.eval`; both must pass before claiming pipeline green.
 - 🚀 **Redeploy `functions/`** — the Tier-1 `hygiene.js` stack-note copy change ("enter your CMS" → "we auto-detect…") needs `doctl serverless deploy --remote-build` to go live (both the lib + tier1 mirror are updated locally).
 - 🧩 **Optional follow-up:** prune (or wire) the now-dead Tier-2 live-fetch branch in `LiveScan.tsx` — kept as a hook for feeding it a recon-discovered competitor; remove the two unused state slots if that wiring isn't planned.
-- 🎨 **Build the chosen redesign** (after Claude Design returns A/B): implement mobile-first → `design-system` + `impeccable` polish → `qa` gate (axe 100/100, e2e) → ship via deploy-on-push. Then the **client dashboard MVP** — Next.js + Supabase on `app.` subdomain; reads the pipeline's `rescan` snapshot JSON (citation scorecard, you-vs-competitor, run status + eval badge, human-gated fix queue); secrets server-side only; sample data marked until real.
+- 🎨 **Build the chosen redesign** (after Claude Design returns A/B): implement mobile-first → `design-system` + `impeccable` polish → `qa` gate (axe 100/100, e2e) → ship via deploy-on-push.
+
+|- 🧪 **CI/CD eval gate wiring** — make the merge/deploy gate explicit before dashboard work starts:
+  - **Functions:** `cd functions && npm test` must pass (zero-key, zero-network unit suite).
+  - **Web:** `cd web && npm test && npm run build` must pass. Add browser/axe verification when public UI changes.
+  - **Pipeline:** `cd pipeline && .venv\\Scripts\\python.exe -m pytest -q && .venv\\Scripts\\python.exe -m goblin.eval` must pass. Optional full harness: `.venv\\Scripts\\python.exe harness/run_harness.py`.
+  - **Blocking rule:** no merge to deploy-on-push `main`, no functions redeploy, and no "pipeline green" claim if any required gate is red. Mock/skipped/demo paths are reported as such.
+  - **Visual regression (Playwright MCP):** any public-site or dashboard UI change must include before/after screenshots captured via Playwright MCP against key viewports (desktop 1440, tablet 768, mobile 375). Screenshots go to `web/tests/visual/` with a stable naming scheme and are reviewed before merge. No console errors, no new axe violations.
+
+- 📊 **Client dashboard MVP** — Next.js 16 App Router + Supabase on `app.promptgoblin.io` subdomain. **Full spec:**
+  - **Stack:** Next.js (same `web/` monorepo, separate `app/` subdomain target) + Supabase (postgres + pgvector + auth). Supabase schema from vault `Prompt Goblin - Supabase + Vector DB Plan.md` — create committed migrations before any API routes.
+  - **Migrations + local proof:** add a `supabase/migrations/` workstream (or the chosen equivalent if the monorepo structure changes), including `clients`, `competitors`, `runs`, `citations`, `competitor_citations`, `crawl_pages`, `page_chunks`, `recommendations`, `verification_results`, RLS policies, and seed/sample fixtures. Verify locally with Supabase CLI before wiring UI.
+  - **Client-visible run history** — `/runs` page lists every scan run for the client's domain(s): timestamp, status badge, visibility score delta vs prior run.
+  - **Rescan snapshots** — each run row is a full snapshot (stored as `graph_snapshot jsonb` + individual score columns in `runs` table); drill-in to any historical run; no data lost on rescan.
+  - **Citation scorecards** — per-run view: visibility score, citation gap count, you-vs-competitor citation diff, platform breakdown (ChatGPT vs Google AIO), verified/unverifiable/fabricated annotation per citation (once verification layer ships).
+  - **Fix queue** — `recommendations` table surfaced as a prioritized queue (HIGH → MED → LOW); each item shows kind, stack-specific snippet, rationale, and current `status` (pending / approved / implemented / verified).
+  - **Eval status** — live badge per run from the `verification_results` table: eval gate PASS/FAIL, which checks passed, which regressed.
+  - **Human approval state** — fix-queue items that require human review are gated: `human_reviewed: false` items are locked (greyed, "awaiting review" badge); `approved: true` unlocks the implementation snippet. No fix ever ships without this flag.
+  - **Server-side secrets only** — Supabase service-role key, Stripe webhook secret, and any scan API keys live in Next.js server environment only (`NEXT_PUBLIC_*` is forbidden for secrets); client-side code only touches the Supabase anon key scoped to the authenticated user's rows (RLS enforced).
+  - **Sample data clearly marked** — until a real run exists for the authenticated client, every metric shows a `[sample]` chip and a `run the scan to see real data` CTA; no sample number is ever styled to look like a real result.
+  - **Scan visual proof / Playwright proof artifacts** — every client-visible run must retain visual evidence the scan rendered correctly: before/after screenshots of the scan terminal + results card on desktop/tablet/mobile, stored as run artifacts and surfaced in the run detail view. Captured via Playwright/Browser MCP; serves as regression proof plus proof that the backend-driven scan actually produced visible output for that run.
+  - **Automated dashboard screenshot gate** — before any dashboard release, run Playwright MCP against `/dashboard`, `/runs`, `/login`, and the free-scan flow; keep baseline diff artifacts and require human review for any visual change. Same axe + console-error standard as public-site QA.
+  - **Login / auth:** Supabase Auth — dedicated `/login` page on `app.promptgoblin.io` (magic-link email + optional Google OAuth). Unauthenticated requests to any dashboard route redirect to `/login`. Session managed server-side via Supabase SSR cookies (no client-side token exposure). Post-login lands on `/dashboard`. Each client sees only their own `runs`, `citations`, `recommendations` rows (RLS enforced by `owner_user_id` — no row is readable without a matching auth session). Account provisioning is manual for now: owner creates the Supabase user + `clients` row when a new client signs; self-signup is off until there's a billing gate.
+  - **Prerequisite:** deploy the Next.js `web/` public-site cutover first; then provision Supabase project and run migrations; then scaffold the `app/` subdomain.
+- 🧱 **Vector/RAG ingestion workstream** — make pgvector useful, not just present:
+  - **Acquire:** store crawl attempts in `crawl_pages` with source type (`static_http`, `browser_render`, `sitemap_export`, `search_console_export`, `bing_export`, `client_upload`, `cms_api`) and honest status (`ok`, `blocked`, `unreachable`, `manual_needed`).
+  - **Normalize:** extract title/meta/headings/body/JSON-LD from each acquired page; preserve source URL, fetch timestamp, HTTP status, and acquisition method.
+  - **Chunk/embed:** chunk normalized content into `page_chunks`, embed with a fixed model/dimension matching the `vector(1536)` plan, and upsert by content hash so rescans don't duplicate unchanged chunks.
+  - **Retrieve:** during recommendations, retrieve relevant client/competitor/source chunks by query/gap; include provenance in report JSON and AI-prompt artifact.
+  - **Refresh cadence:** expire stale chunks by segment (finance faster, evergreen docs slower); never use stale content without labeling it as cached.
+- 🛡️ **Protected-site / WAF fallback ladder** — turn the Meijer-style block into a paid-audit path without evasion language:
+  - Tier 1 free scan remains honest: blocked WAF/CDN/JS-heavy sites get **no hygiene score**, plus a note that the quick static fetch could not read the page.
+  - Paid Scout acquisition order: static HTTP fetch → browser-rendered capture (Playwright/Browser MCP, normal browser session, no bypass promises) → sitemap/Search Console/Bing export → client-uploaded HTML/docs → CMS/API pull with client consent → mark `manual_needed`.
+  - Every acquisition attempt writes method/status/evidence to `crawl_pages`; reports say exactly which method produced the content.
+  - Do **not** promise WAF bypass, captcha solving, or access-control evasion. Position this as consented alternate acquisition for protected sites.
 - 📱 **Social-presence agent flow** — stand up real github / x.com / substack profiles, seed content, then wire the real URLs into the footer (`app.jsx` ~1193, currently non-clickable "soon" spans). Until then the footer honestly shows them as forthcoming.
 - _(Pipeline task (b) → now **In flight**, above. `functions/` Tier-2 hardening → **done**, see Recently done.)_
 - 📧 **Email DNS** — _user only, at Cloudflare_ — Zoho Mail free plan for `goblins@promptgoblin.com`: MX (mx/mx2/mx3.zoho.com 10/20/50), SPF (`v=spf1 include:zohomail.com ~all`), DKIM (`zmail._domainkey`), DMARC (`_dmarc` start `p=none`). Last remaining migration piece.
 - 📨 **Send DMs** — _user only_ (I draft, never send). Start with Matt Aitken / Trigger.dev. Send 5–8, not 27.
-- 🔑 **Rotate secrets** — _user only_ — exposed DigitalOcean token + WORKDAY_PASSWORD.
+- 🔑 **HIGH-RISK: rotate secrets** — _user only, but blocking for serious ops_ — exposed DigitalOcean token + WORKDAY_PASSWORD. Rotate before new deploy automation, CI secret wiring, dashboard service-role setup, or broader repo sharing. Never paste replacement values into chat or committed files; keep in gitignored `.env` / platform secret stores only.
 - ⬆️ **Push pipeline repo** — local pipeline `master` is ahead of origin by ~6 commits (task (b) + Product-schema fix), not pushed.
 - 🧹 Optional: drop the throwaway `browser_audit/_contrast_recheck.json` artifact.
 
@@ -70,7 +108,7 @@
 
 - 📋 **Documentation plan** — `DOCS_PLAN.md` now exists in the repo root (2026-06-06). Covers all four doc audiences: prospect-facing methodology + methodology explainers, client-facing onboarding + report guides, public-authority content (benchmark report + AEO/GEO explainers), and internal pipeline/agent docs. Work it in parallel with the dashboard build — docs unlock sales conversations before dashboards exist.
 
-- 🔍 **Citation verification layer** (`pipeline/` + `functions/`) — The fabrication crisis is the sharpest differentiator (51% hallucination rate in independent investigations; 12x increase 2023→2026; 206+ court sanctions). Competitors monitor/audit; almost none *verify*. Design: after Perplexity returns brand citations, add a verification node that cross-checks each URL against real indexed sources (HTTP HEAD + content snippet match) and annotates each citation as `verified` / `unverifiable` / `fabricated`. Surface in the dashboard and the AI-prompt artifact. **Requires:** `graph-keeper` review; add `verified` field to `citations` table in Supabase schema.
+- 🔍 **Citation verification layer** (`pipeline/` + `functions`) — The fabrication crisis is the sharpest differentiator (51% hallucination rate in independent investigations; 12x increase 2023→2026; 206+ court sanctions). Competitors monitor/audit; almost none *verify*. Design: add `verify_citations` after retrieval/Tier-2 citation capture. Cross-check each cited URL with HTTP HEAD/GET, canonical URL normalization, content/snippet match, and optional indexed-source evidence; annotate each citation as `verified` / `unverifiable` / `fabricated`. Fabricated/unverifiable citations must lower confidence and appear in the dashboard + AI-prompt artifact. **Requires:** `graph-keeper` review; add citation status enum/fields in Supabase; tests for verified, canonical-redirect, blocked-but-unverifiable, and fabricated citation cases; eval honesty invariant that no unverified citation is rendered as proven.
 
 - 📊 **Topical authority proxy score** (`pipeline/goblin/nodes/seo_audit.py`) — The #1 citation predictor (r=0.41) is unmeasured. DA/backlinks (what we currently fingerprint) explain <4% of variance. Proxy: count connected named entities (NER over rendered text), heading-to-content depth ratio, and whether the page is a single-topic page vs. a hub. Flag as `topical_depth: low/medium/high`; wire into the recommendations priority weighting. **Note:** don't claim topical authority as a citation guarantee — flag as "structural signal."
 
@@ -78,7 +116,7 @@
 
 - 🏪 **Third-party platform presence check** (`pipeline/goblin/nodes/recon.py` or new `platforms_audit` node) — For B2B SaaS: ~82% of comparison queries cite G2/Capterra/TrustRadius/Gartner Peer Insights — not the client's own site. For finance: NerdWallet/comparison aggregators. For e-commerce: Amazon brand presence. The scan should check whether the client has a profile on the relevant platform tier for their ICP segment, and flag absence as a HIGH citation gap. Add `icp_segment` → `platform_checklist` mapping keyed off the `recon` node's `company_profile`.
 
-- 🗄️ **Supabase + pgvector schema** (dashboard workstream) — The vault has a full proposed schema at `Prompt Goblin - Supabase + Vector DB Plan.md`: `clients`, `competitors`, `runs`, `citations`, `competitor_citations`, `page_chunks` (w/ `vector(1536)` + ivfflat index), `crawl_pages`, `recommendations`, `verification_results`. This is Phase 1 of the dashboard build — create migrations before any Next.js API routes. pgvector over cached `page_chunks` removes the hard dependency on live-fetch-only, improving reliability against WAF/JS-heavy blocks. **Prerequisite:** deploy the Next.js `web/` cutover first; then provision a Supabase project and run the migrations.
+- 🗄️ **Supabase + pgvector schema** (dashboard workstream) — The vault has a full proposed schema at `Prompt Goblin - Supabase + Vector DB Plan.md`: `clients`, `competitors`, `runs`, `citations`, `competitor_citations`, `page_chunks` (w/ `vector(1536)` + ivfflat index), `crawl_pages`, `recommendations`, `verification_results`. This is Phase 1 of the dashboard build — create committed migrations before any Next.js API routes. pgvector over cached `page_chunks` removes the hard dependency on live-fetch-only, improving reliability against WAF/JS-heavy blocks. Add RLS tests proving one client cannot read another client's rows, and seed fixtures where every sample metric is explicitly marked sample. **Prerequisite:** deploy the Next.js `web` cutover first; then provision a Supabase project and run migrations.
 
 - 📅 **Freshness cadence check** (`functions/lib/hygiene.js` + `pipeline/goblin/nodes/seo_audit.py`) — Finance content cited by AI is updated within 30 days — freshness is the dominant lever in that vertical. Add a content-age signal: parse `<meta name="revised">` / `<time datetime>` / sitemap `<lastmod>` and flag if >30 days for finance-segment clients. Low effort, high signal for Finance ICP. Emit as a `FRESHNESS_STALE` finding with severity calibrated by segment.
 
