@@ -200,6 +200,9 @@ const TECH_RULES = [
   [/hs-scripts\.com|js\.hs-analytics|_hsenc=/i, "HubSpot", "medium", "HubSpot scripts or tracking"],
   [/cdn\.jsdelivr\.net\/npm\/bootstrap|\/bootstrap(?:\.min)?\.css/i, "Bootstrap", "low", "Bootstrap stylesheet"],
   [/cdn\.tailwindcss\.com|\/tailwind(?:\.min)?\.css/i, "Tailwind CSS", "low", "Tailwind stylesheet or CDN"],
+  [/\/bulma(?:\.min)?\.css|cdn\.jsdelivr\.net\/npm\/bulma/i, "Bulma", "low", "Bulma stylesheet"],
+  [/\/foundation(?:\.min)?\.css|foundation-sites/i, "Foundation", "low", "Foundation stylesheet"],
+  [/\/materialize(?:\.min)?\.css|materializecss/i, "Materialize", "low", "Materialize stylesheet"],
   [/code\.jquery\.com|\/jquery(?:-\d|\.min)?\.js/i, "jQuery", "low", "jQuery script"],
   [/data-reactroot|react-dom(?:\.production)?(?:\.min)?\.js/i, "React", "low", "React DOM markers"],
   [/\/assets\/index-[A-Za-z0-9_]+\.js|type=["']module["'][^>]+src=["'][^"']*\/assets\//i, "Vite", "low", "Vite-bundled module assets"],
@@ -236,6 +239,12 @@ function detectTechStack(html) {
       (s) => !((s.name === "React" || s.name === "Vite") && s.confidence === "low")
     );
   }
+
+  // jQuery is a legacy library, not a framework: its presence means a plain-HTML
+  // (server-rendered) site, so never report it as part of the stack. CSS
+  // frameworks (Bootstrap/Tailwind/etc.) stay — they're always shown if found.
+  // ("if it's jQuery, that means HTML.")
+  detected = detected.filter((s) => s.name !== "jQuery");
 
   return {
     detected: detected.slice(0, 6),

@@ -202,6 +202,31 @@ const nrStack = buildHygieneReport({ url: "https://nr.example/", html: NEXT_REAC
 ok("tech stack: Next.js detected on a React app", nrStack.techStack.detected.some((s) => s.name === "Next.js"));
 ok("tech stack: drops bare React when a framework is detected", !nrStack.techStack.detected.some((s) => s.name === "React"));
 
+// CSS frameworks are ALWAYS reported when found; jQuery means plain HTML.
+const NEXT_TAILWIND_HTML = `<!doctype html><html><head><title>App</title>
+  <script id="__NEXT_DATA__" type="application/json">{}</script>
+  <script src="/_next/static/chunks/main.js"></script>
+  <link rel="stylesheet" href="/assets/tailwind.min.css">
+</head><body></body></html>`;
+const ntStack = buildHygieneReport({ url: "https://nt.example/", html: NEXT_TAILWIND_HTML, contentBytes: Buffer.byteLength(NEXT_TAILWIND_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: reports CSS (Tailwind) alongside the framework", ntStack.techStack.detected.some((s) => s.name === "Tailwind CSS"));
+ok("tech stack: keeps the framework when CSS is also present", ntStack.techStack.detected.some((s) => s.name === "Next.js"));
+
+const JQUERY_ONLY_HTML = `<!doctype html><html><head><title>Old site</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head><body><h1>Hi</h1></body></html>`;
+const jqStack = buildHygieneReport({ url: "https://jq.example/", html: JQUERY_ONLY_HTML, contentBytes: Buffer.byteLength(JQUERY_ONLY_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: jQuery never headlines the stack", !jqStack.techStack.detected.some((s) => s.name === "jQuery"));
+ok("tech stack: a jQuery-only site reads as plain HTML", jqStack.techStack.detected.length === 0 && /No obvious stack/i.test(jqStack.techStack.note));
+
+const JQUERY_BOOTSTRAP_HTML = `<!doctype html><html><head><title>Old site</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head><body></body></html>`;
+const jqbStack = buildHygieneReport({ url: "https://jqb.example/", html: JQUERY_BOOTSTRAP_HTML, contentBytes: Buffer.byteLength(JQUERY_BOOTSTRAP_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: CSS still shows on a jQuery (plain-HTML) site", jqbStack.techStack.detected.some((s) => s.name === "Bootstrap"));
+ok("tech stack: jQuery dropped even when only CSS accompanies it", !jqbStack.techStack.detected.some((s) => s.name === "jQuery"));
+
 // Product schema is commerce-only — service/gov sites must never be flagged for it.
 const service = buildHygieneReport({
   url: "https://hatfieldlaw.com/",
