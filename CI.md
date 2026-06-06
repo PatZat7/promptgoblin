@@ -4,6 +4,8 @@ Two repos, two GitHub Actions pipelines. Everything runs on every pull request
 and on push to the default branch. **Nothing auto-deploys** — deploys are
 human-gated (see below).
 
+> This file is the **CI/CD (GitHub Actions)** reference. The **agent pre-merge discipline** — who runs these gates before merging, the Codex/Claude/Hermes lanes, and the `feedback/` inbox — lives in **`COORDINATION.md`**. Keep the two in sync.
+
 ## What runs
 
 ### `PatZat7/promptgoblin` (parent) — `.github/workflows/ci.yml`

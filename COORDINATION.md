@@ -70,7 +70,16 @@ For each note, Codex records one of:
 
 No agent should assume silence means approval. If Claude or Hermes reviewed something, their feedback must be visible in `feedback/` or pasted into the active thread before Codex treats it as part of the execution contract.
 
+## Coordination watcher (per-turn diffs)
+
+`scripts/coordination-watch.js` prints a compact "what the *other* agents changed since your last turn" digest (status-board rows + `feedback/` notes), so nobody re-reads everything each turn. Deterministic, no LLM, silent when idle.
+- **Claude:** runs automatically via a `UserPromptSubmit` hook (`.claude/settings.json`).
+- **Codex / Hermes:** run `node scripts/coordination-watch.js --agent <codex|hermes>` at the start of each task.
+- Per-agent snapshots live in `.coordination-watch/` (gitignored).
+
 ## Gate checklist (Codex runs before any merge to `main`)
+
+> This is the **agent pre-merge** gate. The **CI/CD** pipeline (GitHub Actions on every PR/push, deploy steps, CodeRabbit) is documented separately in **`CI.md`** — keep the two in sync.
 
 Deploy-on-push: a bad merge ships live. No merge unless all that apply are green:
 
