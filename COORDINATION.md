@@ -91,7 +91,7 @@ Deploy-on-push: a bad merge ships live. No merge unless all that apply are green
 ## Source-of-truth split
 
 - **Repo** = anything gated/executable: code, `specs/`, `supabase/migrations/`, `PLAN.md`, `DOCS_PLAN.md`, this file.
-- **Vault** (`ObsidianVault/`) = anything strategic: market intel, GTM, positioning, research, MOCs.
+- **Vault** (external — `C:\Users\atpat\Documents\ObsidianVault`, NOT a repo subdir; see the Vault note above) = anything strategic: market intel, GTM, positioning, research, MOCs.
 - Sync direction: strategy flows vault → PLAN.md (Hermes proposes, Codex integrates); execution status flows PLAN.md → vault mirror (Hermes reflects).
 - **Feedback inbox** (`feedback/`) = review notes and integration decisions when Claude/Hermes are not operating in the same live thread.
 
