@@ -553,8 +553,9 @@ export const HeroScan = () => {
                     </div>
                   ) : null}
                   <div className={styles.heroCitationNote}>
+                    {`${teaser.queriesRun ?? 1} ${(teaser.queriesRun ?? 1) === 1 ? "query" : "queries"} checked · `}
                     {teaser.clientCited
-                      ? "1 query checked · full Scout report: 50 prompts × 4 engines"
+                      ? "full Scout report: 50 prompts × 4 engines"
                       : "not cited yet — that's the opening (a measurable gap we close, not a guaranteed outcome) · full Scout: 50 prompts × 4 engines"}
                   </div>
                 </>
