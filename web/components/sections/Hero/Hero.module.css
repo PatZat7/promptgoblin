@@ -350,6 +350,12 @@
   color: var(--muted);
 }
 .heroLine {
+  /* flex:none keeps each line at its natural glyph height — without it the
+     capped-height flex column shrinks lines below their line-box and the
+     overflow:hidden (kept for horizontal URL ellipsis) clips the lettering
+     top & bottom. Older lines now scroll cleanly off the top instead. */
+  flex: none;
+  line-height: 1.5;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -595,6 +601,16 @@
   color: var(--faint);
   background: transparent;
   border: 0;
+}
+.heroErrorBlock {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.heroErrorBlock :global(.btn) {
+  justify-content: center;
 }
 .heroScanError {
   position: relative;

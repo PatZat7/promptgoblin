@@ -101,7 +101,7 @@ export const ScanResult = ({ report, email, target, competitor, techStackInput, 
   );
 };
 
-const Tier2Card = ({
+export const Tier2Card = ({
   target,
   competitor,
   tier2,

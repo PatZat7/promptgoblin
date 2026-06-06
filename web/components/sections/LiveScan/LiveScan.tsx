@@ -8,7 +8,7 @@ import { runCitationTeaser, runCitationTeaserAuto, runHygieneScan, type ScanRepo
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
 import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "./scan-report";
-import { ScanResult, type Tier2State } from "./ScanResult";
+import { ScanResult, Tier2Card, type Tier2State } from "./ScanResult";
 import { ScanStepper } from "./ScanStepper";
 import styles from "./LiveScan.module.css";
 
@@ -196,6 +196,42 @@ export const LiveScan = () => {
     setPct(8);
     setSteps(SCAN_PHASES.map((p) => ({ key: p.key, label: p.label, status: "pending", value: null, tone: "ok" })));
 
+    // Tier-2 citation teaser (auto, domain-only). Independent of the Tier-1
+    // site fetch — it asks the answer engines about the brand, so a WAF-walled
+    // site whose hygiene we can't read STILL has a real citation surface. Fired
+    // from both the success and the blocked paths so big retail/enterprise sites
+    // (the ones most likely to block our fetch) still get the AI-visibility hook.
+    const fireAutoTier2 = () => {
+      setTier2({ status: "loading" });
+      runCitationTeaserAuto(domain).then((auto) => {
+        if (!alive()) return;
+        if (!auto) {
+          setTier2({ status: "error", message: "Citation teaser network request failed." });
+          return captureEvent("tier2_auto_error", { scan_id: scanId, domain, reason: "network_or_parse" });
+        }
+        if (auto.ok && auto.configured && auto.teaser) {
+          setTier2({ status: "ready-auto", data: auto });
+          captureEvent("tier2_auto_result_shown", {
+            scan_id: scanId,
+            domain,
+            engine: auto.teaser.engine || "perplexity",
+            queries_run: auto.teaser.queriesRun ?? 0,
+            client_cited: auto.teaser.clientCited ? 1 : 0,
+            cited_domains_count: auto.teaser.citedDomains?.length ?? 0,
+          });
+        } else if (auto.ok && auto.configured === false) {
+          setTier2({ status: "no-key" });
+          captureEvent("tier2_auto_no_key", { scan_id: scanId, domain });
+        } else if (auto.retryAfterHours) {
+          setTier2({ status: "rate-limited", retryAfterHours: auto.retryAfterHours });
+          captureEvent("tier2_auto_rate_limited", { scan_id: scanId, domain, retry_after_hours: auto.retryAfterHours });
+        } else {
+          setTier2({ status: "error", message: auto.error || "Citation teaser did not return a usable result." });
+          captureEvent("tier2_auto_error", { scan_id: scanId, domain, status: auto.error || "unknown" });
+        }
+      });
+    };
+
     // Fire the REAL request immediately, narrate genuine operations while it runs.
     const respPromise = runHygieneScan(domain);
     for (let idx = 0; idx < SCAN_PHASES.length; idx += 1) {
@@ -226,6 +262,9 @@ export const LiveScan = () => {
       setPct(100);
       setMode("error");
       captureEvent("scan_failed", { scan_id: scanId, domain, reason: fail.outcome ?? "unknown" });
+      // The hygiene fetch was blocked, but Tier 2 doesn't fetch the site — still
+      // surface the AI-visibility teaser (the strongest signal for WAF-walled sites).
+      fireAutoTier2();
       return;
     }
 
@@ -281,33 +320,7 @@ export const LiveScan = () => {
 
     // Tier-2 citation teaser — auto (domain-only) path runs after every Tier-1.
     // No competitor or email needed. Degrades honestly if key absent or rate-limited.
-    setTier2({ status: "loading" });
-    runCitationTeaserAuto(domain).then((auto) => {
-      if (!auto) {
-        setTier2({ status: "error", message: "Citation teaser network request failed." });
-        return captureEvent("tier2_auto_error", { scan_id: scanId, domain, reason: "network_or_parse" });
-      }
-      if (auto.ok && auto.configured && auto.teaser) {
-        setTier2({ status: "ready-auto", data: auto });
-        captureEvent("tier2_auto_result_shown", {
-          scan_id: scanId,
-          domain,
-          engine: auto.teaser.engine || "perplexity",
-          queries_run: auto.teaser.queriesRun ?? 0,
-          client_cited: auto.teaser.clientCited ? 1 : 0,
-          cited_domains_count: auto.teaser.citedDomains?.length ?? 0,
-        });
-      } else if (auto.ok && auto.configured === false) {
-        setTier2({ status: "no-key" });
-        captureEvent("tier2_auto_no_key", { scan_id: scanId, domain });
-      } else if (auto.retryAfterHours) {
-        setTier2({ status: "rate-limited", retryAfterHours: auto.retryAfterHours });
-        captureEvent("tier2_auto_rate_limited", { scan_id: scanId, domain, retry_after_hours: auto.retryAfterHours });
-      } else {
-        setTier2({ status: "error", message: auto.error || "Citation teaser did not return a usable result." });
-        captureEvent("tier2_auto_error", { scan_id: scanId, domain, status: auto.error || "unknown" });
-      }
-    });
+    fireAutoTier2();
   };
 
   const band = report ? scoreBand(report.hygieneScore) : null;
@@ -376,11 +389,14 @@ export const LiveScan = () => {
             />
           ) : mode === "error" ? (
             <div className={styles.errCard}>
-              <div className={styles.lbl}>$ scan failed</div>
+              <div className={styles.lbl}>$ hygiene scan incomplete</div>
               <div className={styles.errMsg}>
-                Couldn&apos;t complete a real scan of <b>{target}</b>.
+                Couldn&apos;t read the hygiene surface of <b>{target}</b> from the outside.
               </div>
               <div className={styles.errWhy}>{errorMsg}</div>
+              {tier2.status !== "idle" ? (
+                <Tier2Card target={target} competitor={competitorTarget} tier2={tier2} />
+              ) : null}
               <button type="button" className="btn" onClick={resetToIdle} data-cursor="./retry">
                 try another domain <span className="arr">→</span>
               </button>

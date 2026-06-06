@@ -379,11 +379,28 @@ export const HeroScan = () => {
       const fail = scanFailureCopy(response);
       setPct(100);
       setMode("error");
-      setTeaserLoading(false);
       setSoftError(fail.soft);
       setErrorMsg(fail.card);
       setLines((prev) => [...prev, mkLine(fail.soft ? "warn" : "bad", fail.line)]);
       captureEvent("hero_scan_failed", { scan_id: scanId, domain: host, reason: fail.outcome ?? "unknown" });
+
+      // Tier 2 never fetches the site — it asks the answer engines about the
+      // brand. A WAF-walled retail/enterprise site (the kind that blocks our
+      // Tier-1 fetch) still has a measurable AI-visibility surface, and it's the
+      // most compelling thing we can show here. So surface it instead of
+      // dropping it on the blocked path.
+      const teaserResult = await teaserPromise.catch(() => null);
+      if (!alive()) return;
+      setTeaserLoading(false);
+      if (teaserResult?.ok && teaserResult.teaserMode && teaserResult.teaser) {
+        setTeaser(teaserResult.teaser);
+        captureEvent("hero_teaser_shown_on_block", {
+          scan_id: scanId,
+          domain: host,
+          client_cited: teaserResult.teaser.clientCited ? 1 : 0,
+          cited_domains: teaserResult.teaser.citedDomains?.length ?? 0,
+        });
+      }
       return;
     }
 
@@ -423,6 +440,42 @@ export const HeroScan = () => {
   const detectedStack = (report?.techStack?.detected ?? []).filter((t) => t.name);
   const scanning = mode !== "idle";
   const canvasActive = scanning;
+
+  // AI-visibility teaser (Tier 2). Rendered in BOTH the results and the
+  // blocked-error states — Tier 2 doesn't fetch the site, so a WAF-walled
+  // hygiene scan can still carry a real citation result worth showing.
+  const citationPanel = (teaserLoading || teaser) ? (
+    <div className={styles.heroCitationTeaser} aria-live="polite">
+      <div className={styles.heroCitationTeaserLabel}>
+        <span>AI visibility</span>
+        <span className={styles.heroCitationTeaserEngine}>· perplexity · live</span>
+      </div>
+      {teaserLoading && !teaser ? (
+        <span className={styles.heroCitationLoading}>checking AI visibility…</span>
+      ) : teaser ? (
+        <>
+          <div className={styles.heroCitationRow}>
+            <span>you:</span>
+            <span className={teaser.clientCited ? styles.heroCitationCited : styles.heroCitationMissed}>
+              {teaser.clientCited ? "✓ cited" : "✗ not cited yet"}
+            </span>
+          </div>
+          {teaser.citedDomains && teaser.citedDomains.length > 0 ? (
+            <div className={styles.heroCitationRow}>
+              <span>also cited:</span>
+              <span>{teaser.citedDomains.join(", ")}</span>
+            </div>
+          ) : null}
+          <div className={styles.heroCitationNote}>
+            {`${teaser.queriesRun ?? 1} ${(teaser.queriesRun ?? 1) === 1 ? "query" : "queries"} checked · `}
+            {teaser.clientCited
+              ? "full Scout report: 50 prompts × 4 engines"
+              : "not cited yet — that's the opening (a measurable gap we close, not a guaranteed outcome) · full Scout: 50 prompts × 4 engines"}
+          </div>
+        </>
+      ) : null}
+    </div>
+  ) : null;
 
   return (
     <div className={styles.scanShell} data-mode={mode} data-pinned={logoPinned}>
@@ -530,38 +583,7 @@ export const HeroScan = () => {
               ))}
             </ul>
           ) : null}
-          {(teaserLoading || teaser) ? (
-            <div className={styles.heroCitationTeaser} aria-live="polite">
-              <div className={styles.heroCitationTeaserLabel}>
-                <span>AI visibility</span>
-                <span className={styles.heroCitationTeaserEngine}>· perplexity · live</span>
-              </div>
-              {teaserLoading && !teaser ? (
-                <span className={styles.heroCitationLoading}>checking AI visibility…</span>
-              ) : teaser ? (
-                <>
-                  <div className={styles.heroCitationRow}>
-                    <span>you:</span>
-                    <span className={teaser.clientCited ? styles.heroCitationCited : styles.heroCitationMissed}>
-                      {teaser.clientCited ? "✓ cited" : "✗ not cited yet"}
-                    </span>
-                  </div>
-                  {teaser.citedDomains && teaser.citedDomains.length > 0 ? (
-                    <div className={styles.heroCitationRow}>
-                      <span>also cited:</span>
-                      <span>{teaser.citedDomains.join(", ")}</span>
-                    </div>
-                  ) : null}
-                  <div className={styles.heroCitationNote}>
-                    {`${teaser.queriesRun ?? 1} ${(teaser.queriesRun ?? 1) === 1 ? "query" : "queries"} checked · `}
-                    {teaser.clientCited
-                      ? "full Scout report: 50 prompts × 4 engines"
-                      : "not cited yet — that's the opening (a measurable gap we close, not a guaranteed outcome) · full Scout: 50 prompts × 4 engines"}
-                  </div>
-                </>
-              ) : null}
-            </div>
-          ) : null}
+          {citationPanel}
           <a className="btn ghost" href="#contact" data-cursor="./email">
             email me the scan <span className="arr">-&gt;</span>
           </a>
@@ -569,8 +591,16 @@ export const HeroScan = () => {
       ) : null}
 
       {mode === "error" ? (
-        <div className={styles.heroScanError} data-soft={softError || undefined} role="alert">
-          {errorMsg}
+        <div className={styles.heroErrorBlock}>
+          <div className={styles.heroScanError} data-soft={softError || undefined} role="alert">
+            {errorMsg}
+          </div>
+          {citationPanel}
+          {teaser ? (
+            <a className="btn ghost" href="#contact" data-cursor="./email">
+              email me the scan <span className="arr">-&gt;</span>
+            </a>
+          ) : null}
         </div>
       ) : null}
 
