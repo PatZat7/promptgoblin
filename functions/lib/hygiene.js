@@ -411,6 +411,80 @@ function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
   };
 }
 
+/**
+ * buildRenderDiff — compare what a static crawler sees vs. what a real browser
+ * renders, to surface JSON-LD that only exists after JS execution (the "hidden
+ * from crawlers" panel). Answer-engine crawlers largely fetch static HTML, so
+ * JS-injected schema is invisible to them — that's a real, honest finding.
+ *
+ *   staticHtml   — the raw HTTP response body (null when the static fetch was
+ *                  WAF-blocked and only the browser render succeeded).
+ *   renderedHtml — browser-rendered HTML from Scrapfly (null when unavailable,
+ *                  e.g. no SCRAPFLY_KEY).
+ *   domSchemas   — live-DOM probe result { ldCount, types[], mdCount, mdTypes[] }
+ *                  (null when not captured). When present, `types` is the
+ *                  ground-truth browser-side schema list and wins over parsing.
+ *
+ * HONESTY CONSTRAINT: with no browser render to compare against, return
+ * { available:false } — never invent a diff. A WAF-blocked static fetch is
+ * reported as staticWasBlocked, not as a hygiene failure.
+ */
+function buildRenderDiff(staticHtml, renderedHtml, domSchemas) {
+  const haveProbe = !!(domSchemas && Array.isArray(domSchemas.types));
+  // Nothing browser-side to compare against → honestly unavailable.
+  if (!renderedHtml && !haveProbe) return { available: false };
+
+  const staticWasBlocked = staticHtml == null;
+  const staticTypes = staticHtml ? extractJsonLdTypes(staticHtml) : [];
+
+  // Browser-side schema truth: prefer the live-DOM probe, else parse rendered HTML.
+  const browserTypes =
+    haveProbe && domSchemas.types.length
+      ? [...new Set(domSchemas.types.map(String))].sort()
+      : renderedHtml
+        ? extractJsonLdTypes(renderedHtml)
+        : [];
+
+  const staticSet = new Set(staticTypes);
+  const browserSet = new Set(browserTypes);
+  const schemasOnlyInBrowser = browserTypes.filter((t) => !staticSet.has(t));
+  const schemasOnlyInStatic = staticTypes.filter((t) => !browserSet.has(t));
+  const schemasInBoth = browserTypes.filter((t) => staticSet.has(t));
+
+  // SPA heuristic: thin static shell, much larger rendered DOM. Only judge when
+  // we can see both sides.
+  const isSpa =
+    !!staticHtml && !!renderedHtml && renderedHtml.length > staticHtml.length * 1.5;
+
+  const diff = {
+    available: true,
+    schemasOnlyInBrowser,
+    schemasOnlyInStatic,
+    schemasInBoth,
+    hiddenSchemaCount: schemasOnlyInBrowser.length,
+    isSpa,
+    staticWasBlocked,
+  };
+
+  // Head-tag drift (title / description) — only when the rendered head is readable.
+  if (renderedHtml) {
+    const staticHead = staticHtml ? analyzeHead(staticHtml) : null;
+    const browserHead = analyzeHead(renderedHtml);
+    diff.title = {
+      static: staticHead ? staticHead.title : null,
+      browser: browserHead.title,
+      match: !!staticHead && staticHead.title === browserHead.title,
+    };
+    diff.description = {
+      static: staticHead ? staticHead.metaDescription : null,
+      browser: browserHead.metaDescription,
+      match: !!staticHead && staticHead.metaDescription === browserHead.metaDescription,
+    };
+  }
+
+  return diff;
+}
+
 module.exports = {
   EXPECTED_TYPES,
   AI_BOTS,
@@ -422,4 +496,5 @@ module.exports = {
   analyzeRobots,
   analyzeLlmsTxt,
   buildHygieneReport,
+  buildRenderDiff,
 };
