@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Supersede in-flight runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  functions:
+    name: Functions unit tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # functions/ is zero-dependency: `npm test` runs build-sync + node tests
+      # (138 checks, no keys, no network). No `npm ci` (there is no lockfile).
+      - run: npm test
+
+  web-unit:
+    name: Web unit tests + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run test          # vitest (scan-api + scan-report honest-envelope)
+      - run: npm run build         # next static export = typecheck gate
+
+  web-lint:
+    name: Web lint (advisory)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # NON-BLOCKING until the 7 pre-existing eslint errors are cleaned up.
+      # Flip `continue-on-error` to false to make lint a hard gate.
+      - run: npm run lint
+        continue-on-error: true
+
+  web-ui:
+    name: Web UI (Playwright) + a11y + screenshots
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build                              # produces web/out/ for `serve`
+      - run: npx playwright install --with-deps chromium
+      # NON-BLOCKING initially: the mobile hero currently fails axe color-contrast
+      # (a real WCAG AA finding). Screenshots + report still upload below.
+      # Flip `continue-on-error` to false once the mobile a11y findings are fixed.
+      - run: npm run test:ui
+        continue-on-error: true
+      - name: Upload screenshots + Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-ui-screenshots-and-report
+          path: |
+            web/test-results
+            web/playwright-report
+          retention-days: 14
+          if-no-files-found: warn

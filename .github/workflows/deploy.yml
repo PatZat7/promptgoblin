@@ -1,0 +1,44 @@
+name: Deploy scan functions (manual)
+
+# Honest-broker: NOTHING auto-deploys. This workflow only runs when a human
+# clicks "Run workflow" in the Actions tab and types "deploy" to confirm.
+# The marketing site (web/) deploys separately via DigitalOcean App Platform
+# deploy-on-push; this workflow covers the DO serverless scan functions only.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm deploying scan functions to production'
+        required: true
+        default: ''
+
+jobs:
+  deploy:
+    name: Deploy DO Functions
+    runs-on: ubuntu-latest
+    # Hard gate: the typed confirmation must match.
+    if: ${{ github.event.inputs.confirm == 'deploy' }}
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # Re-run the unit tests as a pre-deploy gate.
+      - run: npm test
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          # Add this in repo Settings > Secrets and variables > Actions.
+          # Use a scoped DO API token (NOT a personal full-access token).
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Sync libs, connect namespace, deploy
+        run: |
+          npm run sync
+          doctl serverless install || true
+          # If you have more than one namespace, pass its label/id explicitly:
+          #   doctl serverless connect promptgoblin
+          doctl serverless connect
+          doctl serverless deploy . --remote-build

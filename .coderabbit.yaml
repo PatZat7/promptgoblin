@@ -1,0 +1,45 @@
+# CodeRabbit config — https://docs.coderabbit.ai/guides/configure-coderabbit
+# NOTE: this config only takes effect once the CodeRabbit GitHub App is installed
+# on the repo (Marketplace > CodeRabbit > install on PatZat7/promptgoblin).
+language: en-US
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/.venv/**"
+    - "!web/out/**"
+    - "!**/package-lock.json"
+    - "!**/*.min.js"
+    - "!**/playwright-report/**"
+    - "!**/test-results/**"
+  path_instructions:
+    - path: "**/*"
+      instructions: >
+        Honest-broker code for Prompt Goblin (flag any violation):
+        (1) No fabricated metrics, fake clients/testimonials, or invented citations
+        — no number that wasn't measured.
+        (2) Schema/markup is hygiene, NOT a citation lever — flag any claim that
+        schema *causes* AI citations, and any promise of a citation number.
+        (3) Never tell a service/government site it is "missing Product schema"
+        (they correctly use Service/Offer/OfferCatalog).
+        (4) An unreadable / WAF-blocked / JS-rendered (SPA) site must never be
+        scored 0 — it is an honest "blocked / could not read" outcome.
+        (5) Nothing auto-deploys or auto-sends without a human gate.
+        (6) Flag any committed secret: sk-ant-, sk_live_, sk_test_, pplx-, dop_v1_,
+        lsv2_, AQ., xoxb-/xoxp-.
+        (7) Mock / demo / illustrative output must read as illustrative, never as
+        a real pass.
+  tone_instructions: >
+    Be concise and direct. Prioritize correctness bugs and honest-broker
+    violations over style nits.
+
+chat:
+  auto_reply: true
