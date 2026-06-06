@@ -10,7 +10,10 @@ packages:
         runtime: 'nodejs:24'
         web: true
         limits:
-          timeout: 20000
+          # 45s covers a fast WAF 403 (~1-2s) + the 30s Scrapfly ASP bypass + a
+          # margin. Heavy Akamai sites (e.g. walgreens.com) need ~15s+ for the
+          # residential-proxy render alone; 20s aborted them mid-fetch.
+          timeout: 45000
           memory: 256
         environment:
           # Injected at deploy from the gitignored functions/.env (doctl auto-loads it).

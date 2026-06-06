@@ -18,7 +18,12 @@ const { buildHygieneReport, buildRenderDiff } = require("./lib/hygiene");
 const { tier1Summary } = require("./lib/voice");
 
 const FETCH_TIMEOUT_MS = 12000;
+// Opportunistic render on open sites — keep tight so normal scans stay fast.
 const SCRAPFLY_TIMEOUT_MS = 15000;
+// WAF-bypass (asp=true) on heavy Akamai/Cloudflare sites needs more headroom:
+// the residential-proxy + JS-render round trip routinely lands ~15s and spikes
+// higher. Give it 30s so we don't abort a fetch that would have succeeded.
+const SCRAPFLY_ASP_TIMEOUT_MS = 30000;
 const MAX_BYTES = 3 * 1024 * 1024; // 3 MB cap on fetched HTML
 const MAX_REDIRECTS = 4;
 
@@ -77,7 +82,10 @@ const JS_SCHEMA_PROBE = Buffer.from(
 // Scrapfly fetch: browser-rendered HTML + live DOM schema probe.
 // asp=true adds residential-IP + TLS-spoof (needed for Akamai; optional for open sites).
 // Returns { html, bytes, domSchemas } on success, null if no key / failure / still bot-walled.
-async function fetchViaScrapfly(rawUrl, { asp = false } = {}) {
+async function fetchViaScrapfly(
+  rawUrl,
+  { asp = false, timeoutMs = SCRAPFLY_TIMEOUT_MS } = {}
+) {
   const key = process.env.SCRAPFLY_KEY;
   if (!key) return null;
   const endpoint =
@@ -87,7 +95,7 @@ async function fetchViaScrapfly(rawUrl, { asp = false } = {}) {
     `&js=${JS_SCHEMA_PROBE}`;
   let resp;
   try {
-    resp = await fetch(endpoint, { signal: AbortSignal.timeout(SCRAPFLY_TIMEOUT_MS) });
+    resp = await fetch(endpoint, { signal: AbortSignal.timeout(timeoutMs) });
   } catch {
     return null;
   }
@@ -206,7 +214,10 @@ async function main(args) {
   let domSchemas = null;
 
   if (botWalled) {
-    const fallback = await fetchViaScrapfly(target.href, { asp: true });
+    const fallback = await fetchViaScrapfly(target.href, {
+      asp: true,
+      timeoutMs: SCRAPFLY_ASP_TIMEOUT_MS,
+    });
     if (fallback) {
       renderedHtml = fallback.html;
       domSchemas = fallback.domSchemas;
