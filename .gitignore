@@ -12,6 +12,9 @@ _archive/
 skills-lock.json
 .claude/scheduled_tasks.lock
 
+# Per-agent coordination-watch snapshots (local diff state, never shared)
+.coordination-watch/
+
 # The agentic AEO pipeline is a separate deployable (its own repo) — never serve it as static
 pipeline/
 

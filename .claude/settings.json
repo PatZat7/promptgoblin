@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/coordination-watch.js --agent claude",
+            "timeout": 10,
+            "statusMessage": "coordination-watch"
+          }
+        ]
+      }
+    ]
+  }
+}

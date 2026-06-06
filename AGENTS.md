@@ -35,6 +35,7 @@ Three agents share this repo: **Codex (you) · Claude · Hermes**. The lanes, li
 - **You (Codex) hold the integrator + implementation seat:** you merge to `PLAN.md` and `main`; you implement `functions/` · `web/` · `pipeline/goblin/` · build glue; you integrate Hermes-authored `supabase/migrations/`.
 - **`main` is deploy-on-push — a bad merge ships live. Run the full gate checklist in `COORDINATION.md` before every merge** (pipeline pytest + eval; web test + build; functions test; `graph-keeper` on `pipeline/goblin/`; `integrity-reviewer` on outbound copy; honest-broker invariants; mock/demo paths labeled).
 - **Claude** proposes specs + reviews (never merges); **Hermes** owns the vault + authors migration SQL (never merges). Before integrating, check `feedback/claude/` + `feedback/hermes/`; record your accept/reject/defer decisions in `feedback/codex/`. Silence ≠ approval.
+- **Per-turn sync:** run `node scripts/coordination-watch.js --agent codex` at the start of each task — it prints only what Claude/Hermes changed (status-board rows + feedback notes) since your last run, so you don't re-read everything.
 
 ## Verification
 - `pipeline/`: 186 pytest tests + an eval gate (`heal-loop converges` + `verify strands converge (per-discipline)`) must stay green.
