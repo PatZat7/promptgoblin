@@ -632,6 +632,13 @@
     border-top: 1px solid var(--line);
     min-height: 620px;
   }
+  /* Idle = no scan output yet. The empty terminal otherwise reserves 145px below
+     the form, floating the input + submit into the panel's middle. Collapse it so
+     the form sits at the bottom of the panel (the goblin logo stays the
+     centerpiece above). scanShell is already justify-content: flex-end. */
+  .scanShell[data-mode="idle"] .heroTerminal {
+    display: none;
+  }
 }
 @media (max-width: 560px) {
   .heroScanLine {

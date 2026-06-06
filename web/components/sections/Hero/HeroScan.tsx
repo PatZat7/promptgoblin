@@ -462,7 +462,7 @@ export const HeroScan = () => {
           </div>
           {teaser.citedDomains && teaser.citedDomains.length > 0 ? (
             <div className={styles.heroCitationRow}>
-              <span>also cited:</span>
+              <span>cited instead:</span>
               <span>{teaser.citedDomains.join(", ")}</span>
             </div>
           ) : null}
