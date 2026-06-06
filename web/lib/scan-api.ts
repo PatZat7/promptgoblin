@@ -31,9 +31,22 @@ export type ScanReport = {
  *  blocked/unreachable/non-public host is never scored. */
 export type ScanOutcome = "blocked_by_waf" | "unreachable" | "non_public" | "timeout";
 
+export type RenderDiff = {
+  available: boolean;
+  schemasOnlyInBrowser?: string[];
+  schemasOnlyInStatic?: string[];
+  schemasInBoth?: string[];
+  hiddenSchemaCount?: number;
+  isSpa?: boolean;
+  staticWasBlocked?: boolean;
+  title?: { match?: boolean; static?: string | null; browser?: string | null };
+  description?: { match?: boolean; static?: string | null; browser?: string | null };
+};
+
 export type ScanResponse = {
   ok?: boolean;
   report?: ScanReport;
+  renderDiff?: RenderDiff;
   summary?: string;
   error?: string;
   /** Set by the function when the upstream WAF/bot-protection refused our fetch

@@ -14,10 +14,11 @@
  */
 
 const { reply, toUrl, assertPublicHost } = require("./lib/util");
-const { buildHygieneReport } = require("./lib/hygiene");
+const { buildHygieneReport, buildRenderDiff } = require("./lib/hygiene");
 const { tier1Summary } = require("./lib/voice");
 
 const FETCH_TIMEOUT_MS = 12000;
+const SCRAPFLY_TIMEOUT_MS = 15000;
 const MAX_BYTES = 3 * 1024 * 1024; // 3 MB cap on fetched HTML
 const MAX_REDIRECTS = 4;
 
@@ -58,6 +59,33 @@ function looksLikeBotWall(html, contentBytes) {
   if (!html) return false;
   const tiny = contentBytes < 12 * 1024;
   return tiny && WAF_BODY_SIGNATURES.some((re) => re.test(html));
+}
+
+// Scrapfly fetch: always requests render_js=true so we get browser-rendered HTML
+// for both the WAF-bypass path and the render-diff comparison.
+// asp=true adds residential-IP + TLS-spoof (needed for Akamai; optional for open sites).
+// Returns { html, bytes } on success, null if no key / failure / still bot-walled.
+async function fetchViaScrapfly(rawUrl, { asp = false } = {}) {
+  const key = process.env.SCRAPFLY_KEY;
+  if (!key) return null;
+  const endpoint =
+    `https://api.scrapfly.io/scrape?key=${encodeURIComponent(key)}` +
+    `&url=${encodeURIComponent(rawUrl)}&render_js=true` +
+    (asp ? "&asp=true" : "");
+  let resp;
+  try {
+    resp = await fetch(endpoint, { signal: AbortSignal.timeout(SCRAPFLY_TIMEOUT_MS) });
+  } catch {
+    return null;
+  }
+  if (!resp.ok) return null;
+  let json;
+  try { json = await resp.json(); } catch { return null; }
+  const html = json?.result?.content ?? null;
+  if (!html) return null;
+  const bytes = Buffer.byteLength(html, "utf8");
+  if (looksLikeBotWall(html, bytes)) return null;
+  return { html, bytes };
 }
 
 // SSRF-safe fetch: follow redirects MANUALLY and re-validate EVERY hop's host
@@ -155,23 +183,41 @@ async function main(args) {
   const botWalled =
     (!page.ok && page.botProtected) ||
     (page.ok && looksLikeBotWall(page.text, page.bytes));
-  if (botWalled)
-    return reply(
-      200,
-      {
-        ok: false,
-        blocked: true,
-        outcome: "blocked_by_waf",
-        reason: "bot_protection",
-        status: page.status || 200,
-        error:
-          `${target.href} is behind bot/WAF protection that blocks automated ` +
-          `requests (HTTP ${page.status || 200}). This is NOT a problem with your ` +
-          `site's hygiene — our server-side fetch can't reach it the way a browser ` +
-          `can. The full Scout audit reads protected sites a different way.`,
-      },
-      origin
-    );
+
+  // renderedHtml: browser-rendered HTML from Scrapfly (null = unavailable).
+  // staticHtml:   the raw HTTP response body (null when WAF-blocked).
+  let renderedHtml = null;
+  let staticHtml = page.ok ? page.text : null;
+
+  if (botWalled) {
+    const fallback = await fetchViaScrapfly(target.href, { asp: true });
+    if (fallback) {
+      renderedHtml = fallback.html;
+      // Scrapfly bypassed the WAF — overwrite page and fall through to hygiene.
+      // staticHtml stays null (honestly: the static crawl got nothing).
+      page.ok = true;
+      page.text = fallback.html;
+      page.bytes = fallback.bytes;
+      page.status = 200;
+    } else {
+      return reply(
+        200,
+        {
+          ok: false,
+          blocked: true,
+          outcome: "blocked_by_waf",
+          reason: "bot_protection",
+          status: page.status || 200,
+          error:
+            `${target.href} is behind bot/WAF protection that blocks automated ` +
+            `requests (HTTP ${page.status || 200}). This is NOT a problem with your ` +
+            `site's hygiene — our server-side fetch can't reach it the way a browser ` +
+            `can. The full Scout audit reads protected sites a different way.`,
+        },
+        origin
+      );
+    }
+  }
 
   // Genuine fetch failure (DNS, timeout, real 5xx outage, non-WAF 4xx).
   if (!page.ok)
@@ -190,10 +236,20 @@ async function main(args) {
 
   const robotsUrl = `${target.origin}/robots.txt`;
   const llmsUrl = `${target.origin}/llms.txt`;
-  const [robots, llms] = await Promise.all([
+
+  // For non-WAF sites: fire Scrapfly browser render in parallel with robots/llms.
+  // For WAF sites: renderedHtml already set above; skip the extra call.
+  const renderPromise = renderedHtml
+    ? Promise.resolve(null)
+    : fetchViaScrapfly(target.href, { asp: false });
+
+  const [robots, llms, renderResult] = await Promise.all([
     fetchText(robotsUrl),
     fetchText(llmsUrl),
+    renderPromise,
   ]);
+
+  if (renderResult) renderedHtml = renderResult.html;
 
   const report = buildHygieneReport({
     url: target.href,
@@ -203,7 +259,9 @@ async function main(args) {
     llmsText: llms.ok ? llms.text : null,
   });
 
-  return reply(200, { ok: true, tier: 1, report, summary: tier1Summary(report) }, origin);
+  const renderDiff = buildRenderDiff(staticHtml, renderedHtml);
+
+  return reply(200, { ok: true, tier: 1, report, renderDiff, summary: tier1Summary(report) }, origin);
 }
 
 exports.main = main;

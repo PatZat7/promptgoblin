@@ -12,6 +12,10 @@ packages:
         limits:
           timeout: 20000
           memory: 256
+        environment:
+          # Injected at deploy from the gitignored functions/.env (doctl auto-loads it).
+          # Optional — omit or leave blank to skip Scrapfly fallback and report WAF blocks honestly.
+          SCRAPFLY_KEY: ${SCRAPFLY_KEY}
       # Tier 2 — email-gated, rate-limited, single live engine (Perplexity).
       - name: tier2
         binary: false

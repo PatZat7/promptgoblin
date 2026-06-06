@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import clsx from "clsx";
 import { GoblinHead } from "@/components/ui/GoblinHead";
 import { captureEvent } from "@/lib/analytics";
-import { runHygieneScan, runCitationTeaserAuto, type ScanReport, type CitationTeaserData } from "@/lib/scan-api";
+import { runHygieneScan, runCitationTeaserAuto, type ScanReport, type CitationTeaserData, type RenderDiff } from "@/lib/scan-api";
 import { isValidDomain } from "@/lib/validate";
 import { SCAN_PHASES, type ScanStep } from "@/components/sections/LiveScan/scan.data";
 import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "@/components/sections/LiveScan/scan-report";
@@ -65,6 +65,7 @@ export const HeroScan = () => {
   const [pct, setPct] = useState(0);
   const [lines, setLines] = useState<HeroLine[]>([]);
   const [report, setReport] = useState<ScanReport | null>(null);
+  const [renderDiff, setRenderDiff] = useState<RenderDiff | null>(null);
   const [teaser, setTeaser] = useState<CitationTeaserData | null>(null);
   const [teaserLoading, setTeaserLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -314,6 +315,7 @@ export const HeroScan = () => {
     setTarget("");
     setPct(0);
     setReport(null);
+    setRenderDiff(null);
     setTeaser(null);
     setTeaserLoading(false);
     setErrorMsg("");
@@ -345,6 +347,7 @@ export const HeroScan = () => {
     setLogoPinned(false);
     setScanSeq((s) => s + 1); // trigger the logo dissolve
     setReport(null);
+    setRenderDiff(null);
     setTeaser(null);
     setTeaserLoading(true);
     setErrorMsg("");
@@ -416,6 +419,7 @@ export const HeroScan = () => {
 
     setPct(100);
     setReport(response.report);
+    if (response.renderDiff?.available) setRenderDiff(response.renderDiff);
     setMode("results");
     setLines((prev) => [...prev, mkLine("ok", response.summary || "scan complete")]);
     captureEvent("hero_scan_result_shown", {
@@ -582,6 +586,26 @@ export const HeroScan = () => {
                 <li key={`${finding.detail || "finding"}-${i}`}>{finding.detail}</li>
               ))}
             </ul>
+          ) : null}
+          {renderDiff?.available && (renderDiff.hiddenSchemaCount ?? 0) > 0 ? (
+            <div className={styles.heroRenderDiff} aria-label="browser vs. crawler diff">
+              <div className={styles.heroRenderDiffLabel}>
+                <span>browser vs. crawler</span>
+                {renderDiff.isSpa ? <span className={styles.heroRenderDiffTag}>js-rendered</span> : null}
+              </div>
+              <div className={styles.heroRenderDiffRow}>
+                <span>hidden from crawlers:</span>
+                <span className={styles.heroRenderDiffBad}>{renderDiff.hiddenSchemaCount} schema{(renderDiff.hiddenSchemaCount ?? 0) === 1 ? "" : "s"}</span>
+              </div>
+              <div className={styles.heroRenderDiffTypes}>
+                {(renderDiff.schemasOnlyInBrowser ?? []).join(", ")}
+              </div>
+              <div className={styles.heroRenderDiffNote}>
+                {renderDiff.staticWasBlocked
+                  ? "WAF blocked the static crawl — answer engines see none of your structured data"
+                  : "these schema types are injected by JavaScript — answer-engine crawlers fetch static HTML and miss them"}
+              </div>
+            </div>
           ) : null}
           {citationPanel}
           <a className="btn ghost" href="#contact" data-cursor="./email">

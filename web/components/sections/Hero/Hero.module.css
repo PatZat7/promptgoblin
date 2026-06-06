@@ -591,6 +591,52 @@
   animation: heroBlink 1.06s steps(2, end) infinite;
 }
 
+/* Browser vs. crawler render diff panel */
+.heroRenderDiff {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--fire);
+}
+.heroRenderDiffLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fire);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.heroRenderDiffTag {
+  color: var(--faint);
+}
+.heroRenderDiffRow {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.heroRenderDiffBad {
+  color: var(--fire);
+}
+.heroRenderDiffTypes {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.heroRenderDiffNote {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
 .heroResult :global(.btn) {
   grid-column: 1 / -1;
   justify-content: center;

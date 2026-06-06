@@ -64,6 +64,31 @@
 - ⬆️ **Push pipeline repo** — local pipeline `master` is ahead of origin by ~6 commits (task (b) + Product-schema fix), not pushed.
 - 🧹 Optional: drop the throwaway `browser_audit/_contrast_recheck.json` artifact.
 
+## Research-driven backlog (2026-06-06 vault research — 5 files)
+
+> Source: `Prompt Goblin - AEO GEO Industry Deep Research 2026`, `Citation Market Research Compilation 2026`, `Citation Tools And Integrity Research 2026`, `Reddit Community Signal 2026`, `Supabase + Vector DB Plan`. See full analysis in vault.
+
+- 📋 **Documentation plan** — `DOCS_PLAN.md` now exists in the repo root (2026-06-06). Covers all four doc audiences: prospect-facing methodology + methodology explainers, client-facing onboarding + report guides, public-authority content (benchmark report + AEO/GEO explainers), and internal pipeline/agent docs. Work it in parallel with the dashboard build — docs unlock sales conversations before dashboards exist.
+
+- 🔍 **Citation verification layer** (`pipeline/` + `functions/`) — The fabrication crisis is the sharpest differentiator (51% hallucination rate in independent investigations; 12x increase 2023→2026; 206+ court sanctions). Competitors monitor/audit; almost none *verify*. Design: after Perplexity returns brand citations, add a verification node that cross-checks each URL against real indexed sources (HTTP HEAD + content snippet match) and annotates each citation as `verified` / `unverifiable` / `fabricated`. Surface in the dashboard and the AI-prompt artifact. **Requires:** `graph-keeper` review; add `verified` field to `citations` table in Supabase schema.
+
+- 📊 **Topical authority proxy score** (`pipeline/goblin/nodes/seo_audit.py`) — The #1 citation predictor (r=0.41) is unmeasured. DA/backlinks (what we currently fingerprint) explain <4% of variance. Proxy: count connected named entities (NER over rendered text), heading-to-content depth ratio, and whether the page is a single-topic page vs. a hub. Flag as `topical_depth: low/medium/high`; wire into the recommendations priority weighting. **Note:** don't claim topical authority as a citation guarantee — flag as "structural signal."
+
+- 🎯 **Per-platform recommendation tagging** (`pipeline/goblin/nodes/recommend.py`) — ChatGPT drives 87.4% of AI referral traffic and cites pages that don't rank in Google's top 100 (80% of citations). Google AIO requires Page 1 first. The pipeline currently produces a monolithic rec list. Add a `platform` tag to each rec: `chatgpt` (freshness, structure, direct-answer frontloading), `google_aio` (authority, existing ranking, E-E-A-T), or `both`. The client report and AI-prompt artifact should present these in two lanes.
+
+- 🏪 **Third-party platform presence check** (`pipeline/goblin/nodes/recon.py` or new `platforms_audit` node) — For B2B SaaS: ~82% of comparison queries cite G2/Capterra/TrustRadius/Gartner Peer Insights — not the client's own site. For finance: NerdWallet/comparison aggregators. For e-commerce: Amazon brand presence. The scan should check whether the client has a profile on the relevant platform tier for their ICP segment, and flag absence as a HIGH citation gap. Add `icp_segment` → `platform_checklist` mapping keyed off the `recon` node's `company_profile`.
+
+- 🗄️ **Supabase + pgvector schema** (dashboard workstream) — The vault has a full proposed schema at `Prompt Goblin - Supabase + Vector DB Plan.md`: `clients`, `competitors`, `runs`, `citations`, `competitor_citations`, `page_chunks` (w/ `vector(1536)` + ivfflat index), `crawl_pages`, `recommendations`, `verification_results`. This is Phase 1 of the dashboard build — create migrations before any Next.js API routes. pgvector over cached `page_chunks` removes the hard dependency on live-fetch-only, improving reliability against WAF/JS-heavy blocks. **Prerequisite:** deploy the Next.js `web/` cutover first; then provision a Supabase project and run the migrations.
+
+- 📅 **Freshness cadence check** (`functions/lib/hygiene.js` + `pipeline/goblin/nodes/seo_audit.py`) — Finance content cited by AI is updated within 30 days — freshness is the dominant lever in that vertical. Add a content-age signal: parse `<meta name="revised">` / `<time datetime>` / sitemap `<lastmod>` and flag if >30 days for finance-segment clients. Low effort, high signal for Finance ICP. Emit as a `FRESHNESS_STALE` finding with severity calibrated by segment.
+
+- 📰 **Proprietary Citation Landscape Benchmark** (marketing + pipeline) — Run the pipeline on 10–20 sample domains per vertical (B2B SaaS, finance, legal, e-commerce, healthcare) and publish the results as a quarterly Prompt Goblin Citation Benchmark report. This is the dogfood loop that turns the tool into its own citation source — builds SEO/AEO authority for `promptgoblin.io` and gives sales a proprietary data asset. Publish as a `/benchmark` page (static, no auth) + a downloadable PDF. Honest-broker: clearly label sample methodology; no cherry-picking.
+
+- 🎨 **Messaging: fabrication crisis hook** (copywriter gate) — Brief the `copywriter` to test the trust/verification angle on the hero sub-line and HowItWorks section copy: *"51% of AI citations are fabricated — ours are verified."* This wins with technical founders and marketing ops. Current site leads with visibility; verification is a sharper hook in the current trust-eroded market. Route through `integrity-reviewer` before shipping. Do NOT add stat to copy without the honest-broker hedge ("in independent investigations").
+
+### Decision recorded (2026-06-06)
+- **Scout $997/mo is validated below market.** Research floor is $1,500–$1,997 for founders; Scrunch starts at $299 (self-serve), Evertune $499, Bluefish $399, AirOps $500. Prompt Goblin is done-for-you, not self-serve — the pricing gap is intentional for first-client conversion. Plan to raise once 2 logos are landed.
+
 ## Decisions log
 
 - 2026-06-05: **pricing → monthly + cancel-anytime**, then dropped to an **aggressive land-grab ladder: Scout $997 · Warband $3,500 · Warlord $9,500/mo** (owner). Intentionally below the research band ($1,500–$1,997 for founders) — owner is new to market and prioritizing first-client conversion + case studies over margin; raise once there are logos. Stripe Payment Links must be regenerated to match.
