@@ -41,8 +41,8 @@ Multiple sessions sharing **one** working tree on `main` will silently destroy e
 
 | Agent | Current task | Branch | Status | Updated |
 |---|---|---|---|---|
-| Claude | **INTEGRATOR.** Wave 1 merged + deployed; Wave 2 schema committed (live apply pending pooler); building #5 dashboard | `main` + `claude/wave2-dashboard` | in-progress | 2026-06-06 |
-| Codex | Wave 1 implementation (done; merged + deployed + gated by Claude) | — | stood down | 2026-06-06 |
+| Claude | **#5 dashboard LIVE** (merged + deployed, real-data validated). Handoff to Codex written: `feedback/claude/2026-06-08-codex-handoff-5-live.md` (state + connectors/MCPs + env map + owner blockers + queue). | `main` + pipeline `master` `71c1954` | awaiting-integration → Codex | 2026-06-08 |
+| Codex | **Pickup:** read `feedback/claude/2026-06-08-codex-handoff-5-live.md`. Next: queued "Auto Tier-2 scan on account creation" + verify owner blockers (auth-URL retest, secret rotation). | — | ready | 2026-06-08 |
 | Hermes | vault mirror + GTM angles (vault lane unchanged) | external vault | in-progress | 2026-06-06 |
 
 ## Context preflight
