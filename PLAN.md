@@ -4,7 +4,7 @@
 
 ## ⚠️ Deploy note
 
-`main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site** (the cutover from the old root `index.html` SPA is DONE). Gate every merge (tests + build + required reviewers) before pushing. The marketing site is currently `output:'export'` **static**; the dashboard (#5) needs it converted to **Node SSR** — do that on a branch with full verification before any cutover.
+`main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
 
 ## ✅ Current state — 2026-06-06 (Claude-integrator session)
 
@@ -14,10 +14,10 @@
 - **Marketing site:** `web/` Next.js cutover **DONE + live** on promptgoblin.io (DO builds `web/`→`out/` on push to `main`); old root SPA retired.
 - **Wave 1 — shipped + gated:** pipeline (freshness · topical-authority · per-platform lanes · third-party presence · citation-verification offline) — graph-keeper re-gate **APPROVE**, **289 pytest + eval 3/3**, merged to pipeline `master` + pushed (`061bbc9`). Web/functions (`/methodology` · `/learn/aeo-vs-geo` · LiveScan Tier-2 prune · functions citation-verifier) merged to `main` + deployed. Functions redeployed (Scrapfly WAF-bypass + render-diff + buildRenderDiff fix); **live walgreens.com probe honest** (real score 13, `staticWasBlocked:true`, never 0).
 - **Wave 2 — schema (#4): ✅ APPLIED LIVE** (2026-06-06, via the Supabase MCP connector — the `.env` route was blocked by a `[YOUR-PASSWORD]` placeholder, so we used OAuth-based MCP instead). Migrations `0001–0009` in the live ledger; verified: **10 public tables, RLS enabled+forced on all 10, 40 policies + the storage policy, the ivfflat `vector(1536)` index, and the private `scan-proof` bucket.** Security advisors: no RLS gaps; one known low-priority WARN (`vector` extension in `public` — standard Supabase default, left as-is). Added `0009_harden_function_search_path` to silence the function-search-path advisor.
-- **Wave 2 — dashboard (#5):** IN PROGRESS on `claude/wave2-dashboard` — `web/`→Node-SSR + dashboard MVP per `specs/dashboard-mvp.md`. Not cut over (owner-gated).
+- **Wave 2 — dashboard (#5): ✅ MERGED + LIVE** (2026-06-08). `web/`→Node-SSR + dashboard MVP shipped to `main` and the live DO app (cutover via MCP, preview-validated). All gates green: pipeline **298 pytest + eval 3/3**, functions **226**, web **lint 0/0 + vitest 65/65 + build**, **RLS owner-isolation PASS**, **service-key bundle-leak PASS**, **axe 0 violations** on `/login`+`/dashboard`+`/runs`+run-detail+fixes (desktop+Pixel-7), **integrity-reviewer APPROVE**, **graph-keeper APPROVE** (writer). Migrations `0010` views + `0011` RLS write-lockdown + `0012` unique-constraint applied live. Pipeline Supabase writer merged to `master` + wired (`GOBLIN_SUPABASE_ENABLED=true`, client `promptgoblin.io`, owner atpatzat@gmail.com) — runs upsert as `approved=false` (human-gated). Live verified: promptgoblin.io 200, `/dashboard`→307 `/login` (SSR auth gate), www→301.
 - **Wave 2 — vector-rag (#6):** deferred (owner).
-- **Verification truth:** pipeline **289 pytest + eval 3/3** · functions **138** · web **32**. (Older 186 / 272-pass-1-fail / 112 counts below are stale.)
-- **Open owner items:** ~~session-pooler string (#4)~~ ✅ done · service-role key (#5 server access) · DO Static→Node Web Service + `app.` DNS (#5 cutover) · rotate exposed secrets (Stripe live + DB string) · embeddings key (if #6 resumes).
+- **Verification truth:** pipeline **298 pytest + eval 3/3** · functions **226** · web **65 vitest + e2e** (older 289 / 138 / 32 counts are stale).
+- **Open owner items:** ~~session-pooler string (#4)~~ ✅ · ~~service-role key (#5)~~ ✅ set on DO + envs · ~~DO Static→Node + #5 cutover~~ ✅ LIVE · **🔑 STILL OPEN: rotate exposed secrets (Stripe `sk_live_` + DB password)** · embeddings key (if #6 resumes) · optional `app.` subdomain (not needed — dashboard lives on apex).
 
 ## Status
 
