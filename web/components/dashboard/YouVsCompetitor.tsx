@@ -32,11 +32,10 @@ export function YouVsCompetitor({ client, competitors }: YouVsCompetitorProps) {
               {item.domain}
               {isClient && <span className={styles.youChip}> you</span>}
             </span>
-            <div className={styles.barWrap} role="presentation">
+            <div className={styles.barWrap} aria-hidden="true">
               <div
                 className={isClient ? styles.clientBar : styles.competitorBar}
                 style={{ width: barWidth }}
-                aria-label={`${pct}% visibility share`}
               />
             </div>
             <span className={isClient ? styles.clientPct : styles.competitorPct}>

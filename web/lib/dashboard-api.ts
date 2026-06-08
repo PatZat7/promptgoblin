@@ -127,6 +127,10 @@ const SAMPLE_FIX: FixRow = {
  * List all client-visible runs for a client, newest first.
  * Returns [] when the client has no real runs yet; callers render [sample] UI.
  *
+ * When clientId is "__none__" (the MVP placeholder), the function looks up the
+ * authenticated user's first client automatically so that seeded test data and
+ * real production data surface without a hardcoded ID.
+ *
  * RLS enforces owner isolation — the anon key + user JWT means only the
  * authenticated user's rows are ever returned.
  */
@@ -139,12 +143,27 @@ export async function listRuns(clientId: string): Promise<RunSummary[]> {
     return [];
   }
 
+  // Resolve "__none__" placeholder to the user's first real client
+  let resolvedClientId = clientId;
+  if (clientId === "__none__") {
+    const { data: clientRows } = await supabase
+      .from("clients")
+      .select("id")
+      .order("created_at", { ascending: true })
+      .limit(1);
+    if (!clientRows || clientRows.length === 0) {
+      // No clients yet → sample UI
+      return [];
+    }
+    resolvedClientId = (clientRows[0] as Record<string, unknown>).id as string;
+  }
+
   const { data, error } = await supabase
     .from("runs")
     .select(
       "id, client_id, created_at, mode, visibility, confidence, low_confidence, blind_spot, is_sample, clients!inner(domain)"
     )
-    .eq("client_id", clientId)
+    .eq("client_id", resolvedClientId)
     .eq("approved", true) // client_visible equivalent: only approved runs shown
     .order("created_at", { ascending: false });
 

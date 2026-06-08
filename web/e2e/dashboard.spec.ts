@@ -54,7 +54,8 @@ const SKIP_AUTH_MSG =
   "TEST_SESSION_COOKIE not set — no seeded fixture session; skipping authed cases.";
 
 // reduced-motion path for the whole file (CRT/grain determinism).
-test.use({ reducedMotion: "reduce" });
+// reducedMotion must be nested under contextOptions in Playwright 1.60+.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -87,14 +88,18 @@ async function forceDeterministic(page: Page) {
  * Screenshot that NEVER hangs the run. Tries a bounded full-page capture; on
  * timeout/throw it falls back to a serialized-DOM assertion (the named PASS
  * path). Always runs `domAssert` so the load-bearing fact is verified either way.
+ *
+ * `forceDeterministic` is inside the try/catch so a transitional document state
+ * (documentElement null mid-navigation) degrades to the DOM-fallback path rather
+ * than failing the test — consistent with the spec's intent.
  */
 async function safeShot(
   page: Page,
   name: string,
   domAssert: () => Promise<void>,
 ): Promise<"image" | "dom-fallback"> {
-  await forceDeterministic(page);
   try {
+    await forceDeterministic(page);
     await page.screenshot({
       path: `test-results/dashboard-${name}.png`,
       fullPage: true,
@@ -103,9 +108,12 @@ async function safeShot(
     await domAssert();
     return "image";
   } catch {
-    // CRT/grain hang (or any capture failure): the pixel is unavailable, but the
-    // assertion still holds against the DOM. Documented degradation → PASS.
+    // CRT/grain hang, capture failure, or transitional DOM state: the pixel
+    // is unavailable. Wait for DOM content to settle before asserting so the
+    // domAssert doesn't run against a loading/empty document.
+    // Documented degradation → PASS as long as domAssert holds.
     console.warn(`safeShot("${name}") fell back to DOM snapshot (capture unavailable).`);
+    await page.waitForLoadState("domcontentloaded").catch(() => { /* already loaded */ });
     await domAssert();
     return "dom-fallback";
   }
