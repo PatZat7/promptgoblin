@@ -13,10 +13,16 @@ flag a service/gov site for "missing Product schema"; nothing auto-ships).
 
 ## Stack (locked)
 - **Next.js 16** App Router · **React 19** · **TypeScript** (strict)
-- **Static export** (`output: 'export'` → `out/`). No server at runtime, so:
-  no Server Actions, no route handlers that read the request, no `cookies()`/
-  `headers()`/middleware/ISR. Client data fetching hits the existing
-  DigitalOcean scan functions over `fetch`.
+- **Node/SSR runtime** (deploys as a DigitalOcean App Platform **Web Service**,
+  `npm run start`). `output:'export'` was **removed** (2026-06-08) so the
+  dashboard (#5) can use `cookies()`/route handlers/SSR — required for Supabase
+  cookie auth, RLS under the user JWT, and signed URLs. **Do NOT re-add
+  `output:'export'`** — it breaks the dashboard and the deploy. The DO spec is a
+  Node service in `.do/app.yaml`, not a `static_sites` block.
+- **Marketing routes still prerender to static HTML** (SSG) inside the Node app
+  — keep them server-componenty + statically renderable; only `/dashboard`,
+  `/runs*`, `/login`, `/auth/*` are dynamic. Public-site client data still hits
+  the DigitalOcean scan functions over `fetch`.
 - **Tailwind CSS v4** (CSS-first `@theme inline`) + **co-located CSS Modules**
 - **Zustand** (factory + Context provider) for global UI prefs
 - Turbopack is the default bundler — no flags.
