@@ -74,6 +74,20 @@
   color: var(--lime);
 }
 
+/* Illustrative (mock/sample) share — must NOT read as an earned lime result. */
+.sampleShare {
+  font-weight: 700;
+  color: var(--muted);
+}
+.illTag {
+  font-weight: 400;
+  font-size: 0.6875rem;
+  font-style: italic;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .blindSpot {
   color: var(--bolt);
   font-size: 0.75rem;

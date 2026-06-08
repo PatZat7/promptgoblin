@@ -43,7 +43,11 @@ const RunDetailPage = async ({ params }: RunDetailPageProps) => {
         <div className={styles.titleRow}>
           <h1 className={styles.title}>
             {summary.domain}
-            {summary.isSample && <SampleBadge label="illustrative data" />}
+            {(summary.isSample || summary.mode !== "live") && (
+              <SampleBadge
+                label={summary.mode === "mock" ? "mock — not a real result" : "illustrative data"}
+              />
+            )}
           </h1>
           <EvalBadge status={evalBadge} />
         </div>
@@ -66,10 +70,17 @@ const RunDetailPage = async ({ params }: RunDetailPageProps) => {
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>You vs competitors</h2>
-          <YouVsCompetitor
-            client={{ domain: summary.domain, share: summary.clientShare ?? 0 }}
-            competitors={youVsCompetitor.filter((c) => c.domain !== summary.domain)}
-          />
+          {blindSpot || summary.clientShare === null ? (
+            <p className={styles.notMeasured} role="note">
+              Your share couldn&apos;t be measured for this run
+              {blindSpot ? " (blind spot)" : ""} — shown as not measured, never 0.
+            </p>
+          ) : (
+            <YouVsCompetitor
+              client={{ domain: summary.domain, share: summary.clientShare }}
+              competitors={youVsCompetitor.filter((c) => c.domain !== summary.domain)}
+            />
+          )}
         </section>
 
         <section className={styles.section}>

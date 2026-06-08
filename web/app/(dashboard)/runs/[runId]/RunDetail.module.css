@@ -17,6 +17,15 @@
   flex-wrap: wrap;
 }
 
+/* Blind-spot / unmeasured client share — honest note, never a fabricated 0% bar. */
+.notMeasured {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--faint);
+  font-style: italic;
+  margin: 0;
+}
+
 .title {
   font-family: var(--mono);
   font-size: 1.5rem;

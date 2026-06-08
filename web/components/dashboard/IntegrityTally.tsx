@@ -63,9 +63,9 @@ export function IntegrityTally({ verified, unverifiable, fabricated }: Integrity
       {fabricated > 0 && (
         <p className={styles.honestNote} role="note">
           {fabricated} finding{fabricated !== 1 ? "s were" : " was"} flagged by
-          the verify loop as unconfirmed or regressed. This means the pipeline
-          couldn&apos;t confirm those gaps were real — the &ldquo;fabricated&rdquo; label is
-          an honesty signal, not a count of AI hallucinations.
+          the verify loop as unconfirmed or regressed — the pipeline couldn&apos;t
+          confirm those gaps. We surface this on purpose as an honesty signal;
+          the target is 0.
         </p>
       )}
     </div>

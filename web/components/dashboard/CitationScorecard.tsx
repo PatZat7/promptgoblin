@@ -33,6 +33,8 @@ export function CitationScorecard({ run }: CitationScorecardProps) {
     );
   }
 
+  // Earned result = live AND not sample. Mock/sample must never read as earned.
+  const illustrative = run.isSample || run.mode !== "live";
   const sharePct =
     run.clientShare !== null
       ? `${(run.clientShare * 100).toFixed(1)}%`
@@ -41,14 +43,28 @@ export function CitationScorecard({ run }: CitationScorecardProps) {
   return (
     <div className={styles.card}>
       <div className={styles.scoreRow}>
-        <span className={styles.score} aria-label={`Visibility share: ${sharePct}`}>
+        <span
+          className={illustrative ? styles.scoreSample : styles.score}
+          aria-label={`${illustrative ? "Illustrative" : "Measured"} visibility share: ${sharePct}`}
+        >
           {sharePct}
         </span>
         <div className={styles.meta}>
-          <span className={styles.label}>Measured share of answer-engine citations</span>
+          <span className={styles.label}>
+            {illustrative
+              ? "Illustrative share — not a measured result"
+              : "Measured share of answer-engine citations"}
+          </span>
           <ScoreDelta current={run.clientShare} previous={run.prevClientShare} />
         </div>
       </div>
+
+      {illustrative && (
+        <p className={styles.sampleNote} role="note">
+          {run.mode === "mock" ? "Mock run" : "Sample data"} — illustrative only,
+          not an earned result. Real numbers appear once a live run is approved.
+        </p>
+      )}
 
       {run.lowConfidence && (
         <p className={styles.lowConfPill} role="note">

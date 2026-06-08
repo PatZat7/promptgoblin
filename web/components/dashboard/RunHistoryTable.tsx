@@ -45,7 +45,10 @@ export function RunHistoryTable({ runs }: RunHistoryTableProps) {
           </tr>
         </thead>
         <tbody>
-          {runs.map((run) => (
+          {runs.map((run) => {
+            // Earned result = live AND not sample. Mock/sample are illustrative.
+            const illustrative = run.isSample || run.mode !== "live";
+            return (
             <tr key={run.runId} className={styles.row}>
               <td className={styles.td}>
                 <time dateTime={run.generatedAt}>
@@ -58,8 +61,10 @@ export function RunHistoryTable({ runs }: RunHistoryTableProps) {
               </td>
               <td className={styles.td}>
                 <span className={styles.domain}>{run.domain}</span>
-                {run.isSample && (
-                  <SampleBadge label="illustrative data" />
+                {illustrative && (
+                  <SampleBadge
+                    label={run.mode === "mock" ? "mock — not a real result" : "illustrative data"}
+                  />
                 )}
               </td>
               <td className={styles.td}>
@@ -84,8 +89,9 @@ export function RunHistoryTable({ runs }: RunHistoryTableProps) {
                     blind spot — {run.blindSpot.reason}
                   </span>
                 ) : run.clientShare !== null ? (
-                  <span className={styles.share}>
+                  <span className={illustrative ? styles.sampleShare : styles.share}>
                     {(run.clientShare * 100).toFixed(1)}%
+                    {illustrative && <span className={styles.illTag}> illustrative</span>}
                   </span>
                 ) : (
                   <span className={styles.na}>—</span>
@@ -110,7 +116,8 @@ export function RunHistoryTable({ runs }: RunHistoryTableProps) {
                 </a>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
