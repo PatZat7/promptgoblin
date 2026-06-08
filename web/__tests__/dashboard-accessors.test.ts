@@ -2,7 +2,7 @@
  * Dashboard unit tests — Vitest, offline (Supabase client mocked).
  * Tests 1–12 from the spec unit-test plan.
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 // ─── Mock @supabase/ssr + next/headers so server.ts can be loaded offline ─────
 vi.mock("@supabase/ssr", () => ({
