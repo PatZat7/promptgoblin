@@ -8,9 +8,13 @@ import { createServerSupabase } from "@/lib/supabase/server";
  *   - Magic-link OTP email landing
  *   - Google OAuth redirect
  *
- * Allow-list in Supabase dashboard (owner task):
- *   https://app.promptgoblin.io/auth/callback
- *   http://localhost:3010/auth/callback
+ * Supabase dashboard → Authentication → URL Configuration (owner task):
+ *   Site URL:        https://promptgoblin.io
+ *   Redirect URLs:   https://promptgoblin.io/auth/callback
+ *                    https://promptgoblin.io/**
+ *                    http://localhost:3010/auth/callback   (local dev)
+ * The dashboard ships on the APEX (promptgoblin.io), NOT app. — if these aren't
+ * allow-listed, Supabase ignores emailRedirectTo and falls back to Site URL.
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
