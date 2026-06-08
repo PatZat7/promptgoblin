@@ -1,4 +1,6 @@
--- 0009_dashboard_views.sql
+-- 0010_dashboard_views.sql
+-- (renumbered from 0009 — live 0009 is 0009_harden_function_search_path.sql,
+--  already in the project ledger; this views migration follows it.)
 -- Dashboard read views. security_invoker = true so RLS is enforced through
 -- the view (the view never widens access beyond the per-table policies in
 -- 0008_rls_policies.sql). Querying these views as an authenticated user
