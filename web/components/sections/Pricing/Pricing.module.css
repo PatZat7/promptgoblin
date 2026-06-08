@@ -1,8 +1,16 @@
+/* Pricing reads as its own block: drop the shared top seam (Services closes
+   itself now) and float the command bar down on a dark gap. */
+.section.section {
+  border-top: 0;
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
 .grid {
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(16px, 2vw, 24px);
   border: 0;
   background: transparent;
+  margin-top: clamp(28px, 4vw, 48px);
 }
 
 .tier {

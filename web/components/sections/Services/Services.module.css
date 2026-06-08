@@ -1,5 +1,8 @@
 .body {
   padding: 0;
+  /* close the accordion with its own rule so the last row (Accessibility)
+     stays bounded once Pricing is spaced away from the shared seam */
+  border-bottom: 1px solid var(--line);
 }
 
 .row {
