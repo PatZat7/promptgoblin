@@ -1,24 +1,42 @@
-# DigitalOcean App Platform spec — Prompt Goblin marketing site
-# Next.js 16 app in web/, built to a STATIC EXPORT (web/out) and served as static
-# assets — same static hosting model as before, now with a build step.
+# DigitalOcean App Platform spec — Prompt Goblin (Next.js, Node/SSR)
+#
+# CHANGED 2026-06-08: static_site -> Node web service. The dashboard (#5) needs a
+# server at request time (SSR cookie auth, RLS under the user JWT, signed URLs),
+# so web/ dropped `output:'export'`. Marketing routes still PRERENDER to static
+# HTML inside this Node app; only /dashboard, /runs, /login, /auth/* are dynamic.
 #
 # Apply:  doctl apps update b2fc9d71-4cf8-41b0-ad84-696043cd2def --spec .do/app.yaml
 #   (or via the DigitalOcean MCP / dashboard)
+#
+# SECRETS: SUPABASE_SERVICE_ROLE_KEY is NOT stored here (committed file). It is set
+# as an app-level SECRET env out-of-band (dashboard / API) and must NEVER be
+# committed or given a NEXT_PUBLIC_ prefix. The two NEXT_PUBLIC_ values below are
+# publishable by design (browser-safe).
 name: promptgoblin
 region: nyc
 features:
   - buildpack-stack=ubuntu-22
-static_sites:
+services:
   - name: promptgoblin-site
     github:
       repo: PatZat7/promptgoblin
       branch: main
       deploy_on_push: true
-    source_dir: web              # buildpack detects web/package.json (Node)
+    source_dir: web
+    environment_slug: node-js
     build_command: npm ci --include=dev && npm run build
-    output_dir: out              # next.config output:'export' → web/out
-    index_document: index.html
-    catchall_document: index.html
+    run_command: npm run start
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    http_port: 8080
+    envs:
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: https://teeztxhrolhmmibxnnxi.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        scope: RUN_AND_BUILD_TIME
+        value: sb_publishable_g6LcVsF3hxNrRoDBlevRIA_4KWRADUH
+      # SUPABASE_SERVICE_ROLE_KEY — set as an app-level SECRET out-of-band (NOT here).
 domains:
   - domain: promptgoblin.io
     type: PRIMARY
