@@ -1,6 +1,6 @@
 # Prompt Goblin — project guide
 
-Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop. A marketing SPA (`app.jsx` + `index.html` + `styles.css` — Babel-in-browser React, no build step), DigitalOcean serverless scan functions (`functions/`), and a Python **LangGraph self-healing RAG pipeline** (`pipeline/`) that measures answer-engine citation gaps and ships human-reviewed fixes.
+Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop. A **Next.js 16 marketing site** (`web/` — App Router · React 19 · TS · Tailwind v4; static-export, **live on promptgoblin.io** via DO App Platform deploy-on-push), DigitalOcean serverless scan functions (`functions/`), and a Python **LangGraph self-healing RAG pipeline** (`pipeline/`) that measures answer-engine citation gaps and ships human-reviewed fixes. _(The old Babel-in-browser SPA `app.jsx`/`index.html`/`styles.css` was retired at the `web/` cutover.)_
 
 ## Honest-broker code (binds every session AND every subagent — non-negotiable)
 

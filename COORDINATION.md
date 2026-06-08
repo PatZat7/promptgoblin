@@ -7,6 +7,20 @@
 
 **One owner per path. One integrator per merge.** Agents *propose and review*; the integrator *merges*. PLAN.md is the execution contract; this file is the live status of who's executing it.
 
+## Per-session worktree isolation (added 2026-06-06)
+
+Multiple sessions sharing **one** working tree on `main` will silently destroy each other's *uncommitted* work — a destructive `git checkout`/`reset --hard`/`stash` in one session wipes another's edits with no warning. This bit us 2026-06-06 (a WAF timeout fix was lost mid-session, then recovered by re-applying + committing). Rules:
+
+1. **Commit early, commit often.** Only committed objects survive another session's git ops. Never leave substantial work uncommitted on a shared tree.
+2. **One worktree per concurrent session** before starting parallel work:
+   ```powershell
+   git worktree add ../pg-<task> -b <fix|feat>/<task>   # own checkout + index + branch
+   git worktree list                                     # audit active trees
+   git worktree remove ../pg-<task>                      # when merged
+   ```
+   A destructive git op in one worktree cannot touch another's uncommitted work.
+3. **Stage by explicit path, never `git add -A`/`.`,** when the shared tree may hold another session's files — commit only your own paths.
+
 ## Roster + lanes (decided 2026-06-06 by owner)
 
 | Agent | Seat | Owns (writes here) | Reviews (no merge) | Does NOT touch |

@@ -103,10 +103,10 @@ export const ScanResult = ({ report, email, target, competitor, techStackInput, 
 
 export const Tier2Card = ({
   target,
-  competitor,
   tier2,
 }: {
   target: string;
+  // competitor is passed by callers but read from `tier2.competitor` below.
   competitor: string;
   tier2: Tier2State;
 }) => {

@@ -4,7 +4,7 @@ import { TIERS } from "./pricing.data";
 import styles from "./Pricing.module.css";
 
 export const Pricing = () => (
-  <Panel id="pricing" cursor="./pricing">
+  <Panel id="pricing" cursor="./pricing" className={styles.section}>
     <PanelBar command="$ goblin --pricing" note="monthly · cancel anytime · no sales call" />
     <div className={clsx("grid-lines", styles.grid)}>
       {TIERS.map((tier) => (
@@ -14,7 +14,7 @@ export const Pricing = () => (
         >
           {tier.tag && <span className={styles.tag}>{tier.tag}</span>}
           <div className={styles.name}>{tier.name}</div>
-          <div className={styles.who}>// {tier.who}</div>
+          <div className={styles.who}>{"// "}{tier.who}</div>
           <div className={styles.price}>
             ${tier.price}
             <small className={styles.priceUnit}>{tier.interval}</small>

@@ -1,0 +1,116 @@
+{
+  "_note": "Real-network smoke list — NOT part of npm test / CI. Run manually: node test/live-smoke.js or npm run smoke. WAF status changes over time; treat failures as signals to investigate, not hard regressions.",
+  "_waf_caveat": "WAF decisions (Akamai, Cloudflare, etc.) are IP-reputation-based. The same URL may pass from some IPs and block from others. A change here is NOT automatically a code regression.",
+  "urls": [
+    {
+      "url": "https://deadmau5.com/",
+      "category": "no-waf",
+      "description": "WordPress site with jQuery. The regression case: must report WordPress + jQuery in stack.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "stack": ["WordPress", "jQuery"],
+        "stackNote": "Both WordPress and jQuery must appear in techStack.detected"
+      }
+    },
+    {
+      "url": "https://walgreens.com/",
+      "category": "waf",
+      "description": "Akamai datacenter-IP block. Server-side HTTP fetch from a DO function IP will be 403.",
+      "expected": {
+        "readable": false,
+        "staticWasBlocked": true,
+        "outcome": "blocked_by_waf",
+        "stackNote": "No tech stack detectable from WAF response"
+      }
+    },
+    {
+      "url": "https://shopify.com/",
+      "category": "no-waf",
+      "description": "Shopify marketing site. Should detect Shopify in the stack.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "stack": ["Shopify"],
+        "stackNote": "Shopify CDN markers should appear"
+      }
+    },
+    {
+      "url": "https://nextjs.org/",
+      "category": "no-waf",
+      "description": "Next.js official site — built with Next.js, should detect it.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "stack": ["Next.js"],
+        "stackNote": "__NEXT_DATA__ script or /_next/ asset paths"
+      }
+    },
+    {
+      "url": "https://web.dev/",
+      "category": "no-waf",
+      "description": "Google web.dev — Eleventy or similar static site, no commerce signals.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "noProductSchema": true,
+        "stackNote": "Service/content site — must never be flagged missing Product schema"
+      }
+    },
+    {
+      "url": "https://wordpress.org/",
+      "category": "no-waf",
+      "description": "WordPress.org — WordPress CMS. Should detect WordPress in stack.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "stack": ["WordPress"],
+        "stackNote": "WordPress asset paths expected"
+      }
+    },
+    {
+      "url": "https://ssa.gov/",
+      "category": "no-waf",
+      "description": "US SSA government site. GovernmentOrganization schema or plain HTML. Must NEVER flag missing Product schema.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "noProductSchema": true,
+        "stackNote": "Government site — Product schema finding must be absent"
+      }
+    },
+    {
+      "url": "https://www.cloudflare.com/",
+      "category": "no-waf",
+      "description": "Cloudflare marketing site — usually readable but may self-challenge. React or Next.js expected.",
+      "expected": {
+        "readable": "maybe",
+        "staticWasBlocked": "maybe",
+        "stackNote": "If readable: React or Next.js expected. If WAF: staticWasBlocked must be true, never score 0 as verdict."
+      }
+    },
+    {
+      "url": "https://www.ticketmaster.com/",
+      "category": "waf",
+      "description": "Heavy bot protection — likely Akamai or similar. Expect blocked_by_waf from a datacenter IP.",
+      "expected": {
+        "readable": false,
+        "staticWasBlocked": true,
+        "outcome": "blocked_by_waf",
+        "stackNote": "No real stack detectable"
+      }
+    },
+    {
+      "url": "https://vercel.com/",
+      "category": "no-waf",
+      "description": "Vercel marketing site — Next.js, Organization schema expected.",
+      "expected": {
+        "readable": true,
+        "staticWasBlocked": false,
+        "stack": ["Next.js"],
+        "noProductSchema": true,
+        "stackNote": "SaaS/service — no Product schema expected"
+      }
+    }
+  ]
+}

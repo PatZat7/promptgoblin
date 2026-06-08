@@ -240,12 +240,6 @@ function detectTechStack(html) {
     );
   }
 
-  // jQuery is a legacy library, not a framework: its presence means a plain-HTML
-  // (server-rendered) site, so never report it as part of the stack. CSS
-  // frameworks (Bootstrap/Tailwind/etc.) stay — they're always shown if found.
-  // ("if it's jQuery, that means HTML.")
-  detected = detected.filter((s) => s.name !== "jQuery");
-
   return {
     detected: detected.slice(0, 6),
     note:

@@ -202,7 +202,8 @@ const nrStack = buildHygieneReport({ url: "https://nr.example/", html: NEXT_REAC
 ok("tech stack: Next.js detected on a React app", nrStack.techStack.detected.some((s) => s.name === "Next.js"));
 ok("tech stack: drops bare React when a framework is detected", !nrStack.techStack.detected.some((s) => s.name === "React"));
 
-// CSS frameworks are ALWAYS reported when found; jQuery means plain HTML.
+// CSS frameworks are ALWAYS reported when found; jQuery is real implementation
+// signal and IS reported too (the fix plan targets jQuery-based themes).
 const NEXT_TAILWIND_HTML = `<!doctype html><html><head><title>App</title>
   <script id="__NEXT_DATA__" type="application/json">{}</script>
   <script src="/_next/static/chunks/main.js"></script>
@@ -216,16 +217,27 @@ const JQUERY_ONLY_HTML = `<!doctype html><html><head><title>Old site</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head><body><h1>Hi</h1></body></html>`;
 const jqStack = buildHygieneReport({ url: "https://jq.example/", html: JQUERY_ONLY_HTML, contentBytes: Buffer.byteLength(JQUERY_ONLY_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
-ok("tech stack: jQuery never headlines the stack", !jqStack.techStack.detected.some((s) => s.name === "jQuery"));
-ok("tech stack: a jQuery-only site reads as plain HTML", jqStack.techStack.detected.length === 0 && /No obvious stack/i.test(jqStack.techStack.note));
+ok("tech stack: jQuery is reported when found", jqStack.techStack.detected.some((s) => s.name === "jQuery"));
 
 const JQUERY_BOOTSTRAP_HTML = `<!doctype html><html><head><title>Old site</title>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head><body></body></html>`;
 const jqbStack = buildHygieneReport({ url: "https://jqb.example/", html: JQUERY_BOOTSTRAP_HTML, contentBytes: Buffer.byteLength(JQUERY_BOOTSTRAP_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
-ok("tech stack: CSS still shows on a jQuery (plain-HTML) site", jqbStack.techStack.detected.some((s) => s.name === "Bootstrap"));
-ok("tech stack: jQuery dropped even when only CSS accompanies it", !jqbStack.techStack.detected.some((s) => s.name === "jQuery"));
+ok("tech stack: CSS (Bootstrap) shows alongside jQuery", jqbStack.techStack.detected.some((s) => s.name === "Bootstrap"));
+ok("tech stack: jQuery reported alongside CSS", jqbStack.techStack.detected.some((s) => s.name === "jQuery"));
+
+// Regression lock (deadmau5.com): a WordPress site that also loads jQuery must
+// report BOTH — WordPress (high) + jQuery (low). Commit 1573276 dropped jQuery
+// here ("jQuery means plain HTML"); that lost real signal and is reverted.
+const WP_JQUERY_HTML = `<!doctype html><html><head><title>deadmau5</title>
+  <link rel="stylesheet" href="/wp-content/themes/mau5/style.css">
+  <script src="/wp-includes/js/jquery/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head><body></body></html>`;
+const wpjqStack = buildHygieneReport({ url: "https://deadmau5.com/", html: WP_JQUERY_HTML, contentBytes: Buffer.byteLength(WP_JQUERY_HTML), robotsText: ROBOTS_WELCOMING, llmsText: null });
+ok("tech stack: WordPress detected on a WP+jQuery site", wpjqStack.techStack.detected.some((s) => s.name === "WordPress"));
+ok("tech stack: jQuery detected on a WP+jQuery site (deadmau5 regression)", wpjqStack.techStack.detected.some((s) => s.name === "jQuery"));
 
 // Product schema is commerce-only — service/gov sites must never be flagged for it.
 const service = buildHygieneReport({

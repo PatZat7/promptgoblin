@@ -11,6 +11,9 @@ export const Loader = () => {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // Post-hydration reduced-motion guard: must run in the effect (not lazy
+      // init) so static-export HTML and the client agree, avoiding a mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHide(true);
       return;
     }
