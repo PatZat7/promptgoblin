@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Bing rank and AI citations · Prompt Goblin",
   description:
     "How Bing indexing and IndexNow accelerate AI Overview and assistant citations.",
+  alternates: { canonical: "/learn/bing-rank-and-ai-citations" },
 };
 
 export default function Page() {

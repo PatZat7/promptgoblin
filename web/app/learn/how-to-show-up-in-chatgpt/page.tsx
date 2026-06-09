@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "How to show up in ChatGPT · Prompt Goblin",
   description:
     "What actually makes a website show up inside ChatGPT and other answer engines — and what almost everyone gets wrong.",
+  alternates: { canonical: "/learn/how-to-show-up-in-chatgpt" },
 };
 
 export default function Page() {
