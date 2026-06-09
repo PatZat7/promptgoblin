@@ -1,50 +1,19 @@
-import type { Metadata } from "next";
-import { listRuns, SAMPLE_RUN_SUMMARY } from "@/lib/dashboard-api";
-import { RunHistoryTable } from "@/components/dashboard/RunHistoryTable";
-import { SampleBadge } from "@/components/dashboard/SampleBadge";
-import styles from "./Dashboard.module.css";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Dashboard · Prompt Goblin",
-  robots: { index: false, follow: false },
-};
+import { useState } from "react";
+import { RunScanForm } from "@/components/dashboard/RunScanForm";
 
-const DashboardPage = async () => {
-  // In the MVP a user owns one client; list all runs for it.
-  // When no clientId is known (pre-DB), fall back to sample data.
-  let runs = await listRuns("__none__").catch(() => []);
-
-  const isAllSample = runs.length === 0;
-  if (isAllSample) {
-    runs = [SAMPLE_RUN_SUMMARY];
-  }
-
+export default function DashboardClientPage() {
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>
-          Overview{" "}
-          {isAllSample && (
-            <SampleBadge label="no real runs yet — illustrative data" />
-          )}
-        </h1>
-        <p className={styles.subtitle}>
-          Latest scan runs for your domain. Each row shows your measured share
-          of answer-engine citations and the delta vs the prior run.
-        </p>
-      </header>
+    <div>
+      <h1 style={{ fontSize: 24, fontWeight: 700 }}>Dashboard</h1>
+      <p style={{ color: "#888", marginTop: 6 }}>
+        Run a scan, track visibility, and manage citation targets.
+      </p>
 
-      <RunHistoryTable runs={runs} />
-
-      {isAllSample && (
-        <p className={styles.sampleNote}>
-          This table shows illustrative{" "}
-          <strong>[sample]</strong> data. Real results will appear here once your
-          first scan run is complete and approved.
-        </p>
-      )}
+      <section style={{ marginTop: 20 }}>
+        <RunScanForm />
+      </section>
     </div>
   );
-};
-
-export default DashboardPage;
+}

@@ -1,0 +1,72 @@
+.footer {
+  border-top: 1px solid var(--line, #222);
+  color: var(--muted, #aaa);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    grid-template-columns: 1.2fr 2fr;
+  }
+}
+
+.brand .home {
+  color: var(--fg, #e8e6e1);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.tagline {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted, #aaa);
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.colTitle {
+  font-weight: 600;
+  color: var(--fg, #e8e6e1);
+  margin: 0 0 8px;
+}
+
+.col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.col a {
+  color: var(--muted, #aaa);
+  text-decoration: none;
+}
+
+.bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted, #aaa);
+}
+
+.email {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
