@@ -42,3 +42,10 @@ jobs:
           #   doctl serverless connect promptgoblin
           doctl serverless connect
           doctl serverless deploy . --remote-build
+      - name: Notify IndexNow
+        if: success()
+        run: |
+          curl -sS -X POST https://promptgoblin.io/indexnow \
+            -H 'Content-Type: application/json' \
+            -d '{"host":"promptgoblin.io"}' \
+            || echo 'IndexNow ping skipped'
