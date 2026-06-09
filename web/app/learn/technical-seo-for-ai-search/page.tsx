@@ -4,6 +4,7 @@ export const metadata: Metadata = {
   title: "Technical SEO for AI search · Prompt Goblin",
   description:
     "The technical conditions that determine whether an answer engine can find, crawl, and cite your content.",
+  alternates: { canonical: "/learn/technical-seo-for-ai-search" },
 };
 
 export default function Page() {
