@@ -10,10 +10,15 @@ type CitationTarget = {
   category: "entity" | "claim" | "feature" | "vertical";
 };
 
-export function RunScanForm() {
+type RunScanFormProps = {
+  defaultDomain: string;
+  canRunScans: boolean;
+};
+
+export function RunScanForm({ defaultDomain, canRunScans }: RunScanFormProps) {
   const [targets, setTargets] = useState<CitationTarget[]>([]);
   const [keyword, setKeyword] = useState("");
-  const [mode, setMode] = useState<"live" | "sample">("live");
+  const [mode, setMode] = useState<"live">("live");
   const [status, setStatus] = useState<string | null>(null);
 
   async function submit(formData: FormData) {
@@ -24,7 +29,7 @@ export function RunScanForm() {
         const text = await res.text();
         throw new Error(text || `HTTP ${res.status}`);
       }
-      setStatus("Run submitted.");
+      setStatus("Run queued. It will appear in Runs once the pipeline finishes and the result is approved.");
     } catch (err) {
       setStatus(err instanceof Error ? err.message : "Submit failed.");
     }
@@ -32,14 +37,22 @@ export function RunScanForm() {
 
   return (
     <form action={submit} style={{ display: "grid", gap: 12 }}>
+      {!canRunScans ? (
+        <p style={{ color: "#ccc", margin: 0 }}>
+          This seat can view reports but cannot launch scans. Ask a Prompt Goblin
+          admin to upgrade the seat.
+        </p>
+      ) : null}
+
       <div style={{ display: "grid", gap: 6 }}>
         <label className="label" htmlFor="domain">Domain</label>
         <input
           id="domain"
           name="domain"
           className="input"
-          defaultValue="promptgoblin.io"
+          defaultValue={defaultDomain}
           required
+          disabled={!canRunScans}
         />
       </div>
 
@@ -51,9 +64,9 @@ export function RunScanForm() {
           className="input"
           value={mode}
           onChange={(e) => setMode(e.target.value as typeof mode)}
+          disabled={!canRunScans}
         >
           <option value="live">Live</option>
-          <option value="sample">Sample</option>
         </select>
       </div>
 
@@ -66,6 +79,7 @@ export function RunScanForm() {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           placeholder="e.g. AEO Chicago"
+          disabled={!canRunScans}
         />
       </div>
 
@@ -89,7 +103,7 @@ export function RunScanForm() {
         }
       />
 
-      <button className="button primary" type="submit">
+      <button className="button primary" type="submit" disabled={!canRunScans}>
         Run scan
       </button>
 

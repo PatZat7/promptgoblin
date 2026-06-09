@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         "Cache-Control": "no-store",
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "IndexNow submission failed" },
       { status: 500 },

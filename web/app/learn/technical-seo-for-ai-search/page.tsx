@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Technical SEO for AI search · Prompt Goblin",

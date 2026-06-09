@@ -1,9 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import { RunScanForm } from "@/components/dashboard/RunScanForm";
+import { getDashboardSeat } from "@/lib/dashboard-seat";
 
-export default function DashboardClientPage() {
+export default async function DashboardClientPage() {
+  const seat = await getDashboardSeat();
+  const canRunScans = seat?.canRunScans ?? false;
+  const domain = seat?.clientDomain ?? "promptgoblin.io";
+
   return (
     <div>
       <h1 style={{ fontSize: 24, fontWeight: 700 }}>Dashboard</h1>
@@ -12,7 +14,10 @@ export default function DashboardClientPage() {
       </p>
 
       <section style={{ marginTop: 20 }}>
-        <RunScanForm />
+        <RunScanForm
+          defaultDomain={domain}
+          canRunScans={canRunScans}
+        />
       </section>
     </div>
   );

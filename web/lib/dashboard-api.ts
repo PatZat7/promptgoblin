@@ -11,6 +11,7 @@ import type {
   PlatformBreakdown,
   Engine,
   VerifyStatus,
+  ApprovalQueueItem,
 } from "@/lib/dashboard-types";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -391,6 +392,49 @@ export async function getEvalBadge(runId: string): Promise<EvalBadge> {
   );
   const lowConfidence = Boolean(runData?.low_confidence);
   return { status: deriveEvalBadgeStatus(integrity, lowConfidence) };
+}
+
+export async function listApprovalQueue(): Promise<ApprovalQueueItem[]> {
+  let supabase: Awaited<ReturnType<typeof createServerSupabase>>;
+  try {
+    supabase = await createServerSupabase();
+  } catch {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("recommendations")
+    .select(
+      "id, run_id, title, kind, score, status, human_reviewed, runs!inner(client_id, clients!inner(domain))"
+    )
+    .eq("human_reviewed", false)
+    .order("score", { ascending: false })
+    .limit(100);
+
+  if (error) {
+    console.error("[dashboard-api] listApprovalQueue error:", error.message);
+    return [];
+  }
+
+  return (data ?? []).map((row) => {
+    const r = row as Record<string, unknown>;
+    const runJoin = r.runs as Record<string, unknown> | Record<string, unknown>[] | null;
+    const run = Array.isArray(runJoin) ? runJoin[0] : runJoin;
+    const clientJoin = (run?.clients as Record<string, unknown> | Record<string, unknown>[] | null) ?? null;
+    const client = Array.isArray(clientJoin) ? clientJoin[0] : clientJoin;
+
+    return {
+      recommendationId: (r.id as string) ?? "",
+      runId: (r.run_id as string) ?? "",
+      clientId: (run?.client_id as string) ?? "",
+      domain: (client?.domain as string) ?? "",
+      title: (r.title as string) ?? "Untitled recommendation",
+      kind: (r.kind as string) ?? "citation",
+      score: Number(r.score ?? 0),
+      status: (r.status as string) ?? "proposed",
+      humanReviewed: Boolean(r.human_reviewed),
+    };
+  });
 }
 
 /** Re-export sample data for pages that need a fallback when no runs exist. */

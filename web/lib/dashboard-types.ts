@@ -75,6 +75,29 @@ export type EvalBadge = {
   status: EvalBadgeStatus;
 };
 
+export type DashboardSeat = {
+  clientId: string | null;
+  clientDomain: string | null;
+  ownerUserId: string | null;
+  role: "admin" | "member" | null;
+  scanTier: "none" | "tier1" | "tier2" | "tier3" | null;
+  seatLabel: string | null;
+  canRunScans: boolean;
+  canReview: boolean;
+};
+
+export type ApprovalQueueItem = {
+  recommendationId: string;
+  runId: string;
+  clientId: string;
+  domain: string;
+  title: string;
+  kind: string;
+  score: number;
+  status: string;
+  humanReviewed: boolean;
+};
+
 export type RunDetail = {
   summary: RunSummary;
   /** visibility jsonb — client domain first, then competitors */

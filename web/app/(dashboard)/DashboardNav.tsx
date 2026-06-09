@@ -6,9 +6,11 @@ import styles from "./DashboardNav.module.css";
 
 type DashboardNavProps = {
   userEmail: string | null;
+  seatLabel: string | null;
+  canReview: boolean;
 };
 
-export function DashboardNav({ userEmail }: DashboardNavProps) {
+export function DashboardNav({ userEmail, seatLabel, canReview }: DashboardNavProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleSignOut() {
@@ -30,8 +32,14 @@ export function DashboardNav({ userEmail }: DashboardNavProps) {
         <Link href="/runs" className={styles.navLink}>
           Runs
         </Link>
+        {canReview && (
+          <Link href="/approvals" className={styles.navLink}>
+            Approvals
+          </Link>
+        )}
       </div>
       <div className={styles.right}>
+        {seatLabel && <span className={styles.seatBadge}>{seatLabel}</span>}
         {userEmail && (
           <span className={styles.userEmail} aria-label={`Signed in as ${userEmail}`}>
             {userEmail}

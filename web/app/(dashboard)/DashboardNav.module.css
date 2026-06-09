@@ -19,6 +19,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .wordmark {
@@ -49,6 +50,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.seatBadge {
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.2rem 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--lime);
+  text-transform: uppercase;
 }
 
 .signOutBtn {

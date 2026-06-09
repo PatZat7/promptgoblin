@@ -29,6 +29,7 @@ export const DOCS = [
   { href: "/learn/aeo-vs-geo", label: "AEO vs GEO" },
   { href: "/learn/how-to-show-up-in-chatgpt", label: "ChatGPT" },
   { href: "/learn/technical-seo-for-ai-search", label: "Technical SEO" },
+  { href: "/faq", label: "FAQ" },
   { href: "/docs/bing-webmaster-tools", label: "Bing" },
   { href: "/docs/report-guide", label: "Reports" },
 ];

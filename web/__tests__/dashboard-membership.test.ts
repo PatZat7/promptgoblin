@@ -18,7 +18,7 @@ describe("dashboard membership model", () => {
     expect(existsSync(migrationPath)).toBe(true);
 
     const migration = readFileSync(migrationPath, "utf8");
-    expect(migration).toContain("create table if not exists client_memberships");
+    expect(migration).toContain("create table if not exists public.client_memberships");
     expect(migration).toContain("role in ('admin','member')");
     expect(migration).toContain("scan_tier");
     expect(migration).toContain("can_run_scans");

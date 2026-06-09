@@ -39,7 +39,7 @@ const AeoVsGeoPage = () => (
         </li>
       </ul>
       <p>
-        80% of ChatGPT citations don't rank in Google's top 100. CTR fell from
+        80% of ChatGPT citations don&apos;t rank in Google&apos;s top 100. CTR fell from
         1.76% to 0.61% for AI Overview queries. The zero-click shift is real.
       </p>
       <p>

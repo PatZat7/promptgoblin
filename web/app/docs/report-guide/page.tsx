@@ -23,7 +23,7 @@ const ReportGuidePage = () => (
       <p>
         Each delivered scan report contains a prioritized fix queue, platform
         lanes, a stack-specific implementation snippet, and an AI-prompt artifact
-        meant for the client's own coding or CMS workflow.
+        meant for the client&apos;s own coding or CMS workflow.
       </p>
 
       <h2>What the severity levels mean</h2>

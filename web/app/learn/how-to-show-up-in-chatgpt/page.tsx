@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "How to show up in ChatGPT · Prompt Goblin",

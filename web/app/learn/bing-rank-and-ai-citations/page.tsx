@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Bing rank and AI citations · Prompt Goblin",

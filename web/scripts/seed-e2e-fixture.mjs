@@ -221,6 +221,16 @@ async function seed() {
   });
   if (clientError) throw clientError;
   console.log(`  Client seeded: ${clientId}`);
+  const { error: membershipError } = await admin.from("client_memberships").insert({
+    client_id: clientId,
+    user_id: userId,
+    role: "admin",
+    scan_tier: "tier3",
+    can_run_scans: true,
+    can_review: true,
+  });
+  if (membershipError) throw membershipError;
+  console.log(`  Membership seeded for ${userId}`);
 
   // 3. Seed a LIVE APPROVED run (the "visible" run)
   const liveRunId = crypto.randomUUID();

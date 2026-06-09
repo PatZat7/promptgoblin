@@ -1,6 +1,5 @@
 import "server-only";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServiceRoleSupabase } from "@/lib/supabase/service-role";
 
 // IMPORTANT: This module uses the SERVICE ROLE key — server-side ONLY.
 // The "server-only" import above ensures bundlers hard-error if this file is
@@ -9,34 +8,6 @@ import { cookies } from "next/headers";
 
 const SIGNED_URL_TTL_SECONDS = 60; // short-lived; client never gets the object key
 const BUCKET = "scan-proof";
-
-function createServiceRoleClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) {
-    throw new Error(
-      "[Supabase signed-urls] NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY " +
-        "are required for signed URL minting. Add SUPABASE_SERVICE_ROLE_KEY to web/.env.local."
-    );
-  }
-  // Service-role client — bypasses RLS for URL minting only.
-  // The *access* check is enforced by the storage.objects RLS policy.
-  return createServerClient(url, serviceKey, {
-    cookies: {
-      getAll: async () => {
-        const store = await cookies();
-        return store.getAll();
-      },
-      setAll: () => {
-        // No-op: service role client doesn't manage auth cookies.
-      },
-    },
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
-}
 
 /**
  * Mint a short-TTL signed URL for a private scan-proof storage object.
@@ -47,7 +18,7 @@ export async function getScanProofSignedUrl(
   storagePath: string
 ): Promise<string | null> {
   try {
-    const supabase = createServiceRoleClient();
+    const supabase = createServiceRoleSupabase();
     const { data, error } = await supabase.storage
       .from(BUCKET)
       .createSignedUrl(storagePath, SIGNED_URL_TTL_SECONDS);
