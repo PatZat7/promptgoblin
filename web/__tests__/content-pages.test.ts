@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
+import sitemap from "@/app/sitemap";
 import { SOURCES, PREDICTORS } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
 import { HONEST_BROKER, LAYERS } from "@/app/methodology/methodology.data";
+import { FAQ } from "@/lib/faq";
+import { DOCS, SITE } from "@/lib/site";
 import { aeoGeoJsonLd, methodologyJsonLd, structuredData } from "@/lib/structured-data";
 
 describe("methodology content", () => {
@@ -43,5 +46,17 @@ describe("aeo vs geo content", () => {
   it("home structured data remains the six-block service graph", () => {
     expect(structuredData).toHaveLength(6);
     expect(structuredData.map((node) => (node as Record<string, unknown>)["@type"])).not.toContain("Product");
+  });
+
+  it("FAQ route is discoverable and JSON-LD mirrors the visible FAQ", () => {
+    expect(DOCS.map((link) => link.href)).toContain("/faq");
+    expect(sitemap().map((entry) => entry.url)).toContain(`${SITE.url}/faq`);
+
+    const faqNode = structuredData.find(
+      (node) => (node as Record<string, unknown>)["@type"] === "FAQPage",
+    ) as { mainEntity: Array<{ name: string; acceptedAnswer: { text: string } }> };
+
+    expect(faqNode.mainEntity.map((item) => item.name)).toEqual(FAQ.map((item) => item.q));
+    expect(faqNode.mainEntity.map((item) => item.acceptedAnswer.text)).toEqual(FAQ.map((item) => item.a));
   });
 });

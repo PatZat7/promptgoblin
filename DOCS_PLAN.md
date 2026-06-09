@@ -16,7 +16,7 @@ Documentation does three jobs before we have a full client roster:
 
 | Audience | Goal | Format | Where it lives |
 |----------|------|--------|----------------|
-| **Prospect** | Understand what we do and why it works before committing | Public web pages + PDF leave-behind | `/how-it-works`, `/methodology`, `/benchmark` on the site |
+| **Prospect** | Understand what we do and why it works before committing | Public web pages + PDF leave-behind | `/`, `/methodology`, `/faq`, `/benchmark` on the site |
 | **Active client** | Know exactly what we measured, what we found, and how to apply the fixes | Delivered artifact (HTML report + AI-prompt .txt) + onboarding doc | Emailed + eventually gated in dashboard |
 | **Technical evaluator / CTO** | Trust our honest-broker stance; validate the scan methodology | Technical methodology page + `llms.txt` | `/methodology` + `public/llms.txt` |
 | **Internal / agent team** | Know the pipeline architecture, eval gate contract, and honest-broker rules | `CLAUDE.md`, `web/AGENTS.md`, pipeline `README`, this file | Repo |
@@ -42,7 +42,7 @@ Documentation does three jobs before we have a full client roster:
 - Never list "Product schema" as a fix for service/government sites
 
 **Owner:** `copywriter` → `integrity-reviewer` → `implementer` (page build)
-**Status:** Not started
+**Status:** Live; keep current as scan capabilities and report wording change.
 **Priority:** High — needed before DM follow-up conversations happen
 
 ---
@@ -81,7 +81,7 @@ Documentation does three jobs before we have a full client roster:
 **Honest-broker:** Cite the research sources (arXiv:2311.09735, Conductor 2026 benchmarks, ZipTie.dev). Don't inflate numbers or claim proprietary access to data we don't have.
 
 **Owner:** `researcher` (drafts) → `copywriter` (voice) → `integrity-reviewer` → `implementer`
-**Status:** Not started
+**Status:** Live; next pass should add the dogfood query/content map from `docs/promptgoblin-dogfood-aeo-seo-plan.md`.
 **Priority:** Medium — builds authority; not a sales blocker
 
 ---
@@ -101,6 +101,39 @@ Documentation does three jobs before we have a full client roster:
 **Status:** Blocked on having enough pipeline runs. Start with 5–10 domains (use the 27 leads list as a seed). Publish as a PDF + a static `/benchmark` page.
 **Owner:** Main thread (pipeline runs) → `copywriter` (report copy) → `integrity-reviewer` → `implementer`
 **Priority:** Medium — needed for SEO/AEO authority; produces a sales asset
+
+---
+
+### 1.5 FAQ page (`/faq`)
+
+**What it is:** A dedicated FAQ route backed by the same `web/lib/faq.ts` source
+as the homepage FAQ section and FAQPage JSON-LD.
+
+**Covers:**
+- What AEO/GEO means
+- Schema and llms.txt as hygiene, not citation guarantees
+- Pricing
+- Work guarantee language
+
+**Status:** Route added 2026-06-08. Keep answers single-sourced; add new FAQ
+items in `web/lib/faq.ts` only.
+**Owner:** Main thread → `integrity-reviewer` for any changed outbound copy
+**Priority:** High — supports crawlable Q&A-shaped content.
+
+---
+
+### 1.6 Bing Webmaster Tools / IndexNow guide
+
+**What it is:** A client/internal guide for Bing property verification, sitemap
+submission, URL inspection, URL submission, and IndexNow changed-URL submission.
+
+**Honest-broker:** Submission is for discovery and diagnostics. It is not an
+indexing, ranking, or AI-citation guarantee.
+
+**Status:** Internal guide added at `docs/bing-webmaster-tools-submission-guide.md`.
+Public route `/docs/bing-webmaster-tools` is queued.
+**Owner:** Main thread → `integrity-reviewer` before public/client-facing copy
+**Priority:** High — handles the Bing/web-rank side of the dogfood loop.
 
 ---
 
@@ -210,12 +243,13 @@ These exist or are covered by existing files. Review and patch gaps as they surf
 
 ## Work order
 
-1. **Now:** `1.1 Methodology page` + `1.2 Pricing tier detail` (blocks DM follow-up)
-2. **Before first client:** `2.1 Onboarding doc` + `2.2 Scan report explainer`
-3. **After Next.js cutover deploys:** `1.3 AEO vs GEO explainer` + fix guide pages (these are citation-bait pages that need the new site)
-4. **After citation verification layer ships:** `3.1 Fabrication crisis explainer` (don't publish until the product backs it)
-5. **After 10+ pipeline runs:** `1.4 Citation Landscape Benchmark` (needs data)
-6. **Ongoing:** `llms.txt` + `pipeline/README` + `functions/README` patches
+1. **Now:** dogfood the live scan, fix bad recon/query recommendations, and re-run before acting.
+2. **Now:** public/client Bing Webmaster Tools guide route + pricing tier detail.
+3. **Before first client:** `2.1 Onboarding doc` + `2.2 Scan report explainer`.
+4. **Authority pages:** how to show up in ChatGPT, Bing rank and AI citations, technical SEO for AI search, accessibility SEO audit.
+5. **After citation verification layer ships:** `3.1 Fabrication crisis explainer` (don't publish until the product backs it).
+6. **After 10+ pipeline runs:** `1.4 Citation Landscape Benchmark` (needs data).
+7. **Ongoing:** `llms.txt` + `pipeline/README` + `functions/README` patches.
 
 ---
 

@@ -21,6 +21,7 @@
 ## Methodology and learning
 - Methodology: https://promptgoblin.io/methodology
 - AEO vs GEO explainer: https://promptgoblin.io/learn/aeo-vs-geo
+- FAQ: https://promptgoblin.io/faq
 
 ## Packages
 - Goblin Scout — monthly visibility audit (~$997/mo): full 5-surface LLM citation audit, competitor citation-graph diff, schema/entity gap report, ranked stack-specific fix queue + a drop-in AI-implementation prompt. Monthly, cancel anytime.
