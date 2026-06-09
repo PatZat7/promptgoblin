@@ -4,42 +4,39 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Bing rank and AI citations · Prompt Goblin",
   description:
-    "How Bing indexes influence AI citation share and the practical steps to improve it.",
-  alternates: { canonical: "/learn/bing-rank-and-ai-citations" },
-  openGraph: {
-    type: "article",
-    url: `${SITE.url}/learn/bing-rank-and-ai-citations`,
-    title: "Bing Rank and AI Citations",
-    description:
-      "Bing's index is an important source for AI citation discovery and verification.",
-    images: ["/og-image.png"],
-  },
+    "How Bing indexing and IndexNow accelerate AI Overview and assistant citations.",
 };
 
-const BingRankAndAiCitationsPage = () => (
-  <div className="os">
-    <section>
-      <h1>Bing rank and AI citations</h1>
+export default function Page() {
+  return (
+    <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+      <h1>Bing Rank and AI Citations</h1>
       <p>
-        Bing remains a primary discovery and verification surface for AI engines
-        that rely on web search results. Strong Bing presence increases the odds
-        of being surfaced, cited, and listed.
+        Bing remains the practical on-ramp for many assistant and AI-search citation systems.
+        If your site is not in Bing, your citation odds drop sharply.
       </p>
 
-      <h2>Why Bing matters for AEO</h2>
+      <h2>What to do first</h2>
+      <ol>
+        <li>Create and verify a Bing Webmaster Tools account.</li>
+        <li>Submit your sitemap once to establish ownership.</li>
+        <li>Add IndexNow so every new or changed URL can be signaled the instant it ships.</li>
+      </ol>
+
+      <h2>What Bing rewards</h2>
       <ul>
-        <li>Bing Webmaster Tools diagnostics and index coverage.</li>
-        <li>IndexNow for instant change notification.</li>
-        <li>Third-party profile presence on Bing-indexed platforms.</li>
+        <li>Stable URL history and low churn.</li>
+        <li>Named entities in JSON-LD, headlines, and first paragraphs.</li>
+        <li>Third-party references to the same URL from authoritative sources.</li>
+        <li>Low soft-404 rate and consistent response shape.</li>
       </ul>
 
-      <h2>Submission is not a citation guarantee</h2>
+      <h2>IndexNow as a habit</h2>
       <p>
-        Submitting to Bing improves discovery and crawl coverage. Citation remains
-        a content quality, authority, and trust signal — not a protocol reset.
+        Use the site’s <code>/indexnow</code> endpoint after every publish. Pair this with a
+        quarterly review in Bing Webmaster Tools for crawl errors, indexed pages, and
+        query coverage.
       </p>
-    </section>
-  </div>
-);
-
-export default BingRankAndAiCitationsPage;
+    </main>
+  );
+}

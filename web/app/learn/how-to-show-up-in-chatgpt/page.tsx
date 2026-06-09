@@ -4,47 +4,44 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "How to show up in ChatGPT · Prompt Goblin",
   description:
-    "What actually makes a brand show up inside ChatGPT answers — and why 80% of cited pages don't rank in Google's top 100.",
-  alternates: { canonical: "/learn/how-to-show-up-in-chatgpt" },
-  openGraph: {
-    type: "article",
-    url: `${SITE.url}/learn/how-to-show-up-in-chatgpt`,
-    title: "How to Show Up in ChatGPT",
-    description:
-      "The levers that predict AI citations: direct-answer frontloading, entity density, HTML tables, freshness, and third-party platform presence.",
-    images: ["/og-image.png"],
-  },
+    "What actually makes a website show up inside ChatGPT and other answer engines — and what almost everyone gets wrong.",
 };
 
-const HowToShowUpInChatGPTPage = () => (
-  <div className="os">
-    <section>
-      <h1>How to show up in ChatGPT</h1>
+export default function Page() {
+  return (
+    <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+      <h1>How to Show Up in ChatGPT</h1>
       <p>
-        When a user asks an LLM for recommendations or listicles, the model
-        returns sourced statements, not a ranked page of blue links. Prompt
-        Goblin measures the gap between being discoverable on the web and being
-        cited inside answers.
+        The fastest way to get an AI assistant to cite your site is to create the kind of page it
+        can’t safely ignore: a direct, named, verifiable answer — then make that answer trivially
+        parseable.
       </p>
 
-      <h2>What predicts ChatGPT citations</h2>
+      <h2>What actually gets cited</h2>
       <ul>
-        <li>A direct answer in the first 50 words.</li>
-        <li>Named-entity density: 15+ linked entities on the page.</li>
-        <li>HTML tables: citation lift versus equivalent prose.</li>
-        <li>Topical authority signal: connected entities and depth (r=0.41).</li>
-        <li>Freshness: finance and news segments update within 30 days.</li>
-        <li>Third-party presence: G2 / Capterra / Google Business Profile.</li>
+        <li>Pages where a specific entity is the clear subject of the URL, title, headings, and body.</li>
+        <li>Pages that answer one question in one place, in plain language, in the first 150 words.</li>
+        <li>Pages with JSON-LD that matches what they say in prose.</li>
+        <li>Pages that Bing has actually indexed. For many assistants, Bing-index is the filter.</li>
       </ul>
 
-      <h2>How Bing feeds ChatGPT</h2>
-      <p>
-        Bing powers a large share of discoverable citations for AI summaries. A
-        clean Bing presence increases the crawlable surface that AI engines draw
-        from.
-      </p>
-    </section>
-  </div>
-);
+      <h2>What doesn’t work</h2>
+      <ul>
+        <li>Relying on Google alone. Google indexing is necessary but not sufficient.</li>
+        <li>“LLM-only” markup tricks. The official guidance is to publish the same good content for
+            humans and crawlers; no special wrapper format is needed.</li>
+        <li>Thin summary pages created for machines. Those are treated as low-value and ignored.</li>
+      </ul>
 
-export default HowToShowUpInChatGPTPage;
+      <h2>The actionable sequence</h2>
+      <ol>
+        <li>Pick one entity or claim you want quoted.</li>
+        <li>Publish a dedicated page named after that exact claim.</li>
+        <li>Front-load the answer in the first paragraph.</li>
+        <li>Add one or more JSON-LD blocks: Organization, FAQPage, or Service.</li>
+        <li>Submit the page to Bing via IndexNow or sitemap.</li>
+        <li>Track whether the term appears in your AEO scorecard over the next 30–90 days.</li>
+      </ol>
+    </main>
+  );
+}
