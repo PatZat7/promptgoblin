@@ -1,6 +1,6 @@
 # Prompt Goblin — project guide
 
-Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop. A **Next.js 16 marketing site** (`web/` — App Router · React 19 · TS · Tailwind v4; static-export, **live on promptgoblin.io** via DO App Platform deploy-on-push), DigitalOcean serverless scan functions (`functions/`), and a Python **LangGraph self-healing RAG pipeline** (`pipeline/`) that measures answer-engine citation gaps and ships human-reviewed fixes. _(The old Babel-in-browser SPA `app.jsx`/`index.html`/`styles.css` was retired at the `web/` cutover.)_
+Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop. A **Next.js 16 marketing site** (`web/` — App Router · React 19 · TS · Tailwind v4; **Node/SSR**, **live on promptgoblin.io** via DO App Platform deploy-on-push), DigitalOcean serverless scan functions (`functions/`), and a Python **LangGraph self-healing RAG pipeline** (`pipeline/`) that measures answer-engine citation gaps and ships human-reviewed fixes. _(The old Babel-in-browser SPA `app.jsx`/`index.html`/`styles.css` was retired at the `web/` cutover. Static export (`output:'export'`) removed 2026-06-08 to enable SSR auth, cookies, and RLS.)_
 
 ## Honest-broker code (binds every session AND every subagent — non-negotiable)
 
@@ -16,6 +16,7 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 - **Secrets** live in a gitignored `.env` only — never commit or paste `sk_live_` / `sk-ant-` / `pplx-` / `AQ.` / `lsv2_` / `dop_v1_`. (DO token + WORKDAY_PASSWORD have leaked before — rotate them.)
 
 ## The agent team (`.claude/agents/`)
+
 Orchestration is the **main thread + `PLAN.md`** — subagents are stateless specialists you dispatch, not a standing crew. There is **no "planner" subagent**: the planner role is the main thread keeping `PLAN.md` current.
 
 **Multi-agent orchestration (read `COORDINATION.md` first):** three agents share this repo — **Claude (you): specs + review**; **Codex: integrator** (merges `PLAN.md` + `main`, runs the gate checklist); **Hermes: vault + migration SQL**. Lanes, the live status board, the handoff protocol, and the merge gate are in **`COORDINATION.md`**. In multi-agent mode **you (Claude) do NOT merge to `main` and do NOT implement `functions/`/`web/`/pipeline delivery code — you write specs + reviews and hand them to Codex** via `feedback/claude/`; Codex is the one who stamps `PLAN.md` on integration. Docs authority: `DOCS_PLAN.md`.
@@ -37,6 +38,7 @@ Orchestration is the **main thread + `PLAN.md`** — subagents are stateless spe
 > Note: these are *project-scoped* — they load when Claude runs from this directory. In a session rooted elsewhere, dispatch the same roles via the Agent tool with the matching prompt.
 
 ## Verification
+
 - `pipeline/`: 186 pytest tests + an eval gate (`heal-loop converges` + `verify strands converge (per-discipline)`) must stay green.
 - Site: axe-core 100/100, 0 contrast violations (AA 4.5:1 small text; `--muted` 0.80 / `--faint` 0.74).
 

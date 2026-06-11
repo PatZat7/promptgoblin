@@ -4,11 +4,12 @@
 
 The public marketing site for **Prompt Goblin** (`Prompt_Goblin™`) — a dark, awwwards-grade
 site built with **Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4**, in `web/`.
-It ships as a **static export** (`output: 'export'` → `web/out/`) to DigitalOcean App Platform,
+It runs as a **Node/SSR web service** (`npm run start`) on DigitalOcean App Platform,
 **deploy-on-push from `main`** (live on `promptgoblin.io`).
 
 > _History: the original zero-build, Babel-in-browser SPA (`index.html` + `app.jsx` +
-> `styles.css`) was retired when the `web/` cutover went live._
+> `styles.css`) was retired when the `web/` cutover went live. Static export (`output:'export'`)
+> was removed 2026-06-08 to enable SSR auth, cookies, and RLS._
 
 ## Layout (`web/`)
 
@@ -28,19 +29,17 @@ Conventions for agents live in **`web/AGENTS.md`**.
 ```bash
 npm --prefix web install
 npm --prefix web run dev     # http://localhost:3010
-npm --prefix web run build   # typecheck + static export → web/out/
+npm --prefix web run build   # typecheck + build → .next/
 npm --prefix web test        # vitest
 ```
 
 ## Deploy (DigitalOcean App Platform)
 
-Deploy-on-push: pushing `main` rebuilds `web/` and ships `web/out/`. The DO app component is a
-**Static Site** (build `npm run build`, output `out/`).
-
-> _A future client dashboard (Supabase + auth) needs SSR — switching the component to a
-> **Node Web Service** — see `specs/dashboard-mvp.md`. That's a separate, owner-gated cutover._
+Deploy-on-push: pushing `main` rebuilds `web/` and ships as a Node web service. The DO app component is a
+**Web Service** (run `npm run start`, port 8080 via `.do/app.yaml`).
 
 ## Related docs
+
 - **`PLAN.md`** — living status + work queue · **`COORDINATION.md`** — multi-agent lanes.
 - **`DOCS_PLAN.md`** — documentation plan · **`specs/`** — implementation specs (gate-verified).
 - Business plan, pricing, GTM, competitive landscape → Obsidian vault **Prompt Goblin** MOC.

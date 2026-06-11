@@ -13,7 +13,7 @@ export default function Page() {
       <h1>Technical SEO for AI Search</h1>
       <p>
         AI search does not remove the old rules — it adds harder ones. Discoverable content
-        requires crawlable URLs, stable canonical targets, and structured data that doesn’t
+        requires crawlable URLs, stable canonical targets, and structured data that doesn't
         disagree with the prose.
       </p>
 
@@ -34,6 +34,22 @@ export default function Page() {
         <li>Framework-level routing that changes canonical without a server redirect.</li>
         <li>Duplicate or thin content created at scale, especially for generative AI targets.</li>
       </ul>
+
+      <h2>The semantic-floor checklist</h2>
+      <ul>
+        <li>Semantic HTML5 landmarks are used: `header`, `main`, `article`, `section`, `nav`.</li>
+        <li>Headings are in order with no skipped levels.</li>
+        <li>Keyboard-accessible controls have visible focus states.</li>
+        <li>Images that communicate meaning include descriptive `alt` text.</li>
+        <li>Interactive elements use real buttons or links rather than styled divs.</li>
+      </ul>
+
+      <h2>Why this matters for AI overviews</h2>
+      <p>
+        Answer engines still depend on a reconstructed crawl snapshot. Clean technical hygiene
+        raises the probability that your content is included in that snapshot and that the
+        engine can assign it to the right answer slot.
+      </p>
     </main>
   );
 }
