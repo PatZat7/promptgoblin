@@ -368,10 +368,13 @@ function buildHygieneReport({ url, html, contentBytes, robotsText, llmsText }) {
   else if (!robots.welcomesAiBots)
     add(4, "crawlability", "robots.txt blocks one or more AI answer-engine crawlers.");
   if (!robots.sitemap) add(2, "crawlability", "No Sitemap: line in robots.txt.");
+  // llms.txt is informational only — Google confirmed Search + AI Overviews
+  // don't use it (Illyes/Mueller, Jul 2025), so its absence/shape is NEVER
+  // scored. Severity 0 = surfaced for transparency, zero score penalty.
   if (!llms.present)
-    add(2, "llms", "No llms.txt. Hygiene only — emerging, not a proven citation lever.");
+    add(0, "llms", "No llms.txt — informational only. Google's Search & AI Overviews don't use it (Illyes/Mueller, Jul 2025); not scored.");
   else if (!llms.valid)
-    add(1, "llms", `llms.txt present but off-spec: ${llms.notes.join("; ")}.`);
+    add(0, "llms", `llms.txt present but off-spec (${llms.notes.join("; ")}) — informational only; Google doesn't use llms.txt, not scored.`);
   if (weight.renderBlockingScripts > 4)
     add(2, "cwv", `${weight.renderBlockingScripts} render-blocking scripts — LCP risk.`);
   if (weight.imagesMissingDimensions > 0)
