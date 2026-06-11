@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+    <article style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
       <h1>Technical SEO for AI Search</h1>
       <p>
         AI search does not remove the old rules — it adds harder ones. Discoverable content
-        requires crawlable URLs, stable canonical targets, and structured data that doesn't
+        requires crawlable URLs, stable canonical targets, and structured data that doesn&apos;t
         disagree with the prose.
       </p>
 
@@ -37,10 +37,13 @@ export default function Page() {
 
       <h2>The semantic-floor checklist</h2>
       <ul>
-        <li>Semantic HTML5 landmarks are used: `header`, `main`, `article`, `section`, `nav`.</li>
+        <li>
+          Semantic HTML5 landmarks are used: <code>header</code>, <code>main</code>,{" "}
+          <code>article</code>, <code>section</code>, <code>nav</code>.
+        </li>
         <li>Headings are in order with no skipped levels.</li>
         <li>Keyboard-accessible controls have visible focus states.</li>
-        <li>Images that communicate meaning include descriptive `alt` text.</li>
+        <li>Images that communicate meaning include descriptive <code>alt</code> text.</li>
         <li>Interactive elements use real buttons or links rather than styled divs.</li>
       </ul>
 
@@ -50,6 +53,6 @@ export default function Page() {
         raises the probability that your content is included in that snapshot and that the
         engine can assign it to the right answer slot.
       </p>
-    </main>
+    </article>
   );
 }

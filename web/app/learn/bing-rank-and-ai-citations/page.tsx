@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+    <article style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
       <h1>Bing Rank and AI Citations</h1>
       <p>
         Bing remains the practical on-ramp for many assistant and AI-search citation systems.
@@ -37,6 +37,6 @@ export default function Page() {
         quarterly review in Bing Webmaster Tools for crawl errors, indexed pages, and
         query coverage.
       </p>
-    </main>
+    </article>
   );
 }

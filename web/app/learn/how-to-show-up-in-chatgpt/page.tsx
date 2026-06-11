@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+    <article style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
       <h1>How to Show Up in ChatGPT</h1>
       <p>
         The fastest way to get an AI assistant to cite your site is to create the kind of page it
@@ -42,6 +42,6 @@ export default function Page() {
         <li>Submit the page to Bing via IndexNow or sitemap.</li>
         <li>Track whether the term appears in your AEO scorecard over the next 30–90 days.</li>
       </ol>
-    </main>
+    </article>
   );
 }

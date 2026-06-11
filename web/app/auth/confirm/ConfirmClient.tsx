@@ -73,11 +73,14 @@ export function ConfirmClient({ tokenHash, type }: ConfirmClientProps) {
         email scanners that pre-fetch links.
       </p>
 
-      {error ? (
-        <div className={styles.error} role="alert">
-          {error}
-        </div>
-      ) : null}
+      <div
+        className={styles.error}
+        role="alert"
+        aria-live="assertive"
+        hidden={!error}
+      >
+        {error}
+      </div>
 
       <button
         onClick={handleConfirm}
