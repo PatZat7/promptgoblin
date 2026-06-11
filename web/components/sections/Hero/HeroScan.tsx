@@ -574,7 +574,7 @@ export const HeroScan = () => {
               </ol>
               {steps.some((s) => s.key === "llms") ? (
                 <p className={styles.heroStepNote}>
-                  llms.txt struck: Google says Search &amp; AI Overviews don&apos;t use it (Illyes/Mueller, Jul 2025). We still check it — it just isn&apos;t a citation lever.
+                  llms.txt struck: Google says Search &amp; AI Overviews don&apos;t use it (Illyes/Mueller, Jul 2025).
                 </p>
               ) : null}
             </>
