@@ -26,7 +26,15 @@ alter table public.clients
   add column if not exists stripe_customer_id text,
   add column if not exists stripe_subscription_id text,
   add column if not exists stripe_checkout_session_id text,
-  add column if not exists stripe_price_id text;
+  add column if not exists stripe_price_id text,
+  -- Welcome/magic-link email is a best-effort side effect: provisioning still
+  -- succeeds (event marked processed) if Resend is down. Failures are recorded
+  -- here (never silently swallowed) so an admin / cron can re-sweep, and the
+  -- customer can always self-serve a fresh link from /login.
+  add column if not exists welcome_email_status text
+    check (welcome_email_status is null
+           or welcome_email_status in ('sent','failed','skipped')),
+  add column if not exists welcome_email_error text;
 
 create unique index if not exists clients_stripe_customer_uidx
   on public.clients (stripe_customer_id)
@@ -84,7 +92,22 @@ set search_path = public
 as $$
 declare
   v_client_id uuid;
+  v_existing_owner uuid;
 begin
+  -- Cross-tenant guard: `domain` is unique but user-controlled and never
+  -- ownership-verified. If this domain already belongs to a DIFFERENT owner,
+  -- refuse rather than silently granting the payer an admin seat on someone
+  -- else's client (and overwriting their billing). The caller treats this as a
+  -- permanent failure (no Stripe retry) and flags the event for manual review.
+  select owner_user_id into v_existing_owner
+    from public.clients
+    where domain = p_domain;
+
+  if v_existing_owner is not null and v_existing_owner <> p_owner_user_id then
+    raise exception 'DOMAIN_OWNED_BY_OTHER_USER'
+      using errcode = 'P0001';
+  end if;
+
   insert into public.clients (
     owner_user_id,
     slug,

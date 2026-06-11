@@ -27,7 +27,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      // Don't leak internal verifyOtp detail (token format/expiry) to the client.
+      console.error("[auth/confirm] verifyOtp failed:", error.message);
+      return NextResponse.json(
+        { error: "Invalid or expired link. Please request a new sign-in link." },
+        { status: 400 },
+      );
     }
 
     return NextResponse.json({

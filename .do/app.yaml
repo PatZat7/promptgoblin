@@ -36,7 +36,16 @@ services:
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         scope: RUN_AND_BUILD_TIME
         value: sb_publishable_g6LcVsF3hxNrRoDBlevRIA_4KWRADUH
+      # Authoritative site origin for server-generated magic links. MUST be set —
+      # the webhook refuses to send a login link without it (no Host-header
+      # fallback, which would let a forged Host phish the token).
+      - key: NEXT_PUBLIC_SITE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: https://promptgoblin.io
       # SUPABASE_SERVICE_ROLE_KEY — set as an app-level SECRET out-of-band (NOT here).
+      # Stripe money path — also app-level SECRETs set out-of-band (NOT here):
+      #   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET (live-mode), RESEND_API_KEY,
+      #   RESEND_FROM_EMAIL. Turn Resend click-tracking OFF for auth mail.
 domains:
   - domain: promptgoblin.io
     type: PRIMARY

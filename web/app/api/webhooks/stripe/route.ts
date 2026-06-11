@@ -18,7 +18,12 @@ type StripeEventRow = {
   status: EventStatus;
   retry_count: number | null;
   error_message: string | null;
+  last_attempt_at: string | null;
 };
+
+// A row left in `processing` longer than this is treated as orphaned (a prior
+// delivery crashed mid-handle) and reclaimed, instead of being dropped forever.
+const STALE_PROCESSING_MS = 10 * 60 * 1000;
 
 type ProvisionResult = {
   clientId?: string;
@@ -45,6 +50,21 @@ const PLAN_TO_SCAN_TIER: Record<BillingPlan, ScanTier> = {
   warlord: "tier3",
 };
 
+const PLAN_LABELS: Record<BillingPlan, string> = {
+  scout: "Scout",
+  warband: "Warband",
+  warlord: "Warlord",
+};
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
 }
@@ -56,10 +76,26 @@ function getStripe(): { stripe: Stripe; webhookSecret: string } {
     throw new Error("STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are required.");
   }
 
+  // apiVersion is intentionally unpinned: the package-lock pins the stripe SDK,
+  // which pins both the TypeScript event shapes and the default API version
+  // together — so they cannot drift apart without a deliberate dependency bump.
   return {
     stripe: new Stripe(secretKey, { typescript: true }),
     webhookSecret,
   };
+}
+
+// Authoritative site origin for the magic link. NEVER derived from the request
+// (a forged Host header would let an attacker phish the one-time token). Must be
+// configured; if missing we refuse to send a link rather than send a bad one.
+function getSiteOrigin(): string {
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.SITE_URL;
+  if (!origin) {
+    throw new Error(
+      "NEXT_PUBLIC_SITE_URL (or SITE_URL) must be set to generate sign-in links.",
+    );
+  }
+  return origin.replace(/\/$/, "");
 }
 
 function normalizeEmail(value: unknown): string | null {
@@ -217,7 +253,7 @@ async function claimEvent(
 
   const { data, error } = await supabase
     .from("stripe_events")
-    .select("id, status, retry_count, error_message")
+    .select("id, status, retry_count, error_message, last_attempt_at")
     .eq("id", event.id)
     .maybeSingle();
 
@@ -227,7 +263,14 @@ async function claimEvent(
 
   const row = data as StripeEventRow;
   if (row.status === "processed" || row.status === "ignored") return "processed";
-  if (row.status === "processing") return "processing";
+  if (row.status === "processing") {
+    const lastAttempt = row.last_attempt_at
+      ? new Date(row.last_attempt_at).getTime()
+      : 0;
+    // Recent => another delivery is actively handling it; let Stripe retry later.
+    // Stale => the prior attempt crashed; fall through and reclaim it below.
+    if (Date.now() - lastAttempt < STALE_PROCESSING_MS) return "processing";
+  }
 
   const { error: updateError } = await supabase
     .from("stripe_events")
@@ -347,18 +390,22 @@ async function provisionClient(
   );
 
   if (error || typeof data !== "string") {
+    // The RPC raises this when the domain already belongs to a DIFFERENT owner.
+    // Permanent (no Stripe retry) — the event stays in the ledger as `failed`
+    // for manual review instead of silently granting cross-tenant access.
+    if (error?.message?.includes("DOMAIN_OWNED_BY_OTHER_USER")) {
+      throw new PermanentWebhookError(
+        "This domain already belongs to another account; flagged for manual review. No account was created or modified.",
+      );
+    }
     throw new Error(`Failed to provision client: ${error?.message ?? "no client id returned"}`);
   }
 
   return data;
 }
 
-function confirmationUrl(request: Request, hashedToken: string): string {
-  const configuredOrigin =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.SITE_URL ??
-    new URL(request.url).origin;
-  const url = new URL("/auth/confirm", configuredOrigin);
+function confirmationUrl(siteOrigin: string, hashedToken: string): string {
+  const url = new URL("/auth/confirm", siteOrigin);
   url.searchParams.set("token_hash", hashedToken);
   url.searchParams.set("type", "magiclink");
   return url.toString();
@@ -377,15 +424,18 @@ async function sendWelcomeEmail(params: {
     process.env.RESEND_FROM_EMAIL ??
     "Prompt Goblin <goblins@promptgoblin.io>";
 
+  const planLabel = escapeHtml(PLAN_LABELS[params.plan]);
+  const safeDomain = escapeHtml(params.domain);
+  const safeLink = escapeHtml(params.magicLink);
   const html = `
 <!doctype html>
 <html>
   <body style="font-family: Arial, sans-serif; line-height: 1.55; color: #111; max-width: 640px; margin: 0 auto; padding: 28px;">
     <h1 style="font-size: 24px; margin: 0 0 16px;">Your Prompt Goblin dashboard is ready</h1>
-    <p>Your ${params.plan} account for <strong>${params.domain}</strong> has been provisioned.</p>
-    <p>Use the button below to sign in. The page asks for one click before verifying the token so mail scanners cannot consume the login link before you do.</p>
+    <p>Your <strong>${planLabel}</strong> account for <strong>${safeDomain}</strong> is ready.</p>
+    <p>Use the button below to sign in. The page asks for one click before completing sign-in. This protects against email scanners that pre-fetch links and would otherwise consume your one-time link before you can use it.</p>
     <p>
-      <a href="${params.magicLink}" style="display:inline-block;background:#10130f;color:#f8f5ec;padding:12px 18px;text-decoration:none;border-radius:4px;">
+      <a href="${safeLink}" style="display:inline-block;background:#10130f;color:#f8f5ec;padding:12px 18px;text-decoration:none;border-radius:4px;">
         Sign in to Prompt Goblin
       </a>
     </p>
@@ -415,8 +465,28 @@ async function sendWelcomeEmail(params: {
   return null;
 }
 
+async function recordWelcomeEmailStatus(
+  supabase: SupabaseAdmin,
+  clientId: string,
+  status: "sent" | "failed" | "skipped",
+  errorMessage: string | null,
+) {
+  // Best-effort bookkeeping — never throw. Provisioning already succeeded; this
+  // only records whether the welcome mail went out so a cron/admin can re-sweep.
+  const { error } = await supabase
+    .from("clients")
+    .update({ welcome_email_status: status, welcome_email_error: errorMessage })
+    .eq("id", clientId);
+  if (error) {
+    console.error(
+      "[stripe webhook] failed to record welcome_email_status",
+      error.message,
+    );
+  }
+}
+
 async function handleCheckoutCompleted(
-  request: Request,
+  siteOrigin: string,
   supabase: SupabaseAdmin,
   session: Stripe.Checkout.Session,
 ): Promise<ProvisionResult> {
@@ -464,8 +534,15 @@ async function handleCheckoutCompleted(
     email,
     domain,
     plan,
-    magicLink: confirmationUrl(request, hashedToken),
+    magicLink: confirmationUrl(siteOrigin, hashedToken),
   });
+
+  await recordWelcomeEmailStatus(
+    supabase,
+    clientId,
+    warning ? "failed" : "sent",
+    warning ?? null,
+  );
 
   return { clientId, warning: warning ?? undefined };
 }
@@ -490,14 +567,14 @@ async function updateSubscriptionStatus(
 }
 
 async function handleEvent(
-  request: Request,
+  siteOrigin: string,
   supabase: SupabaseAdmin,
   event: Stripe.Event,
 ): Promise<ProvisionResult> {
   switch (event.type) {
     case "checkout.session.completed":
       return handleCheckoutCompleted(
-        request,
+        siteOrigin,
         supabase,
         event.data.object as Stripe.Checkout.Session,
       );
@@ -537,8 +614,10 @@ async function handleEvent(
 export async function POST(request: Request) {
   let stripe: Stripe;
   let webhookSecret: string;
+  let siteOrigin: string;
   try {
     ({ stripe, webhookSecret } = getStripe());
+    siteOrigin = getSiteOrigin();
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Stripe is not configured.", 500);
   }
@@ -561,17 +640,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true, duplicate: true });
     }
     if (claim === "processing") {
-      return NextResponse.json({ received: true, duplicate: true, status: "processing" });
+      // Another delivery holds the claim. Non-2xx so Stripe retries after the
+      // in-flight attempt finishes (or after it goes stale and we reclaim it).
+      return NextResponse.json(
+        { received: false, status: "processing" },
+        { status: 409 },
+      );
     }
 
-    const result = await handleEvent(request, supabase, event);
+    const result = await handleEvent(siteOrigin, supabase, event);
     if (result.ignored) {
       await markEvent(supabase, event, "ignored");
       return NextResponse.json({ received: true, ignored: true });
     }
 
     if (result.warning) {
-      await markEvent(supabase, event, "failed", result.warning);
+      // Provisioning succeeded; only the welcome email failed. Mark PROCESSED so
+      // Stripe does NOT retry (the account exists). The failure is recorded on
+      // the client row (welcome_email_status='failed') and the customer can
+      // self-serve a fresh link from /login.
+      await markEvent(supabase, event, "processed", result.warning);
       return NextResponse.json({ received: true, warning: result.warning });
     }
 

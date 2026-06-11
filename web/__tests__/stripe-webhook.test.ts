@@ -60,4 +60,43 @@ describe("Stripe checkout provisioning", () => {
     expect(envExample).toContain("RESEND_API_KEY=");
     expect(packageJson.dependencies).toHaveProperty("stripe");
   });
+
+  // Regression locks for the 2026-06-09 security review (C1/H1/H2/M1).
+  it("derives the magic-link origin from config, never the request host (C1)", () => {
+    const route = readRepoFile("web/app/api/webhooks/stripe/route.ts");
+    const appSpec = readRepoFile(".do/app.yaml");
+
+    // No Host-header-derived origin — that would let a forged Host phish the token.
+    expect(route).not.toContain("new URL(request.url).origin");
+    expect(route).toContain("function getSiteOrigin");
+    expect(route).toContain("NEXT_PUBLIC_SITE_URL");
+    // The deployed app must actually set it, or provisioning refuses to send.
+    expect(appSpec).toContain("NEXT_PUBLIC_SITE_URL");
+  });
+
+  it("treats welcome-email failure as best-effort, not customer loss (H1)", () => {
+    const route = readRepoFile("web/app/api/webhooks/stripe/route.ts");
+    const migration = readRepoFile("supabase/migrations/0015_stripe_events.sql");
+
+    // Email failure is recorded, not silently swallowed, and the event is still
+    // marked processed (Stripe must not retry a completed provision).
+    expect(route).toContain("welcome_email_status");
+    expect(route).toContain('markEvent(supabase, event, "processed", result.warning)');
+    expect(migration).toContain("welcome_email_status");
+  });
+
+  it("reclaims orphaned processing rows instead of dropping them (H2)", () => {
+    const route = readRepoFile("web/app/api/webhooks/stripe/route.ts");
+    expect(route).toContain("STALE_PROCESSING_MS");
+    // Active duplicate => non-2xx so Stripe retries (not a 200 that drops it).
+    expect(route).toContain("status: 409");
+  });
+
+  it("refuses to grant a seat on a domain owned by another tenant (M1)", () => {
+    const route = readRepoFile("web/app/api/webhooks/stripe/route.ts");
+    const migration = readRepoFile("supabase/migrations/0015_stripe_events.sql");
+    expect(migration).toContain("DOMAIN_OWNED_BY_OTHER_USER");
+    expect(migration).toContain("raise exception");
+    expect(route).toContain("DOMAIN_OWNED_BY_OTHER_USER");
+  });
 });
