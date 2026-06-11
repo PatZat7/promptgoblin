@@ -466,7 +466,7 @@ export const HeroScan = () => {
           </div>
           {teaser.citedDomains && teaser.citedDomains.length > 0 ? (
             <div className={styles.heroCitationRow}>
-              <span>cited instead:</span>
+              <span>{teaser.clientCited ? "also cited:" : "cited instead:"}</span>
               <span>{teaser.citedDomains.join(", ")}</span>
             </div>
           ) : null}
@@ -578,6 +578,13 @@ export const HeroScan = () => {
                   </span>
                 ))}
               </div>
+            </div>
+          ) : report?.techStack?.note ? (
+            // No fingerprint matched (e.g. a custom/enterprise build): show the
+            // honest note instead of dropping the stack section entirely.
+            <div className={styles.heroStack}>
+              <div className={styles.heroStackLabel}>implementation stack</div>
+              <p className={styles.heroStackNote}>{report.techStack.note}</p>
             </div>
           ) : null}
           {shownFindings.length ? (

@@ -190,7 +190,9 @@ export const Tier2Card = ({
         )}
         {citedDomains.length > 0 && (
           <div className={styles.srBlock}>
-            <div className={styles.srK}>who is getting cited instead</div>
+            <div className={styles.srK}>
+              {t?.clientCited ? "also getting cited" : "who is getting cited instead"}
+            </div>
             <div className={styles.srChips}>
               {citedDomains.map((d) => (
                 <span className={clsx(styles.srChip, styles.chipMiss)} key={d}>{d}</span>
