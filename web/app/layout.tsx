@@ -44,6 +44,9 @@ export const metadata: Metadata = {
       "When an AI names the best in your category, is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it.",
     images: ["/og-image.png"],
   },
+  other: {
+    "msvalidate.01": "540C5A8914B4B51C872736CC0A2E8CBD",
+  },
 };
 
 export const viewport: Viewport = {
