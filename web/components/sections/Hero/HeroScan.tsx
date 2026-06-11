@@ -545,26 +545,39 @@ export const HeroScan = () => {
             <div className={styles.heroResultMeta}>{findings.length} measured finding{findings.length === 1 ? "" : "s"}</div>
           </div>
           {steps.length ? (
-            <ol className={styles.heroStepper} aria-label="scan checks">
-              {steps.map((step) => (
-                <li className={clsx(styles.heroStep, step.status === "done" && styles.heroStepDone)} key={step.key}>
-                  <span className={styles.heroStepDot} aria-hidden="true">
-                    {step.status === "done" ? "✓" : "›"}
-                  </span>
-                  <span className={styles.heroStepLabel}>{step.label}</span>
-                  {step.value ? (
-                    <span
-                      className={clsx(
-                        styles.heroStepVal,
-                        step.tone === "bad" ? styles.lineBad : step.tone === "warn" ? styles.lineWarn : styles.lineOk,
-                      )}
-                    >
-                      {step.value}
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
+            <>
+              <ol className={styles.heroStepper} aria-label="scan checks">
+                {steps.map((step) => {
+                  // Google (Illyes/Mueller, Jul 2025) confirmed Search + AI
+                  // Overviews don't use llms.txt — strike it so it never reads
+                  // as a ranking/citation factor.
+                  const struck = step.key === "llms";
+                  return (
+                    <li className={clsx(styles.heroStep, step.status === "done" && styles.heroStepDone)} key={step.key}>
+                      <span className={styles.heroStepDot} aria-hidden="true">
+                        {step.status === "done" ? "✓" : "›"}
+                      </span>
+                      <span className={clsx(styles.heroStepLabel, struck && styles.heroStepStruck)}>{step.label}</span>
+                      {step.value ? (
+                        <span
+                          className={clsx(
+                            styles.heroStepVal,
+                            struck ? styles.heroStepDimmed : step.tone === "bad" ? styles.lineBad : step.tone === "warn" ? styles.lineWarn : styles.lineOk,
+                          )}
+                        >
+                          {step.value}
+                        </span>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ol>
+              {steps.some((s) => s.key === "llms") ? (
+                <p className={styles.heroStepNote}>
+                  llms.txt struck: Google says Search &amp; AI Overviews don&apos;t use it (Illyes/Mueller, Jul 2025). We still check it — it just isn&apos;t a citation lever.
+                </p>
+              ) : null}
+            </>
           ) : null}
           {detectedStack.length ? (
             <div className={styles.heroStack}>

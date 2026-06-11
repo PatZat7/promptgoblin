@@ -530,6 +530,49 @@
   margin: 0;
 }
 
+/* llms.txt is a confirmed non-factor (Google, Jul 2025) — strike it with a
+   micro-animation that draws the line across on reveal. */
+.heroStepStruck {
+  position: relative;
+  color: var(--faint);
+}
+.heroStepStruck::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 54%;
+  height: 1px;
+  background: var(--fire);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: heroStrikeDraw 420ms ease-out 140ms forwards;
+}
+@keyframes heroStrikeDraw {
+  to {
+    transform: scaleX(1);
+  }
+}
+.heroStepDimmed {
+  color: var(--faint);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--fire) 70%, transparent);
+}
+.heroStepNote {
+  grid-column: 1 / -1;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--faint);
+  margin: 2px 0 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .heroStepStruck::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
 /* Citation teaser panel — Tier-2 AI visibility preview */
 .heroCitationTeaser {
   grid-column: 1 / -1;

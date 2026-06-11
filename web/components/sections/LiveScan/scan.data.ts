@@ -42,7 +42,7 @@ export const SAMPLE_LINES: ScanLineInput[] = [
   { t: "info", text: "illustrative sample · no domain queried" },
   { t: "phase", k: "fetch surface", v: "71 KB", tone: "ok" },
   { t: "phase", k: "read robots.txt", v: "welcomes AI crawlers", tone: "ok" },
-  { t: "phase", k: "read llms.txt", v: "not found", tone: "warn" },
+  { t: "phase", k: "read llms.txt", v: "not used by Google", tone: "ok" },
   { t: "phase", k: "parse JSON-LD", v: "2 of 5 entity types", tone: "warn" },
   { t: "phase", k: "score hygiene", v: "64 / 100", tone: "warn" },
   { t: "sep" },

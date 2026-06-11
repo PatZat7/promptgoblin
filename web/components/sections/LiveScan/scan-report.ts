@@ -30,7 +30,9 @@ export const phaseValues = (r: ScanReport | null): Record<ScanPhase["key"], stri
 export const phaseTone = (r: ScanReport | null, key: ScanPhase["key"]): string => {
   const report = r || {};
   if (key === "robots") return report.crawlability?.welcomesAiBots ? "ok" : "warn";
-  if (key === "llms") return report.llmsTxt?.present ? "ok" : "warn";
+  // llms.txt is not used by Google Search / AI Overviews (Illyes/Mueller, Jul
+  // 2025) — never color its absence as a warning. The stepper strikes it through.
+  if (key === "llms") return "ok";
   if (key === "schema") return (report.schema?.missing || []).length === 0 ? "ok" : "warn";
   if (key === "score") {
     const s = report.hygieneScore ?? 0;
