@@ -6,6 +6,17 @@
 
 `main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
 
+## ✅ Current state — 2026-06-11 (Claude session — money path)
+
+> Branch `fix/indexnow-canonicals` (6 commits ahead of `main`), gated, pending merge.
+
+- **Stripe money path COMMITTED + HARDENED** (`e86c36a` build, `e49caa8` hardening): `web/app/api/webhooks/stripe/route.ts` (idempotent `stripe_events` ledger · `payment_status==='paid'` · `admin.createUser` · `provision_stripe_checkout_client` RPC · `generateLink` hashed_token · Resend best-effort) + `/auth/confirm` SafeLinks interstitial (`verifyOtp`, not PKCE) + `/api/runs` explicit auth gate. Pre-merge **integrity-reviewer** (REVISE→fixed) + **security review** (DO-NOT-SHIP→fixed): **C1** host-header magic-link phishing, **H1** email-failure customer loss, **H2** stuck-`processing` events, **M1** cross-tenant domain seizure, + M3/L1. 4 regression-lock tests added. **Gate green: web vitest 82/82 + build; pipeline 305 pytest + eval 3/3.**
+- **Migration `0015_stripe_events` APPLIED LIVE + verified** (MCP): billing columns + `welcome_email_status` on `clients`, service-role-only `stripe_events` (RLS forced, no policy = deny-all by design), RPC `revoke public/anon/authenticated` + `grant service_role`. Advisors: no new RLS gaps (only the known `vector`-in-public + leaked-password WARNs).
+- **IndexNow + Bing**: real key + `keyLocation` + own-host validation live in code (`0a812f4`); Bing verification via msvalidate meta + `web/public/BingSiteAuth.xml`. Owner does GSC/Bing onboarding.
+- **Dogfood**: recon/listen fix already committed + pushed (`024737d`, pipeline `master`); the old bad run is **not** approved (live `approved=true` count = 0 — integrity issue already clear).
+- **⚠️ NEW: live `runs` table polluted** — 1441 rows because `goblin.eval`/pytest write to the live dogfood client (`GOBLIN_SUPABASE_ENABLED=true`). Needs eval/test isolation + cleanup (TODO `I-06`).
+- **Open owner blockers before money path goes live:** rotate secrets · set DO env (`NEXT_PUBLIC_SITE_URL` + Stripe/Resend secrets, `I-07`) · Stripe Payment Links must collect `domain` (`I-08`) · Resend DNS + click-tracking OFF · live $1 e2e.
+
 ## ✅ Current state — 2026-06-06 (Claude-integrator session)
 
 > Authoritative snapshot; older "In flight / Queued" entries below may lag.

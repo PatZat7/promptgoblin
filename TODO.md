@@ -4,7 +4,9 @@
 >
 > **Convention**: `✅` = done + verified; `🟡` = in progress (claimed); `⬜` = queued; `🔴` = blocked; `🟣` = research/design needed.
 >
-> **Last sync**: 2026-06-09 (Hermes session)
+> **Last sync**: 2026-06-11 (Claude session — money path hardened + gated)
+
+> **2026-06-11 changelog (Claude):** Committed + hardened the Stripe money path on branch `fix/indexnow-canonicals` (6 commits). Pre-merge reviews (integrity + security) returned blockers; all fixed: **C1** host-header magic-link phishing, **H1** email-failure customer loss, **H2** stuck-`processing` events, **M1** cross-tenant domain seizure (+ M3/L1). Migration `0015_stripe_events` **applied live + verified** (RLS forced, RPC grants service-role-only, no new advisor gaps). Web gate green (vitest 82/82, build). Pipeline recon fix already committed/pushed (`024737d`, eval 3/3). Visual gate captured. **Still owner-gated before live use:** secret rotation, set DO env (`NEXT_PUBLIC_SITE_URL` + Stripe/Resend secrets), Stripe Payment Links must collect `domain`, Resend DNS, live $1 e2e. **New finding:** live `runs` table polluted (1441 rows) by eval/test writes (`GOBLIN_SUPABASE_ENABLED=true`) — needs isolation + cleanup.
 
 ---
 
@@ -18,7 +20,7 @@
 | A-03 | Seat-based access control (`client_memberships`) | ✅ | supabase | Migrations `0013` + `0014` applied live; RLS widened for members |
 | A-04 | Dashboard nav with seat label + tier | ✅ | web | `DashboardNav.tsx` shows `seatLabel`, `canRunScans`, `canReview` |
 | A-05 | Tier-gated scan launch API (`/api/runs`) | ✅ | web | Checks `seat.canRunScans` + domain scoping + `approved=false` init |
-| A-06 | **Stripe webhook → auto-provision account** | ⬜ | web/functions | **MISSING** — `app/api/webhooks/stripe/route.ts` needed. On `checkout.session.completed`: create user via service role, upsert `clients` + `client_memberships` (admin, tier3), send magic-link welcome email via Resend |
+| A-06 | **Stripe webhook → auto-provision account** | 🟡 | web | **CODE DONE + GATED** (`fix/indexnow-canonicals`, e86c36a+e49caa8): `app/api/webhooks/stripe/route.ts` → idempotent `stripe_events` → `admin.createUser` → `provision_stripe_checkout_client` RPC → `generateLink` hashed_token → Resend. Migration 0015 applied live. Security-hardened (C1/H1/H2/M1). Owner-gated to go live: secrets + DO env + Stripe `domain` field + Resend DNS + e2e |
 | A-07 | **Login button → modal on public site** | ⬜ | web | Header CTA should open a modal (not redirect) with `LoginForm` island |
 | A-08 | **Post-checkout profile completion** | ⬜ | web | After first login, prompt 2–4 Q survey (Role, Company Size, ICP) → save to `profiles` table |
 | A-09 | **Google OAuth + custom sender config** | ⬜ | infra | Supabase project settings: enable Google provider, set `goblins@promptgoblin.io` via Resend/Postmark SMTP |
@@ -38,8 +40,8 @@
 | ID | Task | Status | Owner | Notes |
 |---|---|---|---|---|
 | A-17 | Stripe Checkout/Pricing Table with prefilled email | ✅ | web | Pricing page uses Stripe Payment Links (live, monthly) |
-| A-18 | Stripe webhook signature verification | ⬜ | web | `stripe.webhooks.constructEvent` against `STRIPE_WEBHOOK_SECRET` |
-| A-19 | Idempotent `checkout.session.completed` handling | ⬜ | web | Upsert user/client/membership; `approved=false` by default |
+| A-18 | Stripe webhook signature verification | ✅ | web | `constructEvent` on raw body before any parse; nodejs runtime; security-reviewed |
+| A-19 | Idempotent `checkout.session.completed` handling | ✅ | web | `stripe_events` insert-before-process ledger + stale-reclaim; `payment_status==='paid'` guard |
 | A-20 | Stripe Customer Portal for billing self-serve | ⬜ | web | Route past_due/canceled users to portal on login |
 
 ---
@@ -68,10 +70,10 @@
 ### 2.3 Search Engine Submission Hygiene
 | ID | Task | Status | Owner | Notes |
 |---|---|---|---|---|
-| S-12 | Google Search Console: verify + submit sitemap | ⬜ | infra | `sitemap.ts` generates; submit in GSC |
-| S-13 | Bing Webmaster Tools: verify + submit sitemap | ⬜ | infra | Same sitemap; Bing powers partner citation layer |
-| S-14 | Enable IndexNow with real key | ⬜ | infra | POST changed URLs on every deploy; validate via `api.indexnow.org/check` |
-| S-15 | Submit changed URLs via IndexNow on every publish | ⬜ | infra | Automate in deploy pipeline or post-build script |
+| S-12 | Google Search Console: verify + submit sitemap | ✅ | infra | GSC: Success, **12 pages discovered** (read 2026-06-10) — matches `sitemap.ts` exactly |
+| S-13 | Bing Webmaster Tools: verify + submit sitemap | ✅ | infra | BWT verified (GUID real) + sitemap submitted 2026-06-10, 0 errors/0 warnings; status Processing → expect 12 URLs after crawl |
+| S-14 | Enable IndexNow with real key | ✅ | web | Real key in `public/indexnow.txt` + own-host-validated `/indexnow` endpoint (branch `fix/indexnow-canonicals`); validate via `api.indexnow.org/check` after deploy |
+| S-15 | Submit changed URLs via IndexNow on every publish | ✅ | web | CI ping bug fixed (was sending no `urlList` → silent 400; now resubmits sitemap `<loc>` URLs). `npm run indexnow:submit` script added (`web/scripts/indexnow-submit.mjs`, 4 unit tests). Submits full sitemap; run post-deploy (deliberate, not auto-fire). Spec: `feedback/claude/2026-06-11-indexnow-deploy-ping-fix.md`. Changed-URLs-only = later optimization |
 
 ### 2.4 Authority & Citation Building
 | ID | Task | Status | Owner | Notes |
@@ -171,6 +173,9 @@
 | I-03 | DigitalOcean MCP for Claude/Hermes (per vault note) | ⬜ | infra | Add `@digitalocean/mcp` via `npx` to `~/.hermes/config.yaml` → restart |
 | I-04 | Push pipeline repo (local `master` ahead by ~6 commits) | ⬜ | pipeline | Task (b) + Product-schema fix not pushed to origin |
 | I-05 | Email DNS at Cloudflare (Zoho free plan for `goblins@promptgoblin.com`) | ⬜ | user | MX mx/mx2/mx3.zoho.com; SPF; DKIM `zmail._domainkey`; DMARC `_dmarc` p=none |
+| I-06 | **Isolate eval/test writes from live Supabase + clean polluted `runs`** | 🔴 | pipeline | Live `runs` = 1441 rows (2026-06-11): `goblin.eval`/pytest write to the live dogfood client because `GOBLIN_SUPABASE_ENABLED=true`. Gate runs must NOT write prod. Fix: unset/override the flag for eval+tests (or a separate test project), then prune eval-generated runs for client `3dbea6df`. Blocks a trustworthy dashboard run-history |
+| I-07 | DO env for money path: `NEXT_PUBLIC_SITE_URL`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (live), `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | ⬜ | infra | Webhook refuses to send links without `NEXT_PUBLIC_SITE_URL`; `.do/app.yaml` documents them as out-of-band SECRETs. Resend click-tracking OFF for auth mail |
+| I-08 | **Stripe Payment Links must collect `domain`** (metadata or custom field) | ⬜ | infra | The webhook requires a domain (M1) — a checkout without one permanently fails by design. Configure before enabling paid signups |
 
 ---
 
