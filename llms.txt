@@ -22,6 +22,9 @@
 - Methodology: https://promptgoblin.io/methodology
 - AEO vs GEO explainer: https://promptgoblin.io/learn/aeo-vs-geo
 - FAQ: https://promptgoblin.io/faq
+- [Why schema markup isn't enough to get cited](https://promptgoblin.io/learn/why-schema-not-enough): Post-implementation diagnostic for the schema-done-still-uncited gap — five checks that identify which real lever (Bing indexing, third-party mentions, extractable content) is missing.
+- [AEO audit checklist for small agencies](https://promptgoblin.io/learn/aeo-audit-checklist): Practitioner checklist covering the three citation levers — brand-mention surface, Bing indexing, answer-shaped content — plus a hygiene pass and honest scoring rules.
+- [You rank, but AI Overviews don't cite you](https://promptgoblin.io/learn/rank-but-not-cited): The rank-vs-citation gap — why a well-ranked page can still lose the AI citation, with a diagnostic and fixes mapped to each cause.
 
 ## Packages
 - Goblin Scout — monthly visibility audit (~$997/mo): full 5-surface LLM citation audit, competitor citation-graph diff, schema/entity gap report, ranked stack-specific fix queue + a drop-in AI-implementation prompt. Monthly, cancel anytime.

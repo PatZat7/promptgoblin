@@ -4,7 +4,22 @@ import { SOURCES, PREDICTORS } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
 import { HONEST_BROKER, LAYERS } from "@/app/methodology/methodology.data";
 import { FAQ } from "@/lib/faq";
 import { DOCS, SITE } from "@/lib/site";
-import { aeoGeoJsonLd, methodologyJsonLd, structuredData } from "@/lib/structured-data";
+import {
+  aeoGeoJsonLd,
+  methodologyJsonLd,
+  structuredData,
+  aeoAuditChecklistJsonLd,
+  whySchemaNotEnoughJsonLd,
+  rankButNotCitedJsonLd,
+} from "@/lib/structured-data";
+import { FAQ_ITEMS as AEO_CHECKLIST_FAQ } from "@/app/learn/aeo-audit-checklist/aeo-audit-checklist.data";
+import { FAQ_ITEMS as WHY_SCHEMA_FAQ } from "@/app/learn/why-schema-not-enough/why-schema-not-enough.data";
+import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/rank-but-not-cited.data";
+
+type FaqPageNode = { mainEntity: Array<{ name: string; acceptedAnswer: { text: string } }> };
+
+const faqPageNodeOf = (graph: object[]): FaqPageNode =>
+  graph.find((node) => (node as Record<string, unknown>)["@type"] === "FAQPage") as FaqPageNode;
 
 describe("methodology content", () => {
   it("keeps the schema and WAF honesty lines", () => {
@@ -21,6 +36,35 @@ describe("methodology content", () => {
     const graph = methodologyJsonLd();
     expect(graph[0]).toMatchObject({ "@type": "TechArticle" });
     expect(graph.some((node) => (node as Record<string, unknown>)["@type"] === "BreadcrumbList")).toBe(true);
+  });
+});
+
+describe("longtail batch-1 learn pages", () => {
+  const cases: Array<[string, () => object[], { q: string; a: string }[]]> = [
+    ["aeo-audit-checklist", aeoAuditChecklistJsonLd, AEO_CHECKLIST_FAQ],
+    ["why-schema-not-enough", whySchemaNotEnoughJsonLd, WHY_SCHEMA_FAQ],
+    ["rank-but-not-cited", rankButNotCitedJsonLd, RANK_NOT_CITED_FAQ],
+  ];
+
+  it.each(cases)("%s JSON-LD is an Article graph with breadcrumbs", (_slug, jsonLd) => {
+    const graph = jsonLd();
+    expect(graph[0]).toMatchObject({ "@type": "Article" });
+    expect((graph[0] as { headline: string }).headline).toBeTruthy();
+    expect(graph.some((node) => (node as Record<string, unknown>)["@type"] === "BreadcrumbList")).toBe(true);
+  });
+
+  it.each(cases)("%s FAQPage mainEntity matches visible FAQ_ITEMS exactly", (_slug, jsonLd, faq) => {
+    const faqNode = faqPageNodeOf(jsonLd());
+    expect(faqNode).toBeDefined();
+    expect(faqNode.mainEntity.map((item) => item.name)).toEqual(faq.map((item) => item.q));
+    expect(faqNode.mainEntity.map((item) => item.acceptedAnswer.text)).toEqual(faq.map((item) => item.a));
+  });
+
+  it("all three routes are in the sitemap", () => {
+    const urls = sitemap().map((entry) => entry.url);
+    for (const slug of ["why-schema-not-enough", "aeo-audit-checklist", "rank-but-not-cited"]) {
+      expect(urls).toContain(`${SITE.url}/learn/${slug}`);
+    }
   });
 });
 

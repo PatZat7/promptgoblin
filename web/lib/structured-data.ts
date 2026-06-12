@@ -1,6 +1,9 @@
 import { SITE, TIERS } from "@/lib/site";
 import { FAQ } from "@/lib/faq";
 import { SOURCES } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
+import { FAQ_ITEMS as WHY_SCHEMA_FAQ } from "@/app/learn/why-schema-not-enough/why-schema-not-enough.data";
+import { FAQ_ITEMS as AEO_CHECKLIST_FAQ } from "@/app/learn/aeo-audit-checklist/aeo-audit-checklist.data";
+import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/rank-but-not-cited.data";
 
 /**
  * JSON-LD graph — the AEO payload. This is the product thesis applied to our
@@ -321,6 +324,93 @@ export const aiCitationHallucinationsJsonLd = (): object[] => [
     ["Learn", "/learn/ai-citation-hallucinations"],
     ["AI Citation Fabrications", "/learn/ai-citation-hallucinations"],
   ),
+];
+
+export const rankButNotCitedJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "You rank but AI Overviews don't cite you — diagnosing the gap",
+    description:
+      "Ranking proves crawlability and relevance — but citation selection also weighs passage extractability, direct-answer shape, and third-party corroboration. Here is how to diagnose the gap.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/rank-but-not-cited`,
+    inLanguage: "en",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: RANK_NOT_CITED_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/rank-but-not-cited"],
+    ["Rank But Not Cited", "/learn/rank-but-not-cited"],
+  ),
+];
+
+export const whySchemaNotEnoughJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Why schema markup isn't enough to get cited",
+    description:
+      "You added JSON-LD, validated it, and still nothing changed. Schema labels content — it does not create the brand mentions, Bing rank, or extractable answers that drive AI citations. Here is the post-implementation diagnostic.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/why-schema-not-enough`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/why-schema-not-enough"],
+    ["Why Schema Markup Isn't Enough", "/learn/why-schema-not-enough"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: WHY_SCHEMA_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const aeoAuditChecklistJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "AEO audit checklist for small agencies",
+    description:
+      "The practical AEO audit framework small agencies use to check client sites for AI-search readiness: three citation levers, a hygiene pass, and honest scoring rules.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/aeo-audit-checklist`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/aeo-audit-checklist"],
+    ["AEO Audit Checklist", "/learn/aeo-audit-checklist"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: AEO_CHECKLIST_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
 ];
 
 export const aeoGeoJsonLd = (): object[] => [

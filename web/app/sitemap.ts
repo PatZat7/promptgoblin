@@ -16,6 +16,9 @@ const sitemap = (): MetadataRoute.Sitemap => [
   { url: `${SITE.url}/docs/bing-webmaster-tools`, changeFrequency: "monthly", priority: 0.6 },
   { url: `${SITE.url}/docs/report-guide`, changeFrequency: "monthly", priority: 0.5 },
   { url: `${SITE.url}/learn/ai-citation-hallucinations`, changeFrequency: "monthly", priority: 0.6 },
+  { url: `${SITE.url}/learn/why-schema-not-enough`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${SITE.url}/learn/aeo-audit-checklist`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${SITE.url}/learn/rank-but-not-cited`, changeFrequency: "monthly", priority: 0.7 },
 ];
 
 export default sitemap;

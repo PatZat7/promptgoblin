@@ -43,8 +43,14 @@ These align to Google's query fan-out: a user asks X, and the engine expands to 
 | how to get cited by AI | answer | citation | Variant |
 | how to get cited in ChatGPT | answer | citation | Variant |
 | how to show up in AI search | answer | discovery | Broader |
-| why am I not cited in AI Overviews | problem | troubleshooting | Diagnostic |
+| why am I not cited in AI Overviews | problem | troubleshooting | Diagnostic. See also: why-schema-not-enough (schema-done-still-uncited sub-case) and rank-but-not-cited (rank-vs-cite sub-case) |
 | how to measure AI visibility | how-to | benchmark | Covers benchmark route |
+| why ChatGPT not citing my content after schema markup | problem | troubleshooting | Diagnostic; targets post-implementation confusion → `/learn/why-schema-not-enough` |
+| schema markup not getting cited | problem | troubleshooting | Fan-out variant → `/learn/why-schema-not-enough` |
+| why business not appearing in Google AI Overviews no rank drop | problem | troubleshooting | Rank-vs-cite diagnostic → `/learn/rank-but-not-cited` |
+| rank top 5 but not cited | problem | troubleshooting | Fan-out variant → `/learn/rank-but-not-cited` |
+| AEO audit checklist for small agencies | answer | audit | Practitioner checklist → `/learn/aeo-audit-checklist` |
+| how to audit a client site for AI search | answer | audit | Fan-out variant → `/learn/aeo-audit-checklist` |
 
 ---
 
@@ -92,6 +98,9 @@ These are not home/landing term targets, but supporting pages to exist and be in
 - `/learn/technical-seo-for-ai-search`
 - `/learn/bing-rank-and-ai-citations`
 - `/learn/accessibility-seo-audit`
+- `/learn/why-schema-not-enough`
+- `/learn/aeo-audit-checklist`
+- `/learn/rank-but-not-cited`
 - `/docs/bing-webmaster-tools`
 - `/benchmark`
 - `/faq`
