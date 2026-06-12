@@ -28,6 +28,10 @@
 - [E-E-A-T for AI search](https://promptgoblin.io/learn/eeat-for-ai-search): Implementation guide for visible author signals and Article-to-author-to-Person JSON-LD, framed as extraction hygiene rather than a citation lever.
 - [Entity clarity for AI search](https://promptgoblin.io/learn/entity-clarity-for-ai): SMB-focused guide to disambiguating a brand entity with consistent naming, sameAs profile hygiene, and crawlable co-occurrence.
 - [llms.txt implementation guide](https://promptgoblin.io/learn/llms-txt-implementation): Practical template for writing and maintaining llms.txt as a low-cost hygiene label, not a ranking or citation signal.
+- [FAQ schema vs HowTo schema](https://promptgoblin.io/learn/faq-schema-vs-howto-schema): Google deprecated HowTo rich results in 2023 and restricted FAQ rich results to government/health sites — what each type still does and when to use which.
+- [Site structure for AI citations](https://promptgoblin.io/learn/site-structure-ai-citations): Hub-and-spoke internal linking, sub-question mapping, and how structurally isolated pages get excluded from passage retrieval even when technically crawlable.
+- [Section 508 and AEO](https://promptgoblin.io/learn/wcag-aeo-overlap): Which Section 508 criteria a federal contractor already maintains also carry AI-search parseability weight — and what 508 conformance does not do for citations.
+- [Bing Webmaster Tools guide](https://promptgoblin.io/docs/bing-webmaster-tools): Property verification, sitemap submission, URL inspection, and IndexNow — discovery and diagnostics, not an indexing, ranking, or citation guarantee.
 
 ## Packages
 - Goblin Scout — monthly visibility audit (~$997/mo): full 5-surface LLM citation audit, competitor citation-graph diff, schema/entity gap report, ranked stack-specific fix queue + a drop-in AI-implementation prompt. Monthly, cancel anytime.

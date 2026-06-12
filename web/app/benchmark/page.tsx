@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     url: `${SITE.url}/benchmark`,
     title: "Citation Landscape Benchmark",
     description:
-      "Quarterly benchmark data from Prompt Goblin's own citation pipeline: average visibility score, common citation gaps, and platform distribution.",
+      "Illustrative benchmark snapshot — updates as pipeline runs accumulate. Shows how Prompt Goblin measures citation gaps: visibility score, structural blockers, and platform distribution.",
     images: ["/og-image.png"],
   },
 };
@@ -40,6 +40,19 @@ const BenchmarkPage = () => (
         what it can reach and flags JS-rendered blind spots. Results are labeled
         by pipeline version and date.
       </p>
+
+      <h2>Context</h2>
+      <p>
+        The metrics on this page — visibility score, structural blockers, and
+        platform distribution — reflect the measurements described in the pages
+        below. Read them to understand what each number means before drawing
+        conclusions from the snapshot.
+      </p>
+      <ul>
+        <li><a href="/methodology">Scan methodology — how each finding is measured</a></li>
+        <li><a href="/learn/how-to-show-up-in-chatgpt">How to show up in ChatGPT — the three levers the benchmark tracks</a></li>
+        <li><a href="/learn/bing-rank-and-ai-citations">Bing rank and AI citations — why platform distribution matters</a></li>
+      </ul>
     </section>
   </div>
 );

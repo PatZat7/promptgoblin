@@ -7,6 +7,9 @@ import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/
 import { FAQ_ITEMS as EEAT_FAQ } from "@/app/learn/eeat-for-ai-search/eeat-for-ai-search.data";
 import { FAQ_ITEMS as ENTITY_CLARITY_FAQ } from "@/app/learn/entity-clarity-for-ai/entity-clarity-for-ai.data";
 import { FAQ_ITEMS as LLMS_TXT_FAQ } from "@/app/learn/llms-txt-implementation/llms-txt-implementation.data";
+import { FAQ_ITEMS as FAQ_VS_HOWTO_FAQ } from "@/app/learn/faq-schema-vs-howto-schema/faq-schema-vs-howto-schema.data";
+import { FAQ_ITEMS as SITE_STRUCTURE_FAQ } from "@/app/learn/site-structure-ai-citations/site-structure-ai-citations.data";
+import { FAQ_ITEMS as WCAG_AEO_FAQ } from "@/app/learn/wcag-aeo-overlap/wcag-aeo-overlap.data";
 
 /**
  * JSON-LD graph — the AEO payload. This is the product thesis applied to our
@@ -494,6 +497,25 @@ export const eeatForAiSearchJsonLd = (): object[] => [
   },
 ];
 
+/**
+ * Standalone FAQPage JSON-LD for /faq. This is a separate named export so it
+ * does NOT modify structuredData (which already contains a FAQPage node for
+ * the homepage at lines 97–105). Modifying structuredData would break the
+ * toHaveLength(6) assertion in web/__tests__/content-pages.test.ts.
+ */
+export const faqPageJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+  breadcrumb(["Home", "/"], ["FAQ", "/faq"]),
+];
+
 export const llmsTxtImplementationJsonLd = (): object[] => [
   {
     "@context": "https://schema.org",
@@ -521,4 +543,111 @@ export const llmsTxtImplementationJsonLd = (): object[] => [
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   },
+];
+
+export const siteStructureJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Site Structure for AI Citations — Clusters, Hubs, and Passage Retrieval",
+    description:
+      "Isolated pages lose to clustered pages in AI passage retrieval. The hub-and-spoke pattern — one hub per topic, spokes answering one sub-question each — is how internal linking turns crawlable pages into retrievable ones.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/site-structure-ai-citations`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/site-structure-ai-citations"],
+    ["Site Structure for AI Citations", "/learn/site-structure-ai-citations"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: SITE_STRUCTURE_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const wcagAeoOverlapJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Section 508 and AEO — Where Accessibility Compliance Overlaps AI Search",
+    description:
+      "Federal contractors meeting Section 508 conformance already satisfy most AI-search structural requirements. Four criteria — 1.3.1, 2.4.2, 4.1.2, 4.1.1 — carry direct AEO parseability effects. Schema is hygiene; 508 removes blockers, not citation gaps.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/wcag-aeo-overlap`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/wcag-aeo-overlap"],
+    ["Section 508 and AEO", "/learn/wcag-aeo-overlap"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: WCAG_AEO_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const faqVsHowToSchemaJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "FAQ Schema vs HowTo Schema — What Each Does for AI Search",
+    description:
+      "Google deprecated HowTo rich results entirely and restricted FAQ rich results to government and health sites in August 2023. Neither type causes AI citations. This guide covers what each type still does and when to use it.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/faq-schema-vs-howto-schema`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/faq-schema-vs-howto-schema"],
+    ["FAQ Schema vs HowTo Schema", "/learn/faq-schema-vs-howto-schema"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ_VS_HOWTO_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const bingWebmasterToolsDocJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: "Bing Webmaster Tools guide — verification, sitemap submission, URL inspection, and IndexNow",
+    description:
+      "How to verify a property in Bing Webmaster Tools, submit a sitemap, inspect URLs for indexing gaps, and use IndexNow to notify Bing of changed pages. Supports the Bing-rank side of the AEO loop; does not guarantee indexing, ranking, or AI citations.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/docs/bing-webmaster-tools`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Docs", "/docs/bing-webmaster-tools"],
+    ["Bing Webmaster Tools", "/docs/bing-webmaster-tools"],
+  ),
 ];

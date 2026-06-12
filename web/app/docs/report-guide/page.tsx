@@ -32,6 +32,13 @@ const ReportGuidePage = () => (
         <li>Medium: hygiene and structure gaps.</li>
         <li>Low: improvements that reduce friction.</li>
       </ul>
+
+      <h2>See also</h2>
+      <ul>
+        <li><a href="/methodology">Scan methodology — how each finding is produced</a></li>
+        <li><a href="/faq">FAQ — pricing, guarantee, and what we don&apos;t promise</a></li>
+        <li><a href="/learn/how-to-show-up-in-chatgpt">How to show up in ChatGPT — the levers behind the high-severity findings</a></li>
+      </ul>
     </section>
   </div>
 );

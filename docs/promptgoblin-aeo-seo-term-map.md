@@ -32,6 +32,8 @@
 | llms.txt and AI search | category | Hygiene label; not a ranking or citation signal; honest-broker framing required. Alias: "llms.txt implementation guide" → `/learn/llms-txt-implementation` |
 | llms.txt vs robots.txt | category | Fan-out variant → `/learn/llms-txt-implementation` |
 | entity optimization for AI search | category | SMB-focused → `/learn/entity-clarity-for-ai` |
+| site structure for AI citations | category | Technical/strategic; clusters + passage retrieval → `/learn/site-structure-ai-citations` |
+| internal linking for AI search | category | Fan-out variant → `/learn/site-structure-ai-citations` |
 
 ---
 
@@ -69,6 +71,8 @@ These align to Google's query fan-out: a user asks X, and the engine expands to 
 | GEO tools | category+compare | Competitor-heavy |
 | AI SEO agencies | compare | Service comparison |
 | Prompt Goblin vs [competitor] | compare | Reactive; fill on competitor addition |
+| FAQ schema vs HowTo schema AI citations | compare | Structured-data decision guide → `/learn/faq-schema-vs-howto-schema`. Alias: "FAQPage schema and AI answers" (dogfood-plan target query) |
+| when to use FAQ schema | compare | Fan-out variant → `/learn/faq-schema-vs-howto-schema` |
 
 ---
 
@@ -91,6 +95,8 @@ These align to Google's query fan-out: a user asks X, and the engine expands to 
 | AI citation hallucination stats | verification | News/research term |
 | how to verify AI citations | how-to | Actionable |
 | E-E-A-T for AI search | verification | Author-schema implementation guide → `/learn/eeat-for-ai-search` |
+| Section 508 AEO overlap | solution | Government-procurement buyer audience; 508/WCAG criteria with direct AEO impact → `/learn/wcag-aeo-overlap` |
+| Section 508 compliance SEO implications | solution | Fan-out variant → `/learn/wcag-aeo-overlap` |
 | SEO audit with accessibility | solution | Tied to a11y lane |
 | AI visibility dashboard | product | Route-target |
 
@@ -111,6 +117,9 @@ These are not home/landing term targets, but supporting pages to exist and be in
 - `/learn/eeat-for-ai-search`
 - `/learn/entity-clarity-for-ai`
 - `/learn/llms-txt-implementation`
+- `/learn/faq-schema-vs-howto-schema`
+- `/learn/site-structure-ai-citations`
+- `/learn/wcag-aeo-overlap`
 - `/docs/bing-webmaster-tools`
 - `/benchmark`
 - `/faq`

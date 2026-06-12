@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { JsonLd } from "@/components/system/JsonLd";
 import { technicalSeoForAiJsonLd } from "@/lib/structured-data";
@@ -59,7 +60,7 @@ export default function Page() {
 
         <h3 style={{ marginTop: "1.4em" }}>Sitemap accuracy</h3>
         <ul style={{ marginTop: "0.6em", lineHeight: 1.8, paddingLeft: "1.4em" }}>
-          <li>Submitted and verified in both Google Search Console and Bing Webmaster Tools</li>
+          <li>Submitted and verified in both Google Search Console and <a href="/docs/bing-webmaster-tools">Bing Webmaster Tools</a></li>
           <li>Only canonical, indexable 200 URLs are included — no noindex pages in the sitemap</li>
           <li>Updated automatically after every publish; <code>lastmod</code> reflects actual content change dates</li>
           <li>Size under the 50,000 URL and 50 MB limits; split into sub-sitemaps if needed</li>
@@ -157,6 +158,18 @@ export default function Page() {
           <li><a href="/learn/accessibility-seo-audit">Accessibility SEO audit</a></li>
           <li><a href="/methodology">How the Prompt Goblin scan works — methodology</a></li>
           <li><a href="/faq">FAQ</a></li>
+        </ul>
+
+        <p style={{ marginTop: "1.6em" }}>
+          <Link href="/#scan">Get a citation gap scan</Link>
+        </p>
+
+        {/* ---- What this does not guarantee ---- */}
+        <h2 style={{ marginTop: "2.4em" }}>What this does not guarantee</h2>
+        <ul style={{ marginTop: "0.8em", lineHeight: 1.9, paddingLeft: "1.4em" }}>
+          <li>Schema and structured data are hygiene — not citation levers. Adding structured data to a page does not cause AI engines to cite it.</li>
+          <li>No specific citation count, rank position, or AI response outcome is promised by any action described on this page.</li>
+          <li>The refund covers the delivered work, never a citation number.</li>
         </ul>
       </article>
     </>

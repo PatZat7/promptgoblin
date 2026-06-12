@@ -16,6 +16,11 @@ import {
   eeatForAiSearchJsonLd,
   entityClarityJsonLd,
   llmsTxtImplementationJsonLd,
+  bingWebmasterToolsDocJsonLd,
+  faqVsHowToSchemaJsonLd,
+  siteStructureJsonLd,
+  wcagAeoOverlapJsonLd,
+  faqPageJsonLd,
 } from "@/lib/structured-data";
 import { FAQ_ITEMS as AEO_CHECKLIST_FAQ } from "@/app/learn/aeo-audit-checklist/aeo-audit-checklist.data";
 import { FAQ_ITEMS as WHY_SCHEMA_FAQ } from "@/app/learn/why-schema-not-enough/why-schema-not-enough.data";
@@ -23,6 +28,9 @@ import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/
 import { FAQ_ITEMS as EEAT_FAQ } from "@/app/learn/eeat-for-ai-search/eeat-for-ai-search.data";
 import { FAQ_ITEMS as ENTITY_FAQ } from "@/app/learn/entity-clarity-for-ai/entity-clarity-for-ai.data";
 import { FAQ_ITEMS as LLMS_TXT_FAQ } from "@/app/learn/llms-txt-implementation/llms-txt-implementation.data";
+import { FAQ_ITEMS as FAQ_VS_HOWTO_FAQ } from "@/app/learn/faq-schema-vs-howto-schema/faq-schema-vs-howto-schema.data";
+import { FAQ_ITEMS as SITE_STRUCTURE_FAQ } from "@/app/learn/site-structure-ai-citations/site-structure-ai-citations.data";
+import { FAQ_ITEMS as WCAG_AEO_FAQ } from "@/app/learn/wcag-aeo-overlap/wcag-aeo-overlap.data";
 
 type FaqPageNode = { mainEntity: Array<{ name: string; acceptedAnswer: { text: string } }> };
 
@@ -55,6 +63,9 @@ describe("longtail learn pages", () => {
     ["eeat-for-ai-search", eeatForAiSearchJsonLd, EEAT_FAQ],
     ["entity-clarity-for-ai", entityClarityJsonLd, ENTITY_FAQ],
     ["llms-txt-implementation", llmsTxtImplementationJsonLd, LLMS_TXT_FAQ],
+    ["faq-schema-vs-howto-schema", faqVsHowToSchemaJsonLd, FAQ_VS_HOWTO_FAQ],
+    ["site-structure-ai-citations", siteStructureJsonLd, SITE_STRUCTURE_FAQ],
+    ["wcag-aeo-overlap", wcagAeoOverlapJsonLd, WCAG_AEO_FAQ],
   ];
 
   it.each(cases)("%s JSON-LD is an Article graph with breadcrumbs", (_slug, jsonLd) => {
@@ -86,9 +97,28 @@ describe("longtail learn pages", () => {
       "eeat-for-ai-search",
       "entity-clarity-for-ai",
       "llms-txt-implementation",
+      "faq-schema-vs-howto-schema",
+      "site-structure-ai-citations",
+      "wcag-aeo-overlap",
     ]) {
       expect(urls).toContain(`${SITE.url}/learn/${slug}`);
     }
+  });
+
+  it("faq route JSON-LD mirrors lib/faq exactly and leaves the homepage graph untouched", () => {
+    const faqNode = faqPageNodeOf(faqPageJsonLd());
+    expect(faqNode.mainEntity.map((item) => item.name)).toEqual(FAQ.map((item) => item.q));
+    expect(faqNode.mainEntity.map((item) => item.acceptedAnswer.text)).toEqual(FAQ.map((item) => item.a));
+    expect(structuredData).toHaveLength(6);
+  });
+});
+
+describe("docs pages", () => {
+  it("bing-webmaster-tools JSON-LD is TechArticle with headline and breadcrumbs", () => {
+    const graph = bingWebmasterToolsDocJsonLd();
+    expect(graph[0]).toMatchObject({ "@type": "TechArticle" });
+    expect((graph[0] as { headline: string }).headline).toBeTruthy();
+    expect(graph.some((node) => (node as Record<string, unknown>)["@type"] === "BreadcrumbList")).toBe(true);
   });
 });
 

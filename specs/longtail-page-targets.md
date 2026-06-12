@@ -70,7 +70,7 @@ mentions are disclosed as coming from the company per platform norms.
 |---|---|---|---|
 | `llms.txt` — verify `/llms.txt` is current; add new pages from this spec as they ship | `public/llms.txt` | Low | Implementer executes; no integrity gate needed for file updates |
 | GitHub awesome-list — open PR on an existing `awesome-aeo` or `awesome-llm-seo` repo; description must include "Prompt Goblin (promptgoblin.io) — AEO/GEO + WCAG 2.1 AA agency" | GitHub | Low | Agent drafts PR text; human submits |
-| Business directory listings — G2, Sortlist, BBB Michigan | G2 / Sortlist / BBB | Low–medium | Agent drafts profile copy; human submits |
+| Business directory listings — G2, Sortlist, BBB (Chicago/IL per llms.txt + site.ts; owner confirms registered state before filing) | G2 / Sortlist / BBB | Low–medium | Agent drafts profile copy; human submits |
 | Clutch.co — claim/create agency profile, service tags: AEO, GEO, technical SEO, WCAG | Clutch.co | Medium | Agent drafts copy; human submits |
 | GoodFirms.co — register, multi-level verification | GoodFirms | Medium | Agent drafts copy; human submits |
 | DigitalA11Y directory — accessibility-agency roundup inclusion | digitala11y.com | Low | Agent drafts; human emails |

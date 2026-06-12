@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE } from "@/lib/site";
 import { JsonLd } from "@/components/system/JsonLd";
 import { aeoGeoJsonLd } from "@/lib/structured-data";
@@ -102,7 +103,8 @@ const AeoVsGeoPage = () => (
         <li>
           <strong>Bing / web rank</strong> — most LLM assistants ground on Bing-indexed
           content. Higher rank in Bing expands the set of queries where your pages are
-          retrieval candidates.
+          retrieval candidates.{" "}
+          <a href="/docs/bing-webmaster-tools">Bing Webmaster Tools setup guide.</a>
         </li>
         <li>
           <strong>Crawlable, extractable, answer-shaped content</strong> — pages that
@@ -166,6 +168,18 @@ const AeoVsGeoPage = () => (
         <li><a href="/methodology">How the Prompt Goblin scan works — methodology</a></li>
         <li><a href="/benchmark">Benchmark — compare citation coverage across platforms</a></li>
         <li><a href="/faq">FAQ</a></li>
+      </ul>
+
+      <p style={{ marginTop: "1.6em" }}>
+        <Link href="/#scan">Get a citation gap scan</Link>
+      </p>
+
+      {/* ---- What this does not guarantee ---- */}
+      <h2 style={{ marginTop: "2.4em" }}>What this does not guarantee</h2>
+      <ul style={{ marginTop: "0.8em", lineHeight: 1.9, paddingLeft: "1.4em" }}>
+        <li>Schema and markup are hygiene — not citation levers. Adding structured data to a page does not cause AI engines to cite it.</li>
+        <li>No specific citation count, rank position, or AI response outcome is promised by anything on this page.</li>
+        <li>The refund covers the delivered work, never a citation number.</li>
       </ul>
     </article>
   </>

@@ -18,6 +18,9 @@
   | `https://promptgoblin.io/learn/eeat-for-ai-search` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
   | `https://promptgoblin.io/learn/entity-clarity-for-ai` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
   | `https://promptgoblin.io/learn/llms-txt-implementation` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
+  | `https://promptgoblin.io/learn/why-schema-not-enough` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
+  | `https://promptgoblin.io/learn/aeo-audit-checklist` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
+  | `https://promptgoblin.io/learn/rank-but-not-cited` | 2026-06-12 | 2026-06-26 | 2026-07-10 |
 - **Coordination change (owner call):** the **Codex handoff lane is retired** — Claude is the standing integrator + implementer. `COORDINATION.md`, `CLAUDE.md`, and `specs/INDEX.md` updated; `feedback/codex/` kept as historical record.
 
 ## ✅ Current state — 2026-06-11 (Claude session #2 — implement fleet)

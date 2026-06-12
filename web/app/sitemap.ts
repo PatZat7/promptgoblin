@@ -22,6 +22,9 @@ const sitemap = (): MetadataRoute.Sitemap => [
   { url: `${SITE.url}/learn/eeat-for-ai-search`, changeFrequency: "monthly", priority: 0.7 },
   { url: `${SITE.url}/learn/entity-clarity-for-ai`, changeFrequency: "monthly", priority: 0.7 },
   { url: `${SITE.url}/learn/llms-txt-implementation`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${SITE.url}/learn/faq-schema-vs-howto-schema`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${SITE.url}/learn/site-structure-ai-citations`, changeFrequency: "monthly", priority: 0.7 },
+  { url: `${SITE.url}/learn/wcag-aeo-overlap`, changeFrequency: "monthly", priority: 0.7 },
 ];
 
 export default sitemap;
