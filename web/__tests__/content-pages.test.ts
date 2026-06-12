@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "fs";
+import path from "path";
 import sitemap from "@/app/sitemap";
 import { SOURCES, PREDICTORS } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
 import { HONEST_BROKER, LAYERS } from "@/app/methodology/methodology.data";
 import { FAQ } from "@/lib/faq";
-import { DOCS, SITE } from "@/lib/site";
+import { DOCS, NAV, SITE } from "@/lib/site";
 import {
   aeoGeoJsonLd,
   methodologyJsonLd,
@@ -11,10 +13,16 @@ import {
   aeoAuditChecklistJsonLd,
   whySchemaNotEnoughJsonLd,
   rankButNotCitedJsonLd,
+  eeatForAiSearchJsonLd,
+  entityClarityJsonLd,
+  llmsTxtImplementationJsonLd,
 } from "@/lib/structured-data";
 import { FAQ_ITEMS as AEO_CHECKLIST_FAQ } from "@/app/learn/aeo-audit-checklist/aeo-audit-checklist.data";
 import { FAQ_ITEMS as WHY_SCHEMA_FAQ } from "@/app/learn/why-schema-not-enough/why-schema-not-enough.data";
 import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/rank-but-not-cited.data";
+import { FAQ_ITEMS as EEAT_FAQ } from "@/app/learn/eeat-for-ai-search/eeat-for-ai-search.data";
+import { FAQ_ITEMS as ENTITY_FAQ } from "@/app/learn/entity-clarity-for-ai/entity-clarity-for-ai.data";
+import { FAQ_ITEMS as LLMS_TXT_FAQ } from "@/app/learn/llms-txt-implementation/llms-txt-implementation.data";
 
 type FaqPageNode = { mainEntity: Array<{ name: string; acceptedAnswer: { text: string } }> };
 
@@ -39,11 +47,14 @@ describe("methodology content", () => {
   });
 });
 
-describe("longtail batch-1 learn pages", () => {
+describe("longtail learn pages", () => {
   const cases: Array<[string, () => object[], { q: string; a: string }[]]> = [
     ["aeo-audit-checklist", aeoAuditChecklistJsonLd, AEO_CHECKLIST_FAQ],
     ["why-schema-not-enough", whySchemaNotEnoughJsonLd, WHY_SCHEMA_FAQ],
     ["rank-but-not-cited", rankButNotCitedJsonLd, RANK_NOT_CITED_FAQ],
+    ["eeat-for-ai-search", eeatForAiSearchJsonLd, EEAT_FAQ],
+    ["entity-clarity-for-ai", entityClarityJsonLd, ENTITY_FAQ],
+    ["llms-txt-implementation", llmsTxtImplementationJsonLd, LLMS_TXT_FAQ],
   ];
 
   it.each(cases)("%s JSON-LD is an Article graph with breadcrumbs", (_slug, jsonLd) => {
@@ -60,11 +71,36 @@ describe("longtail batch-1 learn pages", () => {
     expect(faqNode.mainEntity.map((item) => item.acceptedAnswer.text)).toEqual(faq.map((item) => item.a));
   });
 
-  it("all three routes are in the sitemap", () => {
+  it("llms.txt page keeps the hygiene-label framing (no discoverability-aid claim)", () => {
+    const corpus = JSON.stringify(LLMS_TXT_FAQ) + JSON.stringify(llmsTxtImplementationJsonLd());
+    expect(corpus.toLowerCase()).not.toContain("discoverability aid");
+    expect(corpus.toLowerCase()).not.toContain("citation lever");
+  });
+
+  it("all longtail routes are in the sitemap", () => {
     const urls = sitemap().map((entry) => entry.url);
-    for (const slug of ["why-schema-not-enough", "aeo-audit-checklist", "rank-but-not-cited"]) {
+    for (const slug of [
+      "why-schema-not-enough",
+      "aeo-audit-checklist",
+      "rank-but-not-cited",
+      "eeat-for-ai-search",
+      "entity-clarity-for-ai",
+      "llms-txt-implementation",
+    ]) {
       expect(urls).toContain(`${SITE.url}/learn/${slug}`);
     }
+  });
+});
+
+describe("shared navigation", () => {
+  it("top navigation pricing link targets the homepage pricing section", () => {
+    expect(NAV.find((item) => item.label === "Pricing")?.href).toBe("/#pricing");
+  });
+
+  it("footer pricing link targets the homepage pricing section", () => {
+    const footer = readFileSync(path.join(process.cwd(), "components/ui/Footer.tsx"), "utf-8");
+    expect(footer).toContain('href="/#pricing"');
+    expect(footer).not.toContain('href="/pricing"');
   });
 });
 

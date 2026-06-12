@@ -22,7 +22,7 @@ export const TIERS = [
 export const NAV = [
   { href: "/#services", label: "Services" },
   { href: "/methodology", label: "Methodology" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/#pricing", label: "Pricing" },
   { href: "/faq", label: "FAQ" },
 ];
 

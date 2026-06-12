@@ -4,6 +4,9 @@ import { SOURCES } from "@/app/learn/aeo-vs-geo/aeo-geo.data";
 import { FAQ_ITEMS as WHY_SCHEMA_FAQ } from "@/app/learn/why-schema-not-enough/why-schema-not-enough.data";
 import { FAQ_ITEMS as AEO_CHECKLIST_FAQ } from "@/app/learn/aeo-audit-checklist/aeo-audit-checklist.data";
 import { FAQ_ITEMS as RANK_NOT_CITED_FAQ } from "@/app/learn/rank-but-not-cited/rank-but-not-cited.data";
+import { FAQ_ITEMS as EEAT_FAQ } from "@/app/learn/eeat-for-ai-search/eeat-for-ai-search.data";
+import { FAQ_ITEMS as ENTITY_CLARITY_FAQ } from "@/app/learn/entity-clarity-for-ai/entity-clarity-for-ai.data";
+import { FAQ_ITEMS as LLMS_TXT_FAQ } from "@/app/learn/llms-txt-implementation/llms-txt-implementation.data";
 
 /**
  * JSON-LD graph — the AEO payload. This is the product thesis applied to our
@@ -431,4 +434,91 @@ export const aeoGeoJsonLd = (): object[] => [
     })),
   },
   breadcrumb(["Home", "/"], ["Learn", "/learn/aeo-vs-geo"], ["AEO vs GEO", "/learn/aeo-vs-geo"]),
+];
+
+export const entityClarityJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "Entity Clarity for AI Search — Getting Your Brand Recognised as a Thing",
+    description:
+      "An engine that cannot resolve your brand string to a distinct entity cannot retrieve you reliably — and may retrieve a collision instead. The SMB disambiguation toolkit: consistent naming, sameAs profiles, Wikidata when warranted, and co-occurrence in crawlable text.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/entity-clarity-for-ai`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/entity-clarity-for-ai"],
+    ["Entity Clarity for AI Search", "/learn/entity-clarity-for-ai"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: ENTITY_CLARITY_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const eeatForAiSearchJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "E-E-A-T for AI Search — Encoding Author Expertise Machines Can Read",
+    description:
+      "E-E-A-T is Google's quality-rater framework, not an injectable score. Structuring author credentials as Article–Person JSON-LD gives parsers a consistent extraction path — but the credibility must exist off-page first.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/eeat-for-ai-search`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/eeat-for-ai-search"],
+    ["E-E-A-T for AI Search", "/learn/eeat-for-ai-search"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: EEAT_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+
+export const llmsTxtImplementationJsonLd = (): object[] => [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "llms.txt Implementation Guide - What It Is and How to Write One",
+    description:
+      "llms.txt is a hygiene label, not a ranking or citation signal. No current evidence shows it influences whether an answer engine cites your content; it is useful because it is a low-cost canonical summary.",
+    author: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    url: `${SITE.url}/learn/llms-txt-implementation`,
+    inLanguage: "en",
+  },
+  breadcrumb(
+    ["Home", "/"],
+    ["Learn", "/learn/llms-txt-implementation"],
+    ["llms.txt Implementation", "/learn/llms-txt-implementation"],
+  ),
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: LLMS_TXT_FAQ.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
 ];

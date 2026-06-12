@@ -29,6 +29,9 @@
 | citation audit | category | Tied to verification layer |
 | citation gap audit | category | Specific to scan outcome |
 | AI SEO agency | category | Overlap with traditional SEO buyers |
+| llms.txt and AI search | category | Hygiene label; not a ranking or citation signal; honest-broker framing required. Alias: "llms.txt implementation guide" → `/learn/llms-txt-implementation` |
+| llms.txt vs robots.txt | category | Fan-out variant → `/learn/llms-txt-implementation` |
+| entity optimization for AI search | category | SMB-focused → `/learn/entity-clarity-for-ai` |
 
 ---
 
@@ -51,6 +54,9 @@ These align to Google's query fan-out: a user asks X, and the engine expands to 
 | rank top 5 but not cited | problem | troubleshooting | Fan-out variant → `/learn/rank-but-not-cited` |
 | AEO audit checklist for small agencies | answer | audit | Practitioner checklist → `/learn/aeo-audit-checklist` |
 | how to audit a client site for AI search | answer | audit | Fan-out variant → `/learn/aeo-audit-checklist` |
+| E-E-A-T signals for AI optimization expertise author credentials | answer | implementation | Author-schema + Person JSON-LD template; Article→author→Person pattern → `/learn/eeat-for-ai-search` |
+| author schema for AI citations | answer | implementation | Fan-out variant → `/learn/eeat-for-ai-search` |
+| how to get my brand entity recognised by AI | answer | discovery | Fan-out variant → `/learn/entity-clarity-for-ai` |
 
 ---
 
@@ -84,6 +90,7 @@ These align to Google's query fan-out: a user asks X, and the engine expands to 
 | AI citation verification | verification | Mirrors fabrication crisis page |
 | AI citation hallucination stats | verification | News/research term |
 | how to verify AI citations | how-to | Actionable |
+| E-E-A-T for AI search | verification | Author-schema implementation guide → `/learn/eeat-for-ai-search` |
 | SEO audit with accessibility | solution | Tied to a11y lane |
 | AI visibility dashboard | product | Route-target |
 
@@ -101,6 +108,9 @@ These are not home/landing term targets, but supporting pages to exist and be in
 - `/learn/why-schema-not-enough`
 - `/learn/aeo-audit-checklist`
 - `/learn/rank-but-not-cited`
+- `/learn/eeat-for-ai-search`
+- `/learn/entity-clarity-for-ai`
+- `/learn/llms-txt-implementation`
 - `/docs/bing-webmaster-tools`
 - `/benchmark`
 - `/faq`

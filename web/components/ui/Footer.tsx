@@ -14,7 +14,7 @@ export const Footer = () => (
           <p className={styles.colTitle}>Product</p>
           <ul>
             <li><Link href="/methodology">How it works</Link></li>
-            <li><Link href="/pricing">Pricing</Link></li>
+            <li><Link href="/#pricing">Pricing</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
           </ul>
         </div>

@@ -25,6 +25,9 @@
 - [Why schema markup isn't enough to get cited](https://promptgoblin.io/learn/why-schema-not-enough): Post-implementation diagnostic for the schema-done-still-uncited gap — five checks that identify which real lever (Bing indexing, third-party mentions, extractable content) is missing.
 - [AEO audit checklist for small agencies](https://promptgoblin.io/learn/aeo-audit-checklist): Practitioner checklist covering the three citation levers — brand-mention surface, Bing indexing, answer-shaped content — plus a hygiene pass and honest scoring rules.
 - [You rank, but AI Overviews don't cite you](https://promptgoblin.io/learn/rank-but-not-cited): The rank-vs-citation gap — why a well-ranked page can still lose the AI citation, with a diagnostic and fixes mapped to each cause.
+- [E-E-A-T for AI search](https://promptgoblin.io/learn/eeat-for-ai-search): Implementation guide for visible author signals and Article-to-author-to-Person JSON-LD, framed as extraction hygiene rather than a citation lever.
+- [Entity clarity for AI search](https://promptgoblin.io/learn/entity-clarity-for-ai): SMB-focused guide to disambiguating a brand entity with consistent naming, sameAs profile hygiene, and crawlable co-occurrence.
+- [llms.txt implementation guide](https://promptgoblin.io/learn/llms-txt-implementation): Practical template for writing and maintaining llms.txt as a low-cost hygiene label, not a ranking or citation signal.
 
 ## Packages
 - Goblin Watch — weekly monitoring ($99/mo): weekly citation-visibility report across 4 answer engines (ChatGPT, Claude, Gemini, Perplexity) + your Bing rank, a ranked what's-missing list, week-over-week deltas, and a drop-in AI-ready fix prompt. Monitoring only — done-for-you fixes start at Scout. Human-reviewed before every send.
