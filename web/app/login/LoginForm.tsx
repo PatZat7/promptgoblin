@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { createBrowserSupabase } from "@/lib/supabase/client";
+import { useAuthForm } from "@/lib/useAuthForm";
 import styles from "./Login.module.css";
 
 type LoginFormProps = {
@@ -12,60 +11,14 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ next = "/dashboard", errorCode }: LoginFormProps) {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "sending" | "sent" | "error"
-  >("idle");
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { email, setEmail, status, errorMsg, sendMagicLink, startGoogleOAuth, reset } =
+    useAuthForm({ next });
 
   // Map callback error codes to user-facing messages
   const callbackError =
     errorCode === "auth_callback_failed"
       ? "The sign-in link expired or was already used. Request a new one below."
       : null;
-
-  async function handleMagicLink(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus("sending");
-    setErrorMsg(null);
-
-    try {
-      const supabase = createBrowserSupabase();
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
-        options: {
-          shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        },
-      });
-      if (error) {
-        setStatus("error");
-        setErrorMsg(error.message);
-      } else {
-        setStatus("sent");
-      }
-    } catch {
-      setStatus("error");
-      setErrorMsg("Unable to send the link — check your connection and try again.");
-    }
-  }
-
-  async function handleGoogleOAuth() {
-    try {
-      const supabase = createBrowserSupabase();
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        },
-      });
-      if (error) {
-        setErrorMsg(error.message);
-      }
-    } catch {
-      setErrorMsg("Unable to start Google sign-in — check your connection.");
-    }
-  }
 
   return (
     <div className={styles.formWrap}>
@@ -83,10 +36,7 @@ export function LoginForm({ next = "/dashboard", errorCode }: LoginFormProps) {
           </p>
           <p className={styles.hint}>
             Didn&apos;t arrive? Check spam, or{" "}
-            <button
-              className={styles.resendBtn}
-              onClick={() => setStatus("idle")}
-            >
+            <button className={styles.resendBtn} onClick={reset}>
               try again
             </button>
             .
@@ -94,7 +44,7 @@ export function LoginForm({ next = "/dashboard", errorCode }: LoginFormProps) {
         </div>
       ) : (
         <>
-          <form onSubmit={handleMagicLink} className={styles.form} noValidate>
+          <form onSubmit={sendMagicLink} className={styles.form} noValidate>
             <label htmlFor="email" className={styles.label}>
               Email address
             </label>
@@ -125,7 +75,7 @@ export function LoginForm({ next = "/dashboard", errorCode }: LoginFormProps) {
 
           <button
             type="button"
-            onClick={handleGoogleOAuth}
+            onClick={startGoogleOAuth}
             className={styles.googleBtn}
           >
             <svg

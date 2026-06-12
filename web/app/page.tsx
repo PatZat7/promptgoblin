@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/Hero/Hero";
 import { Spellbook } from "@/components/sections/Spellbook/Spellbook";
+import { Levers } from "@/components/sections/Levers/Levers";
 import { HowItWorks } from "@/components/sections/HowItWorks/HowItWorks";
 import { GoblinMesh } from "@/components/sections/GoblinMesh/GoblinMesh";
 import { Stats } from "@/components/sections/Stats/Stats";
@@ -15,6 +16,7 @@ const HomePage = () => (
   <div className="os" id="top">
     <Hero />
     <Spellbook />
+    <Levers />
     <HowItWorks />
     <GoblinMesh />
     <Stats />

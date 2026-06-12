@@ -74,6 +74,9 @@ export const HeroScan = () => {
   const [logoPinned, setLogoPinned] = useState(false);
   const [scanSeq, setScanSeq] = useState(0);
   const [steps, setSteps] = useState<ScanStep[]>([]);
+  const [scanEmail, setScanEmail] = useState("");
+  const [scanEmailStatus, setScanEmailStatus] = useState<"idle" | "sending" | "sent" | "queued" | "error">("idle");
+  const [scanEmailErr, setScanEmailErr] = useState("");
 
   const runRef = useRef(0);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -323,6 +326,40 @@ export const HeroScan = () => {
     setFormErr("");
     setLines([]);
     setSteps([]);
+    setScanEmail("");
+    setScanEmailStatus("idle");
+    setScanEmailErr("");
+  };
+
+  const onSendScanEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const emailVal = scanEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      setScanEmailErr("Enter a valid email address.");
+      return;
+    }
+    setScanEmailErr("");
+    setScanEmailStatus("sending");
+    try {
+      const res = await fetch("/api/scan-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: target, email: emailVal, report }),
+      });
+      const json = await res.json() as { ok?: boolean; delivered?: boolean; reason?: string };
+      if (json.ok === true) {
+        setScanEmailStatus("sent");
+      } else if (json.delivered === false) {
+        // Mailer not configured or transient error — honest fallback, NOT "sent".
+        setScanEmailStatus("queued");
+      } else {
+        setScanEmailStatus("error");
+        setScanEmailErr("Something went wrong — try again or email goblins@promptgoblin.io.");
+      }
+    } catch {
+      setScanEmailStatus("error");
+      setScanEmailErr("Network error — try again or email goblins@promptgoblin.io.");
+    }
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -452,7 +489,7 @@ export const HeroScan = () => {
     <div className={styles.heroCitationTeaser} aria-live="polite">
       <div className={styles.heroCitationTeaserLabel}>
         <span>AI visibility</span>
-        <span className={styles.heroCitationTeaserEngine}>· perplexity · live</span>
+        <span className={styles.heroCitationTeaserEngine}>· perplexity only · live sample</span>
       </div>
       {teaserLoading && !teaser ? (
         <span className={styles.heroCitationLoading}>checking AI visibility…</span>
@@ -461,7 +498,7 @@ export const HeroScan = () => {
           <div className={styles.heroCitationRow}>
             <span>you:</span>
             <span className={teaser.clientCited ? styles.heroCitationCited : styles.heroCitationMissed}>
-              {teaser.clientCited ? "✓ cited" : "✗ not cited yet"}
+              {teaser.clientCited ? "✓ cited by name — table stakes" : "✗ not cited yet"}
             </span>
           </div>
           {teaser.citedDomains && teaser.citedDomains.length > 0 ? (
@@ -473,8 +510,8 @@ export const HeroScan = () => {
           <div className={styles.heroCitationNote}>
             {`${teaser.queriesRun ?? 1} ${(teaser.queriesRun ?? 1) === 1 ? "query" : "queries"} checked · `}
             {teaser.clientCited
-              ? "full Scout report: 50 prompts × 4 engines"
-              : "not cited yet — that's the opening (a measurable gap we close, not a guaranteed outcome) · full Scout: 50 prompts × 4 engines"}
+              ? `cited when buyers ask for you by name — table stakes. The Scout audit tests the category queries buyers actually ask${teaser.citedDomains && teaser.citedDomains.length > 0 ? ` (where ${teaser.citedDomains.join(", ")} currently win)` : ""}, across 4 answer engines — which is the gap worth closing.`
+              : "not cited yet — that's the opening (a measurable gap we close, not a guaranteed outcome) · full Scout: category queries across 4 answer engines"}
           </div>
         </>
       ) : null}
@@ -644,9 +681,14 @@ export const HeroScan = () => {
             </div>
           ) : null}
           {citationPanel}
-          <a className="btn ghost" href="#contact" data-cursor="./email">
-            email me the scan <span className="arr">-&gt;</span>
-          </a>
+          <ScanEmailCta
+            scanEmailStatus={scanEmailStatus}
+            scanEmail={scanEmail}
+            scanEmailErr={scanEmailErr}
+            onEmailChange={(v) => { setScanEmail(v); setScanEmailErr(""); }}
+            onSubmit={onSendScanEmail}
+            styles={styles}
+          />
         </div>
       ) : null}
 
@@ -656,11 +698,14 @@ export const HeroScan = () => {
             {errorMsg}
           </div>
           {citationPanel}
-          {teaser ? (
-            <a className="btn ghost" href="#contact" data-cursor="./email">
-              email me the scan <span className="arr">-&gt;</span>
-            </a>
-          ) : null}
+          <ScanEmailCta
+            scanEmailStatus={scanEmailStatus}
+            scanEmail={scanEmail}
+            scanEmailErr={scanEmailErr}
+            onEmailChange={(v) => { setScanEmail(v); setScanEmailErr(""); }}
+            onSubmit={onSendScanEmail}
+            styles={styles}
+          />
         </div>
       ) : null}
 
@@ -670,5 +715,86 @@ export const HeroScan = () => {
         </button>
       ) : null}
     </div>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Inline scan-email CTA — reveals via CSS transition; shows "scan sent" ONLY
+// when the API returns ok:true. Honest-broker: queued/error states never claim
+// a send happened.
+// ---------------------------------------------------------------------------
+type ScanEmailCtaProps = {
+  scanEmailStatus: "idle" | "sending" | "sent" | "queued" | "error";
+  scanEmail: string;
+  scanEmailErr: string;
+  onEmailChange: (value: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  styles: Record<string, string>;
+};
+
+const ScanEmailCta = ({
+  scanEmailStatus,
+  scanEmail,
+  scanEmailErr,
+  onEmailChange,
+  onSubmit,
+  styles,
+}: ScanEmailCtaProps) => {
+  if (scanEmailStatus === "sent") {
+    return (
+      <div className={styles.scanEmailConfirm}>
+        <span className={styles.scanEmailSent}>scan sent —</span>{" "}
+        check your inbox. Want your visibility tracked every week?{" "}
+        <a href="#pricing" className={styles.scanEmailPricingLink} data-cursor="./watch">
+          Goblin Watch · $99/mo <span className="arr">-&gt;</span>
+        </a>
+      </div>
+    );
+  }
+
+  if (scanEmailStatus === "queued") {
+    return (
+      <div className={styles.scanEmailConfirm}>
+        <span>couldn&apos;t send right now —</span> your results are on screen above.{" "}
+        Email{" "}
+        <a href="mailto:goblins@promptgoblin.io" className={styles.scanEmailPricingLink}>
+          goblins@promptgoblin.io
+        </a>{" "}
+        and we&apos;ll resend, or{" "}
+        <a href="#pricing" className={styles.scanEmailPricingLink} data-cursor="./audit">
+          see the full Scout audit <span className="arr">-&gt;</span>
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <form className={styles.scanEmailForm} onSubmit={onSubmit} noValidate>
+      <div className={styles.scanEmailRow}>
+        <input
+          type="email"
+          value={scanEmail}
+          onChange={(e) => onEmailChange(e.target.value)}
+          placeholder="you@brand.com"
+          autoComplete="email"
+          disabled={scanEmailStatus === "sending"}
+          className={styles.scanEmailInput}
+          aria-label="email for scan results"
+          data-cursor="./type"
+        />
+        <button
+          type="submit"
+          disabled={scanEmailStatus === "sending"}
+          className={styles.scanEmailSubmit}
+          data-cursor="./email"
+        >
+          {scanEmailStatus === "sending" ? "sending…" : "email me the scan"}
+          {scanEmailStatus !== "sending" ? <span className="arr"> -&gt;</span> : null}
+        </button>
+      </div>
+      {scanEmailErr ? (
+        <div className={styles.scanEmailError} role="alert">{scanEmailErr}</div>
+      ) : null}
+    </form>
   );
 };

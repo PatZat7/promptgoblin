@@ -1,0 +1,65 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]: $ goblin crawl --self
+      - generic [ref=e5]:
+        - text: "017"
+        - emphasis [ref=e6]: "%"
+    - generic [ref=e7]:
+      - generic [ref=e8]: indexing
+      - generic [ref=e9]: schema valid
+      - generic [ref=e10]: v 26.05.28
+  - banner [ref=e11]:
+    - generic [ref=e12]:
+      - link "Prompt Goblin Prompt_Goblin™" [ref=e13]:
+        - /url: "#top"
+        - img "Prompt Goblin" [ref=e15]
+        - generic [ref=e36]: Prompt_Goblin™
+      - generic [ref=e38]: AI SEO / Chicago
+    - navigation "Primary" [ref=e39]:
+      - link "Services" [ref=e40]:
+        - /url: /#services
+      - link "Methodology" [ref=e41]:
+        - /url: /methodology
+      - link "Pricing" [ref=e42]:
+        - /url: /pricing
+      - link "FAQ" [ref=e43]:
+        - /url: /faq
+    - generic [ref=e44]:
+      - button "DARK" [ref=e45]:
+        - generic [ref=e47]: DARK
+      - generic [ref=e49]: VISIBLE AF
+      - generic [ref=e52]: 18:48:49 CHI
+  - main [ref=e53]:
+    - generic [ref=e54]:
+      - heading "Sign in to Prompt Goblin" [level=1] [ref=e55]
+      - paragraph [ref=e56]: Click the button below to complete your sign-in. This protects against email scanners that pre-fetch links.
+      - button "Sign in" [ref=e57] [cursor=pointer]
+      - paragraph [ref=e58]:
+        - text: If the button does not work, the link may have expired.
+        - link "Request a new sign-in link" [ref=e59]:
+          - /url: /login
+        - text: .
+  - contentinfo [ref=e60]:
+    - generic [ref=e62]: 41.8781°N · 87.6298°W
+    - generic [ref=e63]:
+      - generic [ref=e64]: SECTOR
+      - generic [ref=e65]: 04/07
+      - generic [ref=e66]: Visibility Mesh
+    - generic [ref=e67]:
+      - link "AEO vs GEO" [ref=e68]:
+        - /url: /learn/aeo-vs-geo
+      - link "ChatGPT" [ref=e69]:
+        - /url: /learn/how-to-show-up-in-chatgpt
+      - link "Technical SEO" [ref=e70]:
+        - /url: /learn/technical-seo-for-ai-search
+      - link "FAQ" [ref=e71]:
+        - /url: /faq
+      - link "Bing" [ref=e72]:
+        - /url: /docs/bing-webmaster-tools
+      - link "Reports" [ref=e73]:
+        - /url: /docs/report-guide
+      - generic [ref=e75]: EN_US
+      - link "↑ top" [ref=e77]:
+        - /url: "#top"
+  - alert [ref=e78]

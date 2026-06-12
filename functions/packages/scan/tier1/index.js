@@ -24,6 +24,9 @@ const SCRAPFLY_TIMEOUT_MS = 15000;
 // the residential-proxy + JS-render round trip routinely lands ~15s and spikes
 // higher. Give it 30s so we don't abort a fetch that would have succeeded.
 const SCRAPFLY_ASP_TIMEOUT_MS = 30000;
+// Per-attempt timeout for the two-attempt ASP sequence.
+// Two attempts of 13s each + ~2s overhead = ~28s < 30s budget.
+const SCRAPFLY_ASP_ATTEMPT_MS = 13000;
 const MAX_BYTES = 3 * 1024 * 1024; // 3 MB cap on fetched HTML
 const MAX_REDIRECTS = 4;
 
@@ -79,20 +82,34 @@ const JS_SCHEMA_PROBE = Buffer.from(
   "mdCount:md.length,mdTypes:Array.from(new Set(Array.from(md).map(function(e){return e.getAttribute(\"itemtype\")}))).slice(0,8)};"
 ).toString("base64url");
 
-// Scrapfly fetch: browser-rendered HTML + live DOM schema probe.
-// asp=true adds residential-IP + TLS-spoof (needed for Akamai; optional for open sites).
-// Returns { html, bytes, domSchemas } on success, null if no key / failure / still bot-walled.
-async function fetchViaScrapfly(
-  rawUrl,
-  { asp = false, timeoutMs = SCRAPFLY_TIMEOUT_MS } = {}
-) {
-  const key = process.env.SCRAPFLY_KEY;
-  if (!key) return null;
-  const endpoint =
+// Build a Scrapfly scrape endpoint URL for one attempt.
+// asp=true: residential-IP proxy + TLS fingerprint spoof (needed for Akamai).
+// country=us: forces a US egress IP — Akamai geo-scores traffic; datacenter IPs
+//   from overseas fail at a higher rate than US residential ones.
+// rendering_wait: ms to pause after DOMContentLoaded so JS-rendered content and
+//   lazy schema blocks have time to settle before we snapshot the DOM.
+// wait_for: CSS selector Scrapfly will poll for before snapshotting — ensures the
+//   main content container exists, not just the <head>.
+// proxy_pool: "public_residential_pool" is the default ASP pool; on a retry we
+//   explicitly request it again to encourage a fresh egress IP assignment.
+function _buildScrapflyUrl(key, rawUrl, { asp, renderingWait, waitFor, proxyPool } = {}) {
+  let url =
     `https://api.scrapfly.io/scrape?key=${encodeURIComponent(key)}` +
     `&url=${encodeURIComponent(rawUrl)}&render_js=true` +
-    (asp ? "&asp=true" : "") +
     `&js=${JS_SCHEMA_PROBE}`;
+  if (asp) {
+    url += "&asp=true&country=us";
+    if (proxyPool) url += `&proxy_pool=${encodeURIComponent(proxyPool)}`;
+  }
+  if (renderingWait) url += `&rendering_wait=${renderingWait}`;
+  if (waitFor) url += `&wait_for=${encodeURIComponent(waitFor)}`;
+  return url;
+}
+
+// Execute one Scrapfly HTTP request and parse the result.
+// Returns { html, bytes, domSchemas } on a usable result, null on any failure
+// or if the result is still a bot-wall interstitial.
+async function _scrapflyAttempt(endpoint, timeoutMs) {
   let resp;
   try {
     resp = await fetch(endpoint, { signal: AbortSignal.timeout(timeoutMs) });
@@ -108,6 +125,55 @@ async function fetchViaScrapfly(
   if (looksLikeBotWall(html, bytes)) return null;
   const domSchemas = json?.result?.browser_data?.javascript_evaluation_result ?? null;
   return { html, bytes, domSchemas };
+}
+
+// Scrapfly fetch: browser-rendered HTML + live DOM schema probe.
+// asp=true adds residential-IP + TLS-spoof (needed for Akamai; optional for open sites).
+//
+// ASP path (WAF bypass): two sequential attempts within the SCRAPFLY_ASP_TIMEOUT_MS
+// budget. The first uses a short rendering_wait; if the result is still a bot-wall
+// (looksLikeBotWall returned true, so _scrapflyAttempt returned null), we retry once
+// with a longer wait and explicitly request a fresh residential proxy — this covers
+// the Akamai "sensor script needs ~3s to resolve" pattern that defeats fast renders.
+//
+// CONTRACT: returns null if every attempt fails or still hits a bot wall.
+// The caller (main) MUST treat null as staticWasBlocked:true — never score 0.
+async function fetchViaScrapfly(
+  rawUrl,
+  { asp = false, timeoutMs = SCRAPFLY_TIMEOUT_MS } = {}
+) {
+  const key = process.env.SCRAPFLY_KEY;
+  if (!key) return null;
+
+  if (!asp) {
+    // Non-ASP opportunistic render: single attempt, no extra params.
+    const endpoint = _buildScrapflyUrl(key, rawUrl, { asp: false });
+    return _scrapflyAttempt(endpoint, timeoutMs);
+  }
+
+  // ASP path: two attempts.
+  // Attempt 1 — moderate wait, standard residential pool.
+  const attempt1 = _buildScrapflyUrl(key, rawUrl, {
+    asp: true,
+    renderingWait: 3000,  // 3s: enough for typical JS-rendered schema, keeps attempt short
+    waitFor: "body",      // Ensure body exists before snapshotting
+  });
+  const result1 = await _scrapflyAttempt(attempt1, SCRAPFLY_ASP_ATTEMPT_MS);
+  if (result1) return result1;
+
+  // Attempt 2 — longer wait, explicit fresh proxy pool request.
+  // Akamai sensor scripts can take 3-5s to resolve; the first attempt's 3s wait
+  // occasionally races it. A second pass with 6s wait + fresh IP has materially
+  // higher success on hard Akamai targets (e.g. meijer-class retailer configs).
+  // NOTE: real bypass can only be confirmed by a live probe — this is a
+  // best-effort improvement, not a guarantee.
+  const attempt2 = _buildScrapflyUrl(key, rawUrl, {
+    asp: true,
+    renderingWait: 6000,
+    waitFor: "body",
+    proxyPool: "public_residential_pool",
+  });
+  return _scrapflyAttempt(attempt2, SCRAPFLY_ASP_ATTEMPT_MS);
 }
 
 // SSRF-safe fetch: follow redirects MANUALLY and re-validate EVERY hop's host
@@ -302,3 +368,6 @@ exports.main = main;
 exports._looksLikeBotWall = looksLikeBotWall;
 exports._fetchText = fetchText;
 exports._BOT_PROTECTION_STATUSES = BOT_PROTECTION_STATUSES;
+exports._fetchViaScrapfly = fetchViaScrapfly;
+exports._buildScrapflyUrl = _buildScrapflyUrl;
+exports._scrapflyAttempt = _scrapflyAttempt;

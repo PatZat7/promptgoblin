@@ -3,7 +3,7 @@
  * `x`/`y` are percentages within the stage; the SVG edges are drawn in a
  * padded 900×480 coordinate space (see nodePosition).
  *
- * Honest-broker copy: 5 real answer engines, engineer-gated review, and a
+ * Honest-broker copy: 4 measured answer engines + Bing rank, engineer-gated review, and a
  * "sample run" framing — no fabricated metrics, no citation promise.
  */
 
@@ -25,7 +25,7 @@ export type MeshStep = {
 
 export const MESH_NODES: MeshNode[] = [
   { id: "intent", x: 4, y: 18, label: "user.intent", value: '"best fleet software"' },
-  { id: "llm", x: 30, y: 6, label: "llm.query.expand", value: "GPT · Claude · Gemini · Pplx · AIO" },
+  { id: "llm", x: 30, y: 6, label: "llm.query.expand", value: "GPT · Claude · Gemini · Pplx" },
   { id: "rag", x: 30, y: 60, label: "rag.retrieve", value: "k=24 sources" },
   { id: "cite", x: 56, y: 36, label: "citation.weave", value: "you vs. 6 competitors" },
   { id: "schema", x: 56, y: 76, label: "audit.schema·seo·a11y", value: "12 gaps · 4 a11y" },
@@ -49,7 +49,7 @@ export const MESH_STEPS: MeshStep[] = [
     num: "01",
     title: "Listen to prompt surfaces",
     description:
-      "Agents sample real buyer queries across ChatGPT, Claude, Gemini, Perplexity, and Google AI Overviews. Not just keyword tools.",
+      "Agents sample real buyer queries across ChatGPT, Claude, Gemini, and Perplexity — plus your Bing rank, the grounding Copilot and Google AI Overviews lean on. Not just keyword tools.",
   },
   {
     num: "02",

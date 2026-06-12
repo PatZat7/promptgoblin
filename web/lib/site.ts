@@ -13,6 +13,7 @@ export const SITE = {
 };
 
 export const TIERS = [
+  { name: "Watch", price: "99.00", period: "month", cadence: "monthly" },
   { name: "Scout", price: "997.00", period: "month", cadence: "monthly" },
   { name: "Warband", price: "3500.00", period: "month", cadence: "monthly" },
   { name: "Warlord", price: "9500.00", period: "month", cadence: "monthly" },

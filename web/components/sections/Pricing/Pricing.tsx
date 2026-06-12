@@ -29,7 +29,7 @@ export const Pricing = () => (
           </ul>
           <a
             className={clsx("btn", !tier.featured && "ghost")}
-            href={tier.link}
+            href={tier.link || "#contact"}
             data-cursor="./checkout"
           >
             {tier.cta} <span className="arr">→</span>

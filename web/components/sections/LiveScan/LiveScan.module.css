@@ -219,6 +219,41 @@
 .checks li::before { content: "›"; position: absolute; left: 0; color: var(--lime); }
 .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
+/* ---- illustrative query list (idle state, task 3) ---- */
+.illustrativeBlock {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--faint);
+}
+.illustrativeLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 8px;
+}
+.illustrativeList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.illustrativeList li {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  padding-left: 14px;
+  position: relative;
+}
+.illustrativeList li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--faint);
+}
+
 /* ---- error card ---- */
 .errCard {
   display: flex;

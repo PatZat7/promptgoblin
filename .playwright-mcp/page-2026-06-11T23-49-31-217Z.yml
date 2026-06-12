@@ -1,0 +1,88 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e11]:
+    - generic [ref=e12]:
+      - link "Prompt Goblin Prompt_Goblin™" [ref=e13]:
+        - /url: "#top"
+        - img "Prompt Goblin" [ref=e15]
+        - generic [ref=e36]: Prompt_Goblin™
+      - generic [ref=e38]: AI SEO / Chicago
+    - navigation "Primary" [ref=e39]:
+      - link "Services" [ref=e40]:
+        - /url: /#services
+      - link "Methodology" [ref=e41]:
+        - /url: /methodology
+      - link "Pricing" [ref=e42]:
+        - /url: /pricing
+      - link "FAQ" [ref=e43]:
+        - /url: /faq
+    - generic [ref=e44]:
+      - button "DARK" [ref=e45]:
+        - generic [ref=e47]: DARK
+      - generic [ref=e49]: VISIBLE AF
+      - generic [ref=e52]: 18:49:31 CHI
+  - main [ref=e53]:
+    - generic [ref=e99]:
+      - navigation "Dashboard navigation" [ref=e100]:
+        - generic [ref=e101]:
+          - link "Prompt Goblin home" [ref=e102]:
+            - /url: /
+            - text: PROMPT_GOBLIN™
+          - link "Dashboard" [ref=e103]:
+            - /url: /dashboard
+          - link "Runs" [ref=e104]:
+            - /url: /runs
+          - link "Approvals" [ref=e105]:
+            - /url: /approvals
+        - generic [ref=e106]:
+          - generic [ref=e107]: admin · tier3
+          - generic "Signed in as atpatzat333+pgtest20260611230553@gmail.com" [ref=e108]: atpatzat333+pgtest20260611230553@gmail.com
+          - button "Sign out" [ref=e109] [cursor=pointer]
+      - main [ref=e110]:
+        - generic [ref=e111]:
+          - heading "Dashboard" [level=1] [ref=e112]
+          - paragraph [ref=e113]: Run a scan, track visibility, and manage citation targets.
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - generic [ref=e117]: Domain
+              - textbox "Domain" [ref=e118]: pgtest-20260611230553.promptgoblin.io
+            - generic [ref=e119]:
+              - generic [ref=e120]: Mode
+              - combobox "Mode" [ref=e121]:
+                - option "Live" [selected]
+            - generic [ref=e122]:
+              - generic [ref=e123]: Top keyword
+              - textbox "Top keyword" [ref=e124]:
+                - /placeholder: e.g. AEO Chicago
+            - generic [ref=e125]:
+              - text: What do you want to be cited for?
+              - generic [ref=e126]:
+                - textbox "What do you want to be cited for?" [ref=e127]:
+                  - /placeholder: e.g. best Chicago AEO agency
+                - button "Add" [ref=e128]
+              - list [ref=e129]:
+                - listitem [ref=e130]: No citation targets yet.
+            - button "Suggest citation targets" [ref=e132]
+            - button "Run scan" [ref=e133]
+  - contentinfo [ref=e60]:
+    - generic [ref=e62]: 41.8781°N · 87.6298°W
+    - generic [ref=e63]:
+      - generic [ref=e64]: SECTOR
+      - generic [ref=e65]: 04/07
+      - generic [ref=e66]: Visibility Mesh
+    - generic [ref=e67]:
+      - link "AEO vs GEO" [ref=e68]:
+        - /url: /learn/aeo-vs-geo
+      - link "ChatGPT" [ref=e69]:
+        - /url: /learn/how-to-show-up-in-chatgpt
+      - link "Technical SEO" [ref=e70]:
+        - /url: /learn/technical-seo-for-ai-search
+      - link "FAQ" [ref=e71]:
+        - /url: /faq
+      - link "Bing" [ref=e72]:
+        - /url: /docs/bing-webmaster-tools
+      - link "Reports" [ref=e73]:
+        - /url: /docs/report-guide
+      - generic [ref=e75]: EN_US
+      - link "↑ top" [ref=e77]:
+        - /url: "#top"
+  - alert [ref=e78]: Dashboard · Prompt Goblin · Prompt Goblin

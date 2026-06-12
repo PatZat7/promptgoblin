@@ -1,0 +1,82 @@
+name: IndexNow on publish
+
+# Auto-fires IndexNow when site content is published. The marketing site deploys
+# via DigitalOcean App Platform deploy-on-push from `main`, so a content push to
+# `main` IS the publish event — this workflow waits for that deploy to go live,
+# then submits the deployed sitemap's URLs to our own-host-validated /indexnow
+# endpoint (which forwards to the IndexNow API with the real key).
+#
+# Honest scope: IndexNow is a CRAWL HINT to Bing/Yandex — "please re-crawl these
+# URLs." It is NOT indexing, and it is NOT a citation guarantee. It only shortens
+# the time to re-crawl; nothing here promises a ranking or an AI citation.
+#
+# Path filter keeps this from firing on doc-only / pipeline-only pushes (which
+# don't change anything indexable), so we don't burn the key's reputation on
+# no-op submits.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/app/**"
+      - "web/components/**"
+      - "web/lib/site.ts"
+      - "web/lib/faq.ts"
+      - "web/public/**"
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Base URL to submit (default https://promptgoblin.io)"
+        required: false
+        default: "https://promptgoblin.io"
+
+concurrency:
+  # Only the latest publish matters; cancel an in-flight wait if a newer push lands.
+  group: indexnow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    name: Resubmit sitemap to IndexNow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for the DigitalOcean deploy to go live
+        # Heuristic buffer: DO App Platform build+release of the Node/SSR app
+        # typically completes in a few minutes. We sleep, then poll the live
+        # sitemap until it responds (max ~8 min) so we submit POST-deploy content,
+        # not the previous build. If it never comes up we still continue — a
+        # slightly-stale submit is harmless (IndexNow is idempotent; the next
+        # publish re-submits), and we never want to fail a good deploy.
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          BASE="${{ github.event.inputs.base || 'https://promptgoblin.io' }}"
+          echo "Waiting ~90s for the DO release to start…"
+          sleep 90
+          for i in $(seq 1 20); do
+            if curl -sS --fail -o /dev/null "$BASE/sitemap.xml"; then
+              echo "Sitemap is reachable (attempt $i)."
+              exit 0
+            fi
+            echo "Sitemap not ready yet (attempt $i) — waiting 20s…"
+            sleep 20
+          done
+          echo "Sitemap still not confirmed after polling — proceeding best-effort."
+
+      - name: Submit sitemap URLs to IndexNow
+        # continue-on-error: a ping failure is visible in the Actions log but never
+        # marks the publish as failed. The /indexnow endpoint requires a non-empty
+        # urlList (a bare {host:…} 400s) and re-validates same-host ownership, so we
+        # pull <loc> entries from the deployed sitemap and send exactly those.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.inputs.base || 'https://promptgoblin.io' }}"
+          urls=$(curl -sS --fail "$BASE/sitemap.xml" \
+            | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g')
+          [ -n "$urls" ] || { echo 'No sitemap URLs found — nothing to submit'; exit 1; }
+          payload=$(printf '%s\n' "$urls" | jq -R . | jq -s '{urlList: .}')
+          count=$(printf '%s\n' "$urls" | grep -c . || true)
+          echo "Submitting ${count} URL(s) to ${BASE}/indexnow"
+          curl -sS --fail -X POST "$BASE/indexnow" \
+            -H 'Content-Type: application/json' -d "$payload"

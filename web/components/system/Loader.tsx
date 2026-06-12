@@ -23,24 +23,28 @@ export const Loader = () => {
       setN(100);
       setHide(true);
     };
+    // Dismiss on the first animation frame after mount — the page is already
+    // painted; we just want a single blink, not a 400ms gate.
+    const rafId = requestAnimationFrame(dismiss);
     const step = () => {
-      i += Math.random() * 9 + 4;
+      i += Math.random() * 18 + 10;
       if (i >= 100) {
         setN(100);
-        timer = setTimeout(() => setHide(true), 340);
+        timer = setTimeout(() => setHide(true), 180);
         return;
       }
       setN(Math.floor(i));
-      timer = setTimeout(step, 40 + Math.random() * 50);
+      timer = setTimeout(step, 20 + Math.random() * 22);
     };
     step();
-    // Hard cap: never gate the page beyond 1.3s, even if the tab is backgrounded
+    // Hard cap: never gate the page beyond 420ms, even if the tab is backgrounded
     // and setTimeout is throttled to >=1s per tick. Plus let a visitor skip it.
-    const cap = setTimeout(dismiss, 1300);
+    const cap = setTimeout(dismiss, 420);
     window.addEventListener("pointerdown", dismiss, { once: true });
     window.addEventListener("keydown", dismiss, { once: true });
     window.addEventListener("wheel", dismiss, { once: true, passive: true });
     return () => {
+      cancelAnimationFrame(rafId);
       clearTimeout(timer);
       clearTimeout(cap);
       window.removeEventListener("pointerdown", dismiss);

@@ -8,8 +8,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type SupabaseAdmin = ReturnType<typeof createServiceRoleSupabase>;
-type BillingPlan = "scout" | "warband" | "warlord";
-type ScanTier = "tier2" | "tier3";
+type BillingPlan = "watch" | "scout" | "warband" | "warlord";
+type ScanTier = "tier1" | "tier2" | "tier3";
 type LegacyClientTier = "starter" | "retainer";
 type EventStatus = "processing" | "processed" | "failed" | "ignored";
 
@@ -39,18 +39,24 @@ class PermanentWebhookError extends Error {
 }
 
 const PLAN_TO_LEGACY_TIER: Record<BillingPlan, LegacyClientTier> = {
+  // Watch is the $99 monitoring tier — legacy "starter" (lowest paid).
+  watch: "starter",
   scout: "starter",
   warband: "retainer",
   warlord: "retainer",
 };
 
 const PLAN_TO_SCAN_TIER: Record<BillingPlan, ScanTier> = {
+  // Watch = tier1: receives weekly reports but does NOT get on-demand scans
+  // (the provisioning RPC gates can_run_scans on tier2/tier3 — see migration 0016).
+  watch: "tier1",
   scout: "tier3",
   warband: "tier3",
   warlord: "tier3",
 };
 
 const PLAN_LABELS: Record<BillingPlan, string> = {
+  watch: "Watch",
   scout: "Scout",
   warband: "Warband",
   warlord: "Warlord",
@@ -140,7 +146,7 @@ function nameFromDomain(domain: string): string {
 
 function normalizeBillingPlan(value: unknown): BillingPlan {
   const plan = typeof value === "string" ? value.trim().toLowerCase() : "";
-  if (plan === "warband" || plan === "warlord" || plan === "scout") return plan;
+  if (plan === "watch" || plan === "warband" || plan === "warlord" || plan === "scout") return plan;
   return "scout";
 }
 
@@ -427,20 +433,76 @@ async function sendWelcomeEmail(params: {
   const planLabel = escapeHtml(PLAN_LABELS[params.plan]);
   const safeDomain = escapeHtml(params.domain);
   const safeLink = escapeHtml(params.magicLink);
-  const html = `
-<!doctype html>
-<html>
-  <body style="font-family: Arial, sans-serif; line-height: 1.55; color: #111; max-width: 640px; margin: 0 auto; padding: 28px;">
-    <h1 style="font-size: 24px; margin: 0 0 16px;">Your Prompt Goblin dashboard is ready</h1>
-    <p>Your <strong>${planLabel}</strong> account for <strong>${safeDomain}</strong> is ready.</p>
-    <p>Use the button below to sign in. The page asks for one click before completing sign-in. This protects against email scanners that pre-fetch links and would otherwise consume your one-time link before you can use it.</p>
-    <p>
-      <a href="${safeLink}" style="display:inline-block;background:#10130f;color:#f8f5ec;padding:12px 18px;text-decoration:none;border-radius:4px;">
-        Sign in to Prompt Goblin
-      </a>
-    </p>
-    <p style="font-size:13px;color:#555;">If the button does not work, request a fresh magic link from the login page.</p>
-  </body>
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <title>Your Prompt Goblin dashboard is ready</title>
+</head>
+<body style="margin:0; padding:0; background-color:#0a0b09;">
+  <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">Your ${planLabel} dashboard for ${safeDomain} is ready &mdash; sign in with one click.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0b09" style="background-color:#0a0b09;">
+    <tr>
+      <td align="center" style="padding:28px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#111310; border:1px solid #2a2d26;">
+          <tr>
+            <td style="padding:26px 28px 18px 28px; border-bottom:1px solid #2a2d26;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right:12px;" valign="middle">
+                    <img src="https://promptgoblin.io/promptgoblinlogo.png" width="48" height="48" alt="Prompt Goblin" style="display:block; width:48px; height:48px; border:0;" />
+                  </td>
+                  <td valign="middle">
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; color:#e9e7dc;">Prompt&nbsp;Goblin</div>
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; color:#a3e635; margin-top:3px;">Get found by robots. Stay usable by humans.</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:26px 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#e9e7dc; font-size:15px; line-height:1.6;">
+              Your <strong style="color:#a3e635;">${planLabel}</strong> dashboard for <strong style="color:#a3e635;">${safeDomain}</strong> is ready.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 28px 22px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#a8a89c; font-size:13px; line-height:1.65;">
+              Use the button below to sign in. The page asks for one click before completing sign-in &mdash; this protects against email scanners that pre-fetch links and would otherwise consume your one-time token before you can use it.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 26px 28px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td bgcolor="#a3e635" style="background-color:#a3e635;">
+                    <a href="${safeLink}" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#0a0b09; text-decoration:none;">
+                      Sign in to Prompt Goblin &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:18px 28px; border-top:1px solid #2a2d26; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; line-height:1.65; color:#8f8f84;">
+              If the button does not work, request a fresh magic link from the login page at promptgoblin.io/login &mdash; one-time tokens expire after 24 hours.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:18px 28px 24px 28px; border-top:1px solid #2a2d26; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; line-height:1.7; color:#6f6f66;">
+              Prompt Goblin &middot; Chicago, IL<br />
+              <a href="https://promptgoblin.io" style="color:#a3e635; text-decoration:none;">promptgoblin.io</a>
+              &nbsp;&middot;&nbsp;
+              <a href="mailto:goblins@promptgoblin.io" style="color:#a3e635; text-decoration:none;">goblins@promptgoblin.io</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
 </html>`;
 
   const response = await fetch("https://api.resend.com/emails", {

@@ -12,7 +12,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
-  transition: opacity 0.55s ease, visibility 0s 0.55s;
+  transition: opacity 0.28s ease, visibility 0s 0.28s;
 }
 .hide {
   opacity: 0;
