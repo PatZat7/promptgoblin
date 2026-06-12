@@ -13,7 +13,7 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 - **Nothing auto-deploys.** Every change is human-reviewed and human-gated.
 - Mock / skip / demo paths are never reported as real passes; illustrative UI must read as illustrative.
 - The refund guarantees the *work*, never a citation number.
-- **Secrets** live in a gitignored `.env` only — never commit or paste `sk_live_` / `sk-ant-` / `pplx-` / `AQ.` / `lsv2_` / `dop_v1_`. (DO token + WORKDAY_PASSWORD have leaked before — rotate them.)
+- **Secrets** — canonical source is **Doppler** (project `prompt-goblin`). To load them: `doppler run -- <cmd>` in a terminal, **or** regenerate the gitignored dotenv cache with `pwsh scripts/doppler-pull-env.ps1` (the path that works in desktop-app/Cowork sessions and for Next.js builds). Full key inventory + setup: **`docs/doppler-secrets.md`**. **If a key seems missing, run the pull script and re-check before reporting it absent** — it's almost always a stale local cache, not a missing key. Never commit or paste `sk_live_` / `sk-ant-` / `pplx-` / `AQ.` / `lsv2_` / `dop_v1_`; never commit `.env*` or `.env.master`. (DO token + WORKDAY_PASSWORD have leaked before — rotate them.)
 
 ## The agent team (`.claude/agents/`)
 

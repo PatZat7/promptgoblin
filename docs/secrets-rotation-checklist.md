@@ -1,21 +1,23 @@
 # Secrets Rotation Checklist
 
-> One master file to rotate them all: **`.env.master`** (repo root, gitignored). Fill it,
-> run the sync script, then push the production values to the DigitalOcean App env and redeploy.
-> **Never** paste a real secret value into chat, a commit, a PR, or a log — key NAMES only.
+> **Canonical source is now Doppler** (project `prompt-goblin`) — see [doppler-secrets.md](doppler-secrets.md).
+> `.env.master` and the local `.env` files are a **generated cache**, not the source. Rotate in
+> Doppler, then re-pull. **Never** paste a real secret value into chat, a commit, a PR, or a log — key NAMES only.
 
 ## How rotation works
 
 1. Regenerate the key in the provider dashboard (links below).
-2. Paste the new value into **`.env.master`** (copy from `.env.master.template` the first time).
-3. Fan out to the three local `.env` files:
-   - macOS/Linux/WSL/Git-Bash: `bash scripts/sync-envs.sh`
-   - Windows PowerShell: `pwsh scripts/sync-envs.ps1`
+2. Set the new value in **Doppler** (dashboard, or `doppler secrets set KEY`).
+3. Regenerate the local cache: `pwsh scripts/doppler-pull-env.ps1` (bash: `scripts/doppler-pull-env.sh`).
+   This pulls Doppler → `.env.master` → fans out to the three local `.env` files.
 4. For anything used in production (web + functions), also set the new value in the
    **DigitalOcean App Platform → App → Settings → Environment Variables**, then redeploy.
 5. Verify, then destroy the old key in the provider.
 
-The sync writes `<file>.bak` backups so a bad sync can be rolled back instantly.
+The pull → sync writes `<file>.bak` backups so a bad refresh can be rolled back instantly.
+
+> Legacy path (Doppler unavailable): edit `.env.master` directly and run `scripts/sync-envs.*`. The
+> downstream fan-out is identical — Doppler just sits above `.env.master` as the source of record.
 
 ## Priority — rotate these FIRST (flagged as exposed in CLAUDE.md / PLAN.md)
 
