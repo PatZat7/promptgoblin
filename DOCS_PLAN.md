@@ -1,6 +1,6 @@
 # Prompt Goblin — Documentation Plan
 
-> Living doc. Last updated: 2026-06-09. Owner: main thread. Route all outbound artifacts through `integrity-reviewer` before publishing.
+> Living doc. Last updated: 2026-06-12. Owner: main thread. Route all outbound artifacts through `integrity-reviewer` before publishing.
 
 ## Why this exists
 
@@ -246,7 +246,8 @@ These exist or are covered by existing files. Review and patch gaps as they surf
 1. **Now:** dogfood the live scan, fix bad recon/query recommendations, and re-run before acting.
 2. **Now:** public/client Bing Webmaster Tools guide route + pricing tier detail.
 3. **Before first client:** `2.1 Onboarding doc` + `2.2 Scan report explainer`.
-4. **Authority pages:** how to show up in ChatGPT, Bing rank and AI citations, technical SEO for AI search, accessibility SEO audit.
+4. **Authority pages wave 1 — ✅ live** (2026-06-11): how to show up in ChatGPT, Bing rank and AI citations, technical SEO for AI search, accessibility SEO audit (deepened from stubs, Article/FAQ JSON-LD, integrity APPROVE).
+4b. **Authority pages wave 2 — long-tail targets:** prioritized routes, page-shape contract, brand-query rescue, and the GSC/Bing measurement loop (both verified + sitemaps submitted 2026-06-12) are specced in **`specs/longtail-page-targets.md`**. Implement per that spec.
 5. **After citation verification layer ships:** `3.1 Fabrication crisis explainer` (don't publish until the product can back it).
 6. **After 10+ pipeline runs:** `1.4 Citation Landscape Benchmark` (needs data).
 7. **Ongoing:** `llms.txt` + `pipeline/README` + `functions/README` patches.

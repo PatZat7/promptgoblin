@@ -1,6 +1,6 @@
 # Specs — implementation index
 
-> Authored by Claude (spec/review lane), gate-verified to **APPROVE** (10/10, honest-broker clean) via a two-pass spec→verify→revise→re-verify workflow, 2026-06-06. **Codex implements through the gate; nothing here is merged or deployed.** Each spec carries its own acceptance criteria + named unit-test plan + honest-broker constraints.
+> Authored by Claude (spec/review lane), gate-verified to **APPROVE** (10/10, honest-broker clean) via a two-pass spec→verify→revise→re-verify workflow, 2026-06-06. **Claude implements through the gate (the Codex handoff lane was retired 2026-06-12); nothing here is merged or deployed without the gate checklist.** Each spec carries its own acceptance criteria + named unit-test plan + honest-broker constraints.
 
 ## Status: all APPROVE
 
@@ -16,6 +16,7 @@
 | [supabase-pgvector-schema](supabase-pgvector-schema.md) | supabase (new) | schema review + RLS tests | ✅ creds in `.env` (`SUPABASE_CONNECTION_STRING` runs migrations) |
 | [dashboard-mvp](dashboard-mvp.md) | web + supabase | integrity + qa(axe) + schema | ◑ Supabase ✓ — still needs `web/` cutover + service-role-vs-connection-string call |
 | [vector-rag-ingestion](vector-rag-ingestion.md) | pipeline + supabase | graph-keeper + schema | ◑ Supabase ✓ — still needs an embeddings key (or reuse Gemini) + schema §0 sign-off |
+| [longtail-page-targets](longtail-page-targets.md) | web + docs | integrity-reviewer (all copy) + qa (axe) + `web npm test` + build | ✅ yes (2026-06-12; GSC/Bing WMT already verified) |
 
 ## Implementation order (dependency-aware)
 

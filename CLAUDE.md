@@ -19,7 +19,7 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 
 Orchestration is the **main thread + `PLAN.md`** — subagents are stateless specialists you dispatch, not a standing crew. There is **no "planner" subagent**: the planner role is the main thread keeping `PLAN.md` current.
 
-**Multi-agent orchestration (read `COORDINATION.md` first):** three agents share this repo — **Claude (you): specs + review**; **Codex: integrator** (merges `PLAN.md` + `main`, runs the gate checklist); **Hermes: vault + migration SQL**. Lanes, the live status board, the handoff protocol, and the merge gate are in **`COORDINATION.md`**. In multi-agent mode **you (Claude) do NOT merge to `main` and do NOT implement `functions/`/`web/`/pipeline delivery code — you write specs + reviews and hand them to Codex** via `feedback/claude/`; Codex is the one who stamps `PLAN.md` on integration. Docs authority: `DOCS_PLAN.md`.
+**Multi-agent orchestration (read `COORDINATION.md` first):** two agents share this repo — **Claude (you): integrator + specs + implementation** (you merge `PLAN.md` + `main`, run the gate checklist, and stamp `PLAN.md` on integration); **Hermes: vault + migration SQL** (you integrate Hermes's authored SQL). **The Codex handoff lane was retired 2026-06-12** (owner call — the spec→Codex handoff didn't work in practice); do not write Codex handoff notes or wait on Codex pickup. Lanes, the live status board, and the merge gate are in **`COORDINATION.md`**. Docs authority: `DOCS_PLAN.md`.
 
 | Agent | Use it for |
 |---|---|

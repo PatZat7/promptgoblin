@@ -6,6 +6,13 @@
 
 `main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
 
+## ✅ Current state — 2026-06-12 (Claude session — own-site visibility)
+
+- **Reality check:** Google doesn't surface promptgoblin.io for "ai search visibility" (head term owned by Semrush/SE Ranking/HubSpot — out of reach for now); `site:promptgoblin.io` ≈ zero results (authority/age, NOT a technical block — robots/sitemap verified fine); brand SERP for "promptgoblin" is owned by the unrelated promptgoblin.com prompt-generator tool.
+- ✅ **GSC + Bing Webmaster Tools DONE** (owner, confirmed 2026-06-12): properties verified + sitemaps submitted. Removed from the owner-gated list below.
+- **🆕 Spec: `specs/longtail-page-targets.md`** — brand-query rescue (crawlable disclosed mentions tying "Prompt Goblin" → promptgoblin.io) + prioritized long-tail page targets + page-shape contract + GSC/Bing measurement loop. Drafted via research workflow (4 researchers → draft → integrity + completeness gates); implement directly (no Codex handoff).
+- **Coordination change (owner call):** the **Codex handoff lane is retired** — Claude is the standing integrator + implementer. `COORDINATION.md`, `CLAUDE.md`, and `specs/INDEX.md` updated; `feedback/codex/` kept as historical record.
+
 ## ✅ Current state — 2026-06-11 (Claude session #2 — implement fleet)
 
 > Branch `fix/scan-citation-label` = `origin/main` HEAD (`b6e4fe2`). **The money path IS merged + deployed** — the older "pending merge" note below was stale (local `main` was 17 commits behind origin). New fleet work below is UNCOMMITTED in the working tree, awaiting owner review.
@@ -18,7 +25,7 @@
   - **Web ux/email (integrity REVISE→fixed):** Loader blink 1300→420ms #6; branded welcome email #9/A-15; 5 tracked queries surfaced in scan UI #17; honest inline scan-email CTA + new `/api/scan-email` #4/#14 (the false "engineer follows up" no-mailer promise was removed by the gate; `queued`→`delivered:false`).
   - **Web dashboard/auth:** modal login #10/A-07; 3-step onboarding checklist #12; tier-gate verified #11.
   - **Main-thread cleanup:** 9 lint errors fixed (unescaped `<code>` quotes ×7 + onboarding setState-in-effect); **removed the fabricated "50 prompts × 4 engines"** homepage teaser number (no "50" exists in backend — real config is max_queries 8 / teaser 2). **web lint 0 + build 0; all 33 routes compile incl. new `/api/scan-email`.**
-- **⚠️ Still owner-gated before outreach (unchanged):** rotate secrets · DO env (Stripe/Resend/`NEXT_PUBLIC_SITE_URL`) · Resend account + DNS (SPF/DKIM/DMARC) · Supabase custom SMTP · live $1 e2e · GSC/Bing sitemap submit · **live dogfood re-run + honest approve** (the one artifact that lets "proven by our own scan" appear in a DM). And: review + merge this branch (deploy-on-push ships it).
+- **⚠️ Still owner-gated before outreach:** rotate secrets · DO env (Stripe/Resend/`NEXT_PUBLIC_SITE_URL`) · Resend account + DNS (SPF/DKIM/DMARC) · Supabase custom SMTP · live $1 e2e · ~~GSC/Bing sitemap submit~~ ✅ done 2026-06-12 · **live dogfood re-run + honest approve** (the one artifact that lets "proven by our own scan" appear in a DM). And: review + merge this branch (deploy-on-push ships it).
 - **Pre-existing honest-broker flag for the next copy pass:** the free Tier-2 "✓ cited" teaser still reads brand-self-citation as visibility — Option A wording proposed in `feedback/claude/2026-06-11-citation-teaser-overstatement.md`, owner + integrity sign-off pending.
 
 ## ✅ Current state — 2026-06-11 (Claude session — money path)
