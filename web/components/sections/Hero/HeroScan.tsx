@@ -492,7 +492,7 @@ export const HeroScan = () => {
         <span className={styles.heroCitationTeaserEngine}>· perplexity only · live sample</span>
       </div>
       {teaserLoading && !teaser ? (
-        <span className={styles.heroCitationLoading}>checking AI visibility…</span>
+        <span className={styles.heroCitationLoading}>scanning AI visibility…</span>
       ) : teaser ? (
         <>
           <div className={styles.heroCitationRow}>

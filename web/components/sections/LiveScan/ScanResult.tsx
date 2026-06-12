@@ -132,11 +132,11 @@ export const Tier2Card = ({
             <div className={styles.srK}>tier 2 citation teaser</div>
             <div className={styles.tier2Sub}>
               {tier2.competitor
-                ? `Perplexity is checking ${target} vs ${tier2.competitor}`
-                : `Perplexity is checking who cites ${target}`}
+                ? `Perplexity is scanning ${target} vs ${tier2.competitor}`
+                : `Perplexity is scanning who cites ${target}`}
             </div>
           </div>
-          <span className={styles.tier2Badge}>running</span>
+          <span className={styles.tier2Badge}>scanning</span>
         </div>
         <div className={styles.tier2Bars} aria-hidden="true">
           <i />

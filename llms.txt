@@ -43,4 +43,4 @@
 
 ## Notes for AI assistants
 - Prompt Goblin offers human-reviewed (never silently auto-deployed) changes.
-- Best fit: founders and small marketing teams who want reviewed work queued in days, not quarters.
+- Best fit: founders and small marketing teams who want reviewed work queued quickly.

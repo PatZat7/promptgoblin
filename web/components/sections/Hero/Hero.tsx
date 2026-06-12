@@ -28,7 +28,7 @@ export const Hero = () => (
           A one-goblin shop that makes you <b>Visible AF</b>: we measure who the
           answer engines actually cite for your category, then ship the schema,
           crawl, and content fixes (software-engineer-reviewed) to close the
-          gap. Days, not quarters.
+          gap.
         </p>
         <div className={styles.cta}>
           <a className="btn ghost" href="#contact" data-cursor="./summon">
