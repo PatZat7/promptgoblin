@@ -153,8 +153,8 @@ is gone (table purged); the I-06 guard means runs no longer get polluted.
 - [ ] From `pipeline/`, run a **live** scan of `promptgoblin.io` with the writer enabled
       (env already wired per PLAN: `GOBLIN_SUPABASE_ENABLED=true`, client `promptgoblin.io`,
       owner `atpatzat@gmail.com`; needs the live LLM/Perplexity keys):
-      ```bash
-      .venv\Scripts\python.exe -m goblin.cli run --domain promptgoblin.io
+      ```powershell
+      .venv\Scripts\python.exe -m goblin.cli scan --domain promptgoblin.io -v
       ```
 - [ ] Open `/approvals` on the dashboard. **Read the recommendations honestly.** Only approve
       if they improve a real lever (brand mentions / Bing rank / extractable content). A low
