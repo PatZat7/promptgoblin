@@ -160,15 +160,15 @@ function renderScanEmail(domain: string, reportJson: string): string {
           ${findingsSection}
           <tr>
             <td style="padding:0 28px 14px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#cfcfc4; font-size:13px; line-height:1.65;">
-              Want this tracked <strong style="color:#e9e7dc;">every week</strong> &mdash; across ChatGPT, Claude, Gemini, Perplexity and your Bing rank &mdash; with what&rsquo;s missing and whether you&rsquo;re gaining ground? That&rsquo;s <span style="color:#a3e635;">Goblin Watch</span>.
+              Want our developer-vetted agentic pipeline running every week — tech-stack-specific fix code, branded content assets, sitemap updates, backlink targets, and exactly <strong style="color:#e9e7dc;">where to post them</strong>? See your citation delta every week. That&rsquo;s <span style="color:#a3e635;">Goblin Watch</span>.
             </td>
           </tr>
           <tr>
             <td style="padding:0 28px 26px 28px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td bgcolor="#a3e635" style="background-color:#a3e635;">
-                    <a href="${watchLink}" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#0a0b09; text-decoration:none;">
+                  <td style="background-color:transparent; border:2px solid #a7ee39;">
+                    <a href="${watchLink}" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#a7ee39; text-decoration:none;">
                       Start Goblin Watch &middot; $99/mo &rarr;
                     </a>
                   </td>

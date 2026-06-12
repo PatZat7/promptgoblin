@@ -23,7 +23,7 @@ export type Tier = {
 export const STRIPE_LINKS = {
   // Set after running `node web/scripts/create-watch-product.mjs` (it prints the
   // Payment Link). Until then the Watch CTA falls back to the contact form.
-  watch: "",
+  watch: "https://buy.stripe.com/9B65kE5VAgoacrp8vR2go09",
   scout: "https://buy.stripe.com/3cI5kE5VAc7U1MLfYj2go06",
   warband: "https://buy.stripe.com/14AdRaabQ4Fs3UT27t2go07",
   warlord: "https://buy.stripe.com/eVqaEYabQ1tg7756nJ2go08",
@@ -45,8 +45,6 @@ export const TIERS: Tier[] = [
       "ChatGPT · Claude · Gemini · Perplexity + your Bing rank",
       "Ranked what's-missing list",
       "Week-over-week deltas — are you gaining ground?",
-      "Drop-in AI-ready fix prompt for your team",
-      "Human-reviewed before every send",
     ],
   },
   {
@@ -61,7 +59,7 @@ export const TIERS: Tier[] = [
     bullets: [
       "Full LLM citation audit · 4 engines + Bing rank",
       "Schema + entity gap report",
-      "Competitor citation diff (top 6)",
+      "Competitor leaderboard (top 6)",
       "Ranked tech stack–specific fix queue · scored by impact × effort",
       "Stack-specific code snippets + AI-ready prompt for your team",
       "Bing Webmaster Tools submission guide",

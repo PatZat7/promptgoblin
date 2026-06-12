@@ -18,7 +18,8 @@
 //   • Coupon  100% off forever  + promotion code  FRIENDS0   (→ $0, friends & family)
 //   • Coupon  $98 off forever   + promotion code  FRIENDS1   (→ $1, paid-flow test)
 //
-// After it runs, copy the printed Payment Link into web/lib/site.ts STRIPE_LINKS.watch.
+// After it runs, copy the printed Payment Link into
+// web/components/sections/Pricing/pricing.data.ts -> STRIPE_LINKS.watch.
 
 import Stripe from "stripe";
 
@@ -147,7 +148,7 @@ async function main() {
   log(`Price ID     : ${price.id}`);
   log("");
   log("Next:");
-  log(`  1. Put the Payment Link in web/lib/site.ts -> STRIPE_LINKS.watch`);
+  log(`  1. Put the Payment Link in web/components/sections/Pricing/pricing.data.ts -> STRIPE_LINKS.watch`);
   log(`  2. Friends & family: share the link, code FRIENDS0 (free) or FRIENDS1 ($1)`);
   log(`  3. Confirm the webhook maps metadata.plan="watch" (already wired in app/api/webhooks/stripe).`);
 }

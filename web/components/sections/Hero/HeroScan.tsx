@@ -744,7 +744,7 @@ const ScanEmailCta = ({
     return (
       <div className={styles.scanEmailConfirm}>
         <span className={styles.scanEmailSent}>scan sent —</span>{" "}
-        check your inbox. Want your visibility tracked every week?{" "}
+        check your inbox. Want a full report with the fixes you need — observability and a dashboard to track your delta?{" "}
         <a href="#pricing" className={styles.scanEmailPricingLink} data-cursor="./watch">
           Goblin Watch · $99/mo <span className="arr">-&gt;</span>
         </a>
@@ -775,7 +775,7 @@ const ScanEmailCta = ({
           type="email"
           value={scanEmail}
           onChange={(e) => onEmailChange(e.target.value)}
-          placeholder="you@brand.com"
+          placeholder="your email"
           autoComplete="email"
           disabled={scanEmailStatus === "sending"}
           className={styles.scanEmailInput}
