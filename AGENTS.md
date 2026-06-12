@@ -13,6 +13,12 @@ Solo **AEO/GEO + technical-SEO + WCAG 2.1 AA / Section 508 accessibility** shop.
 - The refund guarantees the *work*, never a citation number.
 - **Secrets** live in a gitignored `.env` only — never commit or paste `sk_live_` / `sk-ant-` / `pplx-` / `AQ.` / `lsv2_` / `dop_v1_`. (DO token + WORKDAY_PASSWORD have leaked before — rotate them.)
 
+## Copy priority (sales first, honesty as guardrail)
+
+- Prospect-facing copy should prioritize getting the sale with short, simple, direct lines. Lead with the pain, the outcome, and the CTA; cut caveats, methodology, and defensive explanation unless they are needed to avoid a specific false claim.
+- Integrity review is a veto, not the voice. It blocks fabricated numbers, unsupported guarantees, schema-as-citation overclaims, mock-as-real claims, and wrong technical findings. It should not make copy longer, softer, or more academic just to sound careful.
+- Prefer concrete conversion copy over exhaustive precision. If a claim can be made simply without becoming false, make it simply.
+
 ## The agent team (`.claude/agents/`)
 
 Orchestration is the **main thread + `PLAN.md`** — subagents are stateless specialists you dispatch, not a standing crew. There is **no "planner" subagent**: the planner role is the main thread keeping `PLAN.md` current.
