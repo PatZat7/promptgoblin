@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     url: SITE.url,
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image-share-v2.png",
         width: 1200,
         height: 630,
         alt: "Prompt Goblin · Get found by robots. Stay usable by humans.",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     title: "Prompt Goblin · Visible AF",
     description:
       "When an AI names the best in your category, is it you, or your competitor? We measure that gap and ship human-reviewed fixes to close it.",
-    images: ["/og-image.png"],
+    images: ["/og-image-share-v2.png"],
   },
   other: {
     "msvalidate.01": "540C5A8914B4B51C872736CC0A2E8CBD",

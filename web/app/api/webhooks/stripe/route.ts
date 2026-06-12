@@ -452,7 +452,7 @@ async function sendWelcomeEmail(params: {
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="padding-right:12px;" valign="middle">
-                    <img src="https://promptgoblin.io/promptgoblinlogo.png" width="48" height="48" alt="Prompt Goblin" style="display:block; width:48px; height:48px; border:0;" />
+                    <img src="https://promptgoblin.io/email-logo.png" width="48" height="48" alt="Prompt Goblin" style="display:block; width:48px; height:48px; border:0; background-color:transparent;" />
                   </td>
                   <td valign="middle">
                     <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; color:#e9e7dc;">Prompt&nbsp;Goblin</div>
@@ -476,8 +476,8 @@ async function sendWelcomeEmail(params: {
             <td style="padding:0 28px 26px 28px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td bgcolor="#a3e635" style="background-color:#a3e635;">
-                    <a href="${safeLink}" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#0a0b09; text-decoration:none;">
+                  <td style="background-color:transparent; border:2px solid #a7ee39;">
+                    <a href="${safeLink}" style="display:inline-block; padding:13px 22px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#a7ee39; text-decoration:none;">
                       Sign in to Prompt Goblin &rarr;
                     </a>
                   </td>
