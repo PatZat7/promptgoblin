@@ -1,4 +1,5 @@
 import { RunScanForm } from "@/components/dashboard/RunScanForm";
+import { Onboarding } from "@/components/dashboard/Onboarding/Onboarding";
 import { getDashboardSeat } from "@/lib/dashboard-seat";
 
 export default async function DashboardClientPage() {
@@ -12,6 +13,11 @@ export default async function DashboardClientPage() {
       <p style={{ color: "#888", marginTop: 6 }}>
         Run a scan, track visibility, and manage citation targets.
       </p>
+
+      {/* Onboarding checklist — dismissed via localStorage, no DB write */}
+      <section style={{ marginTop: 20 }}>
+        <Onboarding />
+      </section>
 
       <section style={{ marginTop: 20 }}>
         <RunScanForm

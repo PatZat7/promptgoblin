@@ -1,6 +1,7 @@
 import { Panel } from "@/components/ui/Panel/Panel";
 import { Reveal } from "@/components/ui/Reveal";
 import { HeroScan } from "./HeroScan";
+import { STRIPE_LINKS } from "@/components/sections/Pricing/pricing.data";
 import styles from "./Hero.module.css";
 
 export const Hero = () => (
@@ -32,6 +33,13 @@ export const Hero = () => (
         <div className={styles.cta}>
           <a className="btn ghost" href="#contact" data-cursor="./summon">
             ./summon
+          </a>
+          <a
+            className="btn ghost"
+            href={STRIPE_LINKS.watch || "#contact"}
+            data-cursor="./watch"
+          >
+            watch · $99/mo
           </a>
         </div>
       </Reveal>

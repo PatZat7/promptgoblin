@@ -219,6 +219,41 @@
 .checks li::before { content: "›"; position: absolute; left: 0; color: var(--lime); }
 .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
+/* ---- illustrative query list (idle state, task 3) ---- */
+.illustrativeBlock {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-left: 2px solid var(--faint);
+}
+.illustrativeLabel {
+  font-family: var(--pixel-tiny);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 8px;
+}
+.illustrativeList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.illustrativeList li {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  padding-left: 14px;
+  position: relative;
+}
+.illustrativeList li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--faint);
+}
+
 /* ---- error card ---- */
 .errCard {
   display: flex;
@@ -608,6 +643,46 @@
 @keyframes sxPulse {
   0%, 100% { box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.12); }
   50% { box-shadow: 0 0 0 5px rgba(163, 230, 53, 0.04); }
+}
+
+/* llms.txt is a confirmed non-factor (Google, Jul 2025) — strike it with a
+   micro-animation that draws the line across on reveal. */
+.sxStruck {
+  position: relative;
+  color: var(--faint);
+}
+.sxStruck::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 54%;
+  height: 1px;
+  background: var(--fire);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: sxStrikeDraw 420ms ease-out 140ms forwards;
+}
+@keyframes sxStrikeDraw {
+  to { transform: scaleX(1); }
+}
+.sxDimmed {
+  color: var(--faint);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--fire) 70%, transparent);
+}
+.sxNote {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--faint);
+  margin: 8px 0 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sxStruck::after {
+    animation: none;
+    transform: scaleX(1);
+  }
 }
 
 @media (max-width: 900px) {

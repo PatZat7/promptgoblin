@@ -127,3 +127,19 @@ For each top-level term above, expected fan-out queries to cover in generated co
 ---
 
 _This file is the source of truth for the dashboard intake Run Scan flow and for the generator’s citation-target pipeline._
+
+---
+
+## 10. Top 5 tracked (scan display)
+
+> **Human-curated, not generated.** This list is the literal constant in `pipeline/goblin/nodes/term_expand.py::TOP_5_TRACKED` and is what the scan dashboard displays as the active tracking set. Edit deliberately; treat any AI-suggested change as a candidate that needs traffic validation first.
+
+| # | Query |
+|---|---|
+| 1 | how to show up in ChatGPT |
+| 2 | how to get cited by AI |
+| 3 | Bing rank and AI citations |
+| 4 | technical SEO for AI search |
+| 5 | how to measure AI visibility |
+
+These five queries span the core buyer journey: discovery ("show up"), mechanism ("cited by AI"), signal channel ("Bing rank"), category education ("technical SEO for AI"), and measurement ("measure AI visibility"). They are tracked across all four engines (ChatGPT, Perplexity, Claude, Gemini) on every scan run.

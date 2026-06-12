@@ -3,16 +3,17 @@ import { Panel } from "@/components/ui/Panel/Panel";
 import styles from "./Marquee.module.css";
 
 const WORDS = [
-  "schema.org",
+  "AI search visibility",
+  "cited by ChatGPT",
+  "show up in Perplexity",
+  "answer-engine ready",
+  "get found by robots",
+  "stay usable by humans",
   "llms.txt",
-  "crawlability",
-  "structured data",
-  "answer engines",
-  "core web vitals",
-  "entity SEO",
   "JSON-LD",
   "RAG-ready",
-  "sitemaps",
+  "structured data",
+  "entity SEO",
   "Visible AF",
 ];
 

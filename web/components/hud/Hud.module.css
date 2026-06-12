@@ -74,6 +74,26 @@
 .swatch { width: 8px; height: 8px; background: var(--lime); display: inline-block; }
 .toggleLabel { min-width: 30px; text-align: left; }
 
+.loginTrigger {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--lime);
+  border: 1px solid var(--lime);
+  padding: 3px 10px;
+  border-radius: 2px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.loginTrigger:hover {
+  background: var(--lime);
+  color: #0a0b0a;
+}
+.loginTrigger:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
 /* Tablet: drop the center nav. */
 @media (max-width: 980px) {
   .menu { display: none; }

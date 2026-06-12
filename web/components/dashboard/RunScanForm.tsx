@@ -38,9 +38,21 @@ export function RunScanForm({ defaultDomain, canRunScans }: RunScanFormProps) {
   return (
     <form action={submit} style={{ display: "grid", gap: 12 }}>
       {!canRunScans ? (
-        <p style={{ color: "#ccc", margin: 0 }}>
-          This seat can view reports but cannot launch scans. Ask a Prompt Goblin
-          admin to upgrade the seat.
+        <p
+          role="status"
+          aria-live="polite"
+          style={{
+            color: "var(--muted)",
+            fontFamily: "var(--mono)",
+            fontSize: "0.875rem",
+            margin: 0,
+            padding: "0.625rem 0.875rem",
+            border: "1px solid var(--line)",
+            borderRadius: "3px",
+          }}
+        >
+          This seat can view reports but cannot launch scans. Contact your Prompt
+          Goblin admin to upgrade the seat tier to tier2 or tier3.
         </p>
       ) : null}
 

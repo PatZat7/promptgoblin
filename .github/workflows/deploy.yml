@@ -42,10 +42,21 @@ jobs:
           #   doctl serverless connect promptgoblin
           doctl serverless connect
           doctl serverless deploy . --remote-build
-      - name: Notify IndexNow
+      # Best-effort: resubmit the live sitemap's URLs to IndexNow. Our /indexnow
+      # endpoint REQUIRES a non-empty urlList (a bare {"host":...} 400s), so we
+      # pull <loc> entries from the deployed sitemap and send those. Marked
+      # continue-on-error so a ping failure is visible but never rolls back a
+      # successful functions deploy — and we no longer mask errors with a fake
+      # "skipped" echo.
+      - name: Notify IndexNow (resubmit sitemap URLs)
         if: success()
+        continue-on-error: true
         run: |
-          curl -sS -X POST https://promptgoblin.io/indexnow \
-            -H 'Content-Type: application/json' \
-            -d '{"host":"promptgoblin.io"}' \
-            || echo 'IndexNow ping skipped'
+          set -euo pipefail
+          urls=$(curl -sS --fail https://promptgoblin.io/sitemap.xml \
+            | grep -oE '<loc>[^<]+</loc>' | sed -E 's#</?loc>##g')
+          [ -n "$urls" ] || { echo 'No sitemap URLs found — nothing to submit'; exit 1; }
+          payload=$(printf '%s\n' "$urls" | jq -R . | jq -s '{urlList: .}')
+          echo "Submitting $(printf '%s\n' "$urls" | wc -l) URL(s) to IndexNow"
+          curl -sS --fail -X POST https://promptgoblin.io/indexnow \
+            -H 'Content-Type: application/json' -d "$payload"

@@ -4,7 +4,7 @@ import styles from "./Stats.module.css";
 
 // Every number is provable on this site — dogfood telemetry, no vanity metrics.
 const STATS = [
-  { value: "5", label: "Answer engines scanned" },
+  { value: "4", label: "Answer engines measured" },
   { value: "6", label: "JSON-LD blocks · this site" },
   { value: "7", label: "Pipeline nodes · engineer-gated" },
   { value: "0", label: "Changes auto-deployed" },

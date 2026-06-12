@@ -34,6 +34,16 @@ const path = require("path");
 const libDir = path.join(__dirname, "..", "lib");
 const { buildHygieneReport, buildRenderDiff, detectTechStack } = require(path.join(libDir, "hygiene"));
 
+// Tier-1 index helpers (for fetchViaScrapfly / _buildScrapflyUrl tests).
+// We load from packages/scan/tier1 — the canonical source the DO function deploys.
+const tier1Dir = path.join(__dirname, "..", "packages", "scan", "tier1");
+const {
+  _looksLikeBotWall,
+  _buildScrapflyUrl,
+  _scrapflyAttempt,
+  _fetchViaScrapfly,
+} = require(path.join(tier1Dir, "index"));
+
 let passed = 0;
 let failed = 0;
 
@@ -552,6 +562,181 @@ async function run() {
   const diffProbe = buildRenderDiff(null, null, domProbe);
   ok("renderDiff domProbe: available:true", diffProbe.available === true);
   ok("renderDiff domProbe: Organization in browserTypes (via schemasInBoth or OnlyInBrowser)", diffProbe.schemasOnlyInBrowser.includes("Organization") || diffProbe.schemasInBoth.includes("Organization"));
+
+  // -------------------------------------------------------------------------
+  // WAF honest-blind-spot contract — Akamai / meijer-class challenge bodies
+  //
+  // A hard Akamai challenge body (ak_bmsc cookie / bm_sz token, <12 KB, HTTP 200)
+  // is the pattern meijer.com returns.  When EVERY Scrapfly attempt still comes
+  // back as a bot wall (null from _fetchViaScrapfly), the caller must surface
+  // staticWasBlocked:true — NEVER score the site 0.
+  //
+  // These tests are zero-network: they stub global.fetch inside the test scope
+  // so no real HTTP calls are made and no SCRAPFLY_KEY is needed.
+  // -------------------------------------------------------------------------
+  console.log("\nAkamai/WAF honest-blind-spot contract (zero-network stubs)");
+
+  // Meijer-class Akamai challenge: small 200 body with bm_sz token.
+  // buildRenderDiff(null, challengeBody) must yield staticWasBlocked:true.
+  const MEIJER_AKAMAI_BODY =
+    `<html><head><title>Access Denied</title></head>` +
+    `<body><script>window.bm_sz="abc123";window._abck="xyz";</script>` +
+    `<p>Reference #18.abc.def</p></body></html>`;
+  const diffMeijer = buildRenderDiff(null, MEIJER_AKAMAI_BODY, null);
+  ok(
+    "akamai meijer-class: staticWasBlocked:true when static fetch was null",
+    diffMeijer.staticWasBlocked === true
+  );
+  // The challenge body IS still a bot wall — looksLikeBotWall must catch it.
+  ok(
+    "akamai meijer-class: looksLikeBotWall detects bm_sz / _abck body",
+    _looksLikeBotWall(MEIJER_AKAMAI_BODY, Buffer.byteLength(MEIJER_AKAMAI_BODY))
+  );
+  // If buildRenderDiff gets the challenge body as renderedHtml it still marks
+  // staticWasBlocked (static was null), but available may be true — the important
+  // invariant is that staticWasBlocked is true regardless of the rendered side.
+  ok(
+    "akamai meijer-class: staticWasBlocked true regardless of rendered-side",
+    buildRenderDiff(null, MEIJER_AKAMAI_BODY, null).staticWasBlocked === true
+  );
+
+  // _buildScrapflyUrl ASP path must include country=us + rendering_wait + wait_for.
+  console.log("\n_buildScrapflyUrl param coverage");
+  const aspUrl = _buildScrapflyUrl("testkey", "https://meijer.com/", {
+    asp: true,
+    renderingWait: 3000,
+    waitFor: "body",
+  });
+  ok(
+    "_buildScrapflyUrl asp: includes asp=true",
+    aspUrl.includes("asp=true")
+  );
+  ok(
+    "_buildScrapflyUrl asp: includes country=us",
+    aspUrl.includes("country=us")
+  );
+  ok(
+    "_buildScrapflyUrl asp: includes rendering_wait=3000",
+    aspUrl.includes("rendering_wait=3000")
+  );
+  ok(
+    "_buildScrapflyUrl asp: includes wait_for=body",
+    aspUrl.includes("wait_for=")
+  );
+  ok(
+    "_buildScrapflyUrl non-asp: does NOT include country=us",
+    !_buildScrapflyUrl("k", "https://example.com/", { asp: false }).includes("country=us")
+  );
+  ok(
+    "_buildScrapflyUrl asp retry: includes proxy_pool when specified",
+    _buildScrapflyUrl("k", "https://meijer.com/", {
+      asp: true,
+      renderingWait: 6000,
+      waitFor: "body",
+      proxyPool: "public_residential_pool",
+    }).includes("proxy_pool=")
+  );
+
+  // _fetchViaScrapfly with SCRAPFLY_KEY absent must return null (no crash).
+  console.log("\n_fetchViaScrapfly no-key guard");
+  const savedKey = process.env.SCRAPFLY_KEY;
+  delete process.env.SCRAPFLY_KEY;
+  const noKeyResult = await _fetchViaScrapfly("https://example.com/", { asp: true });
+  ok("fetchViaScrapfly: returns null when SCRAPFLY_KEY absent", noKeyResult === null);
+  if (savedKey !== undefined) process.env.SCRAPFLY_KEY = savedKey;
+
+  // _fetchViaScrapfly retry contract: attempt-1 returns bot-wall → attempt-2 gets a
+  // chance.  We stub global.fetch to simulate: attempt-1 = Akamai challenge body
+  // (bot-wall), attempt-2 = real page.
+  //
+  // This verifies the two-attempt retry logic without any real network traffic.
+  console.log("\n_fetchViaScrapfly two-attempt retry logic (stubbed fetch)");
+
+  const REAL_PAGE_HTML = `<html><head><title>Meijer</title>
+  <script type="application/ld+json">{"@type":"Organization","name":"Meijer"}</script>
+  </head><body><h1>Meijer</h1>${"content ".repeat(200)}</body></html>`;
+
+  // Build a realistic Scrapfly JSON wrapper.
+  function scrapflyWrap(html) {
+    return JSON.stringify({ result: { content: html, browser_data: { javascript_evaluation_result: null } } });
+  }
+  const BOT_WALL_HTML =
+    `<html><body><script>var ak_bmsc='x';</script><p>Please wait...</p></body></html>`;
+
+  let fetchCallCount = 0;
+  const originalFetch = global.fetch;
+  global.fetch = async () => {
+    fetchCallCount++;
+    // Attempt-1 (first call): return a bot-wall body that looksLikeBotWall catches.
+    // Attempt-2 (second call): return the real page.
+    const bodyHtml = fetchCallCount === 1 ? BOT_WALL_HTML : REAL_PAGE_HTML;
+    return {
+      ok: true,
+      json: async () => JSON.parse(scrapflyWrap(bodyHtml)),
+    };
+  };
+  process.env.SCRAPFLY_KEY = "stubkey";
+
+  const retryResult = await _fetchViaScrapfly("https://meijer.com/", {
+    asp: true,
+    timeoutMs: 30000,
+  });
+  global.fetch = originalFetch;
+  delete process.env.SCRAPFLY_KEY;
+
+  ok(
+    "fetchViaScrapfly retry: attempt-1 bot-wall triggers attempt-2",
+    fetchCallCount === 2
+  );
+  ok(
+    "fetchViaScrapfly retry: returns real page from attempt-2 (not null)",
+    retryResult !== null
+  );
+  ok(
+    "fetchViaScrapfly retry: returned html contains real page content",
+    retryResult && retryResult.html.includes("Meijer")
+  );
+
+  // _fetchViaScrapfly contract: both attempts bot-walled → returns null.
+  // This is the meijer "still fails" case — caller MUST yield staticWasBlocked:true.
+  console.log("\n_fetchViaScrapfly all-attempts-fail contract");
+
+  let fetch2Calls = 0;
+  global.fetch = async () => {
+    fetch2Calls++;
+    return {
+      ok: true,
+      json: async () => JSON.parse(scrapflyWrap(BOT_WALL_HTML)),
+    };
+  };
+  process.env.SCRAPFLY_KEY = "stubkey";
+
+  const allFailResult = await _fetchViaScrapfly("https://meijer.com/", {
+    asp: true,
+    timeoutMs: 30000,
+  });
+  global.fetch = originalFetch;
+  delete process.env.SCRAPFLY_KEY;
+
+  ok(
+    "fetchViaScrapfly all-fail: returns null when both attempts are bot-walled",
+    allFailResult === null
+  );
+  ok(
+    "fetchViaScrapfly all-fail: made exactly 2 attempts",
+    fetch2Calls === 2
+  );
+  // The honest-broker contract: when _fetchViaScrapfly returns null, the caller
+  // must surface staticWasBlocked:true and never score the site.
+  // We verify the contract via buildRenderDiff(null, null, null) → available:false.
+  const allFailDiff = buildRenderDiff(null, null, null);
+  ok(
+    "fetchViaScrapfly all-fail: contract — buildRenderDiff(null,null,null) available:false (site never scored 0)",
+    allFailDiff.available === false
+  );
+
+  // Restore saved key if it was set before our stubs.
+  if (savedKey !== undefined) process.env.SCRAPFLY_KEY = savedKey;
 
   // -------------------------------------------------------------------------
   // Summary

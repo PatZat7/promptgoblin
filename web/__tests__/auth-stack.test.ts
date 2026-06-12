@@ -30,9 +30,15 @@ describe("dashboard auth stack", () => {
   });
 
   it("keeps magic-link login to provisioned Supabase users only", () => {
-    const loginForm = readWebFile("app/login/LoginForm.tsx");
+    // The magic-link logic lives in the shared useAuthForm hook (consumed by
+    // both LoginForm and LoginModal). The guard that blocks self-signup via the
+    // login form — so only Stripe-provisioned users can sign in — must stay here.
+    const authForm = readWebFile("lib/useAuthForm.ts");
+    expect(authForm).toContain("shouldCreateUser: false");
 
-    expect(loginForm).toContain("shouldCreateUser: false");
+    // And the login form must actually consume that hook (inherit the guard).
+    const loginForm = readWebFile("app/login/LoginForm.tsx");
+    expect(loginForm).toContain("useAuthForm");
   });
 
   it("runs local dashboard dev on the Supabase allow-listed port", () => {

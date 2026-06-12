@@ -2,6 +2,7 @@ import { GoblinHead } from "@/components/ui/GoblinHead";
 import { NAV } from "@/lib/site";
 import { HudClock } from "./HudClock";
 import { ThemeToggle } from "./ThemeToggle";
+import { HudLoginTrigger } from "./HudLoginTrigger";
 import styles from "./Hud.module.css";
 
 /** Top status bar. Server-rendered shell; only the toggle + clock hydrate. */
@@ -27,6 +28,8 @@ export const HudTop = () => (
     </nav>
 
     <div className={styles.right}>
+      <HudLoginTrigger />
+      <span className={styles.divider} />
       <ThemeToggle />
       <span className={styles.divider} />
       <span>

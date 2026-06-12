@@ -21,12 +21,32 @@ export type Tier = {
 // match the land-grab pricing (all recurring/month; Scout flipped one-time→monthly).
 // The old one-time/$2,950 + $4,800 + $12,500 links are deactivated in Stripe.
 export const STRIPE_LINKS = {
+  // Set after running `node web/scripts/create-watch-product.mjs` (it prints the
+  // Payment Link). Until then the Watch CTA falls back to the contact form.
+  watch: "https://buy.stripe.com/9B65kE5VAgoacrp8vR2go09",
   scout: "https://buy.stripe.com/3cI5kE5VAc7U1MLfYj2go06",
   warband: "https://buy.stripe.com/14AdRaabQ4Fs3UT27t2go07",
   warlord: "https://buy.stripe.com/eVqaEYabQ1tg7756nJ2go08",
 } as const;
 
 export const TIERS: Tier[] = [
+  {
+    key: "watch",
+    name: "Goblin Watch",
+    who: "see where you stand, weekly",
+    price: "99",
+    interval: "/ mo",
+    link: STRIPE_LINKS.watch,
+    cta: "Start watching",
+    tag: "new",
+    desc: "Your AI citation visibility, tracked every week across the major answer engines — with what's missing and whether you're gaining ground. Monitoring, not done-for-you fixes (that's Scout+).",
+    bullets: [
+      "Weekly citation-visibility report",
+      "ChatGPT · Claude · Gemini · Perplexity + your Bing rank",
+      "Ranked what's-missing list",
+      "Week-over-week deltas — are you gaining ground?",
+    ],
+  },
   {
     key: "scout",
     name: "Goblin Scout",
@@ -37,9 +57,9 @@ export const TIERS: Tier[] = [
     cta: "Hire a Scout",
     desc: "One daily pipeline run. Citation gaps, schema holes, and stack-specific fix code — delivered as a living report your team's AI can act on immediately.",
     bullets: [
-      "Full LLM citation audit · 5 surfaces",
+      "Full LLM citation audit · 4 engines + Bing rank",
       "Schema + entity gap report",
-      "Competitor citation diff (top 6)",
+      "Competitor leaderboard (top 6)",
       "Ranked tech stack–specific fix queue · scored by impact × effort",
       "Stack-specific code snippets + AI-ready prompt for your team",
       "Bing Webmaster Tools submission guide",

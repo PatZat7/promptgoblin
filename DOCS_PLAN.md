@@ -1,6 +1,6 @@
 # Prompt Goblin — Documentation Plan
 
-> Living doc. Last updated: 2026-06-06. Owner: main thread. Route all outbound artifacts through `integrity-reviewer` before publishing.
+> Living doc. Last updated: 2026-06-09. Owner: main thread. Route all outbound artifacts through `integrity-reviewer` before publishing.
 
 ## Why this exists
 
@@ -130,8 +130,8 @@ submission, URL inspection, URL submission, and IndexNow changed-URL submission.
 **Honest-broker:** Submission is for discovery and diagnostics. It is not an
 indexing, ranking, or AI-citation guarantee.
 
-**Status:** Internal guide added at `docs/bing-webmaster-tools-submission-guide.md`.
-Public route `/docs/bing-webmaster-tools` is queued.
+**Status:** Internal guide at `docs/bing-webmaster-tools-submission-guide.md`.
+Public route `/docs/bing-webmaster-tools` **live** (added 2026-06-09).
 **Owner:** Main thread → `integrity-reviewer` before public/client-facing copy
 **Priority:** High — handles the Bing/web-rank side of the dogfood loop.
 
@@ -247,7 +247,7 @@ These exist or are covered by existing files. Review and patch gaps as they surf
 2. **Now:** public/client Bing Webmaster Tools guide route + pricing tier detail.
 3. **Before first client:** `2.1 Onboarding doc` + `2.2 Scan report explainer`.
 4. **Authority pages:** how to show up in ChatGPT, Bing rank and AI citations, technical SEO for AI search, accessibility SEO audit.
-5. **After citation verification layer ships:** `3.1 Fabrication crisis explainer` (don't publish until the product backs it).
+5. **After citation verification layer ships:** `3.1 Fabrication crisis explainer` (don't publish until the product can back it).
 6. **After 10+ pipeline runs:** `1.4 Citation Landscape Benchmark` (needs data).
 7. **Ongoing:** `llms.txt` + `pipeline/README` + `functions/README` patches.
 

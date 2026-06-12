@@ -1,0 +1,101 @@
+.confirmContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
+
+.confirmContainer h1 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.confirmContainer p {
+  margin: 0 0 var(--space-6);
+  color: var(--muted);
+  max-width: 400px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--fg);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--muted);
+  border-color: var(--fg);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.button.primary {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+.button.primary:hover:not(:disabled) {
+  background: var(--muted);
+  border-color: var(--muted);
+}
+
+/* Error text uses --fg (the body-text color — guaranteed AA in every palette)
+   on a solid --panel surface. The red is carried by the --fire border, so the
+   error is signalled by more than color alone. The old hard-coded #dc2626 failed
+   WCAG 1.4.3 (3.7-4.1:1) in all four palettes and didn't adapt to [data-palette]. */
+.error {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--panel);
+  border: 1px solid var(--fire);
+  border-left: 3px solid var(--fire);
+  border-radius: var(--radius-md);
+  color: var(--fg);
+  font-size: var(--text-sm);
+}
+
+.error[hidden] {
+  display: none;
+}
+
+.muted {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.muted a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.muted a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

@@ -6,6 +6,32 @@
 
 `main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
 
+## ✅ Current state — 2026-06-11 (Claude session #2 — implement fleet)
+
+> Branch `fix/scan-citation-label` = `origin/main` HEAD (`b6e4fe2`). **The money path IS merged + deployed** — the older "pending merge" note below was stale (local `main` was 17 commits behind origin). New fleet work below is UNCOMMITTED in the working tree, awaiting owner review.
+
+- **5-lane gated agent fleet shipped (outreach-readiness batch), uncommitted on `fix/scan-citation-label`:**
+  - **Pipeline (graph-keeper APPROVE, pytest 327 / eval 3/3):** I-06 fixed — `upsert_run` hard-refuses `mode=='mock'`/`is_sample` writes (code-level, can't be re-enabled by ambient env) + pytest `conftest` + `run_eval` env-clamp; competitor acceptance #22 (walgreens→CVS-class recall + junk-domain rejection + vertical-hint fallback flagged inference/verify); term-map expansion node #16 + Top-5 tracked queries.
+  - **Live `runs` table PURGED (MCP):** 1,478 mock runs + 51,365 mock recs deleted; **2 real `live` dogfood runs preserved** (still `approved=false`, awaiting honest review). Dashboard is clean; I-06 guard stops refill.
+  - **Functions (npm test 242):** Scrapfly WAF bypass hardened (`country=us`, `rendering_wait`, 2nd attempt on residential pool, all within the 30s ASP budget) + meijer-class honest-blind-spot regression lock. _Real bypass success still needs a live keyed probe — not claimed._
+  - **Web content (integrity APPROVE):** homepage **3-levers section** #18 (the causal model in goblin voice, schema=hygiene explicit) + 6 learn pages deepened from ~40-line stubs to real answer-shaped content #19 + Article/FAQ JSON-LD.
+  - **Web ux/email (integrity REVISE→fixed):** Loader blink 1300→420ms #6; branded welcome email #9/A-15; 5 tracked queries surfaced in scan UI #17; honest inline scan-email CTA + new `/api/scan-email` #4/#14 (the false "engineer follows up" no-mailer promise was removed by the gate; `queued`→`delivered:false`).
+  - **Web dashboard/auth:** modal login #10/A-07; 3-step onboarding checklist #12; tier-gate verified #11.
+  - **Main-thread cleanup:** 9 lint errors fixed (unescaped `<code>` quotes ×7 + onboarding setState-in-effect); **removed the fabricated "50 prompts × 4 engines"** homepage teaser number (no "50" exists in backend — real config is max_queries 8 / teaser 2). **web lint 0 + build 0; all 33 routes compile incl. new `/api/scan-email`.**
+- **⚠️ Still owner-gated before outreach (unchanged):** rotate secrets · DO env (Stripe/Resend/`NEXT_PUBLIC_SITE_URL`) · Resend account + DNS (SPF/DKIM/DMARC) · Supabase custom SMTP · live $1 e2e · GSC/Bing sitemap submit · **live dogfood re-run + honest approve** (the one artifact that lets "proven by our own scan" appear in a DM). And: review + merge this branch (deploy-on-push ships it).
+- **Pre-existing honest-broker flag for the next copy pass:** the free Tier-2 "✓ cited" teaser still reads brand-self-citation as visibility — Option A wording proposed in `feedback/claude/2026-06-11-citation-teaser-overstatement.md`, owner + integrity sign-off pending.
+
+## ✅ Current state — 2026-06-11 (Claude session — money path)
+
+> Branch `fix/indexnow-canonicals` (6 commits ahead of `main`), gated, pending merge. _(Superseded: this work is now ON origin/main — see session #2 note above.)_
+
+- **Stripe money path COMMITTED + HARDENED** (`e86c36a` build, `e49caa8` hardening): `web/app/api/webhooks/stripe/route.ts` (idempotent `stripe_events` ledger · `payment_status==='paid'` · `admin.createUser` · `provision_stripe_checkout_client` RPC · `generateLink` hashed_token · Resend best-effort) + `/auth/confirm` SafeLinks interstitial (`verifyOtp`, not PKCE) + `/api/runs` explicit auth gate. Pre-merge **integrity-reviewer** (REVISE→fixed) + **security review** (DO-NOT-SHIP→fixed): **C1** host-header magic-link phishing, **H1** email-failure customer loss, **H2** stuck-`processing` events, **M1** cross-tenant domain seizure, + M3/L1. 4 regression-lock tests added. **Gate green: web vitest 82/82 + build; pipeline 305 pytest + eval 3/3.**
+- **Migration `0015_stripe_events` APPLIED LIVE + verified** (MCP): billing columns + `welcome_email_status` on `clients`, service-role-only `stripe_events` (RLS forced, no policy = deny-all by design), RPC `revoke public/anon/authenticated` + `grant service_role`. Advisors: no new RLS gaps (only the known `vector`-in-public + leaked-password WARNs).
+- **IndexNow + Bing**: real key + `keyLocation` + own-host validation live in code (`0a812f4`); Bing verification via msvalidate meta + `web/public/BingSiteAuth.xml`. Owner does GSC/Bing onboarding.
+- **Dogfood**: recon/listen fix already committed + pushed (`024737d`, pipeline `master`); the old bad run is **not** approved (live `approved=true` count = 0 — integrity issue already clear).
+- **⚠️ NEW: live `runs` table polluted** — 1441 rows because `goblin.eval`/pytest write to the live dogfood client (`GOBLIN_SUPABASE_ENABLED=true`). Needs eval/test isolation + cleanup (TODO `I-06`).
+- **Open owner blockers before money path goes live:** rotate secrets · set DO env (`NEXT_PUBLIC_SITE_URL` + Stripe/Resend secrets, `I-07`) · Stripe Payment Links must collect `domain` (`I-08`) · Resend DNS + click-tracking OFF · live $1 e2e.
+
 ## ✅ Current state — 2026-06-06 (Claude-integrator session)
 
 > Authoritative snapshot; older "In flight / Queued" entries below may lag.

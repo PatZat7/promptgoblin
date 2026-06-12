@@ -7,6 +7,7 @@ import { captureEvent, captureLead } from "@/lib/analytics";
 import { runCitationTeaserAuto, runHygieneScan, type ScanReport } from "@/lib/scan-api";
 import { isValidDomain, isValidEmail } from "@/lib/validate";
 import { SAMPLE_LINES, SCAN_PHASES, type ScanLine, type ScanLineInput, type ScanStep } from "./scan.data";
+import { ILLUSTRATIVE_QUERIES } from "./scan-targets.data";
 import { phaseTone, phaseValues, scanFailureCopy, scanHost, scoreBand } from "./scan-report";
 import { ScanResult, Tier2Card, type Tier2State } from "./ScanResult";
 import { ScanStepper } from "./ScanStepper";
@@ -426,6 +427,14 @@ export const LiveScan = () => {
                 <li>title · meta · canonical · OpenGraph</li>
                 <li>Core Web Vitals proxies</li>
               </ul>
+              <div className={styles.illustrativeBlock} aria-label="example queries we track">
+                <div className={styles.illustrativeLabel}>example targets we track — your scan measures your own</div>
+                <ul className={styles.illustrativeList}>
+                  {ILLUSTRATIVE_QUERIES.map((q) => (
+                    <li key={q}>{q}</li>
+                  ))}
+                </ul>
+              </div>
             </form>
           )}
           <div className={styles.statusRow}>

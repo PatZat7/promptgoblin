@@ -21,7 +21,10 @@ export const Contact = () => (
           <br />
           <em>No card, no sales call.</em> Paid work carries a{" "}
           <em>100% money-back guarantee</em>: full refund if we don&apos;t
-          deliver or you&apos;re not happy within 14 days.
+          deliver or you&apos;re not happy within 14 days.{" "}<br /><br />
+          <a href="#contact" className={styles.demoLink} data-cursor="./demo">
+            Request a demo <span className="arr">→</span>
+          </a>
         </p>
         <SummonForm />
       </div>

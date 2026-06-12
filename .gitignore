@@ -22,6 +22,11 @@ pipeline/
 .env
 .env.*
 !.env.example
+# Master secrets file (single source for rotation) + the template + sync .bak backups.
+# Covered by .env.* above; listed explicitly as defense-in-depth so they NEVER commit.
+.env.master
+.env.master.template
+.env.master.bak
 
 # OS / editor cruft
 .DS_Store
@@ -62,3 +67,13 @@ artifacts/
 
 # Ad-hoc QA gate harness output
 _qa_gate*
+
+# Local dev server log redirects (run_in_background stdout/stderr)
+pg-local-dev.out
+pg-local-dev.err
+
+# Codex remote-attachment cache (tooling scratch, not project code)
+.codex-remote-attachments/
+
+# Local asset-generation scratch (logo/social templates + heavy generated gif)
+assetgen/

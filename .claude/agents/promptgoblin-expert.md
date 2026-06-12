@@ -187,6 +187,7 @@ The pipelines should research, measure, audit, recommend, human-gate, verify, sh
 - Batch scan prospects.
 - Produce sample reports.
 - Produce DMs/emails for human sending.
+- Make prospect copy sales-first: short, simple, and conversion-led. Integrity is a veto for false or unsupported claims, not a reason to add caveats by default.
 - Keep every outbound artifact integrity-reviewed.
 - No fake clients, fake wins, fake benchmark numbers, or fake testimonials.
 

@@ -128,6 +128,17 @@ export async function POST(request: Request) {
 
 export async function GET() {
   const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { ok: false, runs: [], error: "Sign in required." },
+      { status: 401 },
+    );
+  }
+
   const { data, error } = await supabase
     .from("runs")
     .select("*")
