@@ -16,7 +16,7 @@
 | [supabase-pgvector-schema](supabase-pgvector-schema.md) | supabase (new) | schema review + RLS tests | ✅ creds in `.env` (`SUPABASE_CONNECTION_STRING` runs migrations) |
 | [dashboard-mvp](dashboard-mvp.md) | web + supabase | integrity + qa(axe) + schema | ◑ Supabase ✓ — still needs `web/` cutover + service-role-vs-connection-string call |
 | [vector-rag-ingestion](vector-rag-ingestion.md) | pipeline + supabase | graph-keeper + schema | ◑ Supabase ✓ — still needs an embeddings key (or reuse Gemini) + schema §0 sign-off |
-| [longtail-page-targets](longtail-page-targets.md) | web + docs | integrity-reviewer (all copy) + qa (axe) + `web npm test` + build | ◑ batch 1 (pages 1–3) implemented on `feat/longtail-batch1`, gates green, awaiting owner merge; pages 4–9 + existing-page upgrades + brand-mention drafts pending |
+| [longtail-page-targets](longtail-page-targets.md) | web + docs | integrity-reviewer (all copy) + qa (axe) + `web npm test` + build | ✅ IMPLEMENTED 2026-06-12 — all 9 pages live, existing-page upgrades shipped (`77f8681`), P0 mention pack gated in `marketing/brand-mention-drafts.md`; remaining: measurement loop (PLAN table) + owner submissions |
 
 ## Implementation order (dependency-aware)
 
