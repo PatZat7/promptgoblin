@@ -15,6 +15,7 @@ import Stripe from "stripe";
 // ---------------------------------------------------------------------------
 
 const WEBHOOK_SECRET = "whsec_testsecretdonotuse";
+const WEBHOOK_SECRET_TEST = "whsec_secondaryendpointsecret";
 
 // vi.hoisted so the (hoisted) vi.mock factory can read the per-test fake.
 const h = vi.hoisted(() => ({ db: null as unknown as FakeSupabase }));
@@ -184,6 +185,7 @@ function subscriptionEvent(type: string, status: string, id = "evt_sub_1") {
 beforeAll(() => {
   process.env.STRIPE_SECRET_KEY = "sk_test_dummy";
   process.env.STRIPE_WEBHOOK_SECRET = WEBHOOK_SECRET;
+  process.env.STRIPE_WEBHOOK_SECRET_TEST = WEBHOOK_SECRET_TEST;
   process.env.NEXT_PUBLIC_SITE_URL = "https://promptgoblin.io";
   process.env.NEXT_PUBLIC_SUPABASE_URL = "https://proj.supabase.co";
   process.env.SUPABASE_SERVICE_ROLE_KEY = "svc-role-key";
@@ -233,6 +235,12 @@ describe("signature verification", () => {
   it("accepts a correctly signed payload", async () => {
     const res = await POST(signedRequest(checkoutEvent()));
     expect(res.status).toBe(200);
+  });
+
+  it("accepts a payload signed with the secondary (test-mode endpoint) secret", async () => {
+    const res = await POST(signedRequest(checkoutEvent(), { secret: WEBHOOK_SECRET_TEST }));
+    expect(res.status).toBe(200);
+    expect(h.db.rpcCalls.filter((c) => c.fn === "provision_stripe_checkout_client")).toHaveLength(1);
   });
 });
 

@@ -75,19 +75,28 @@ function jsonError(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status });
 }
 
-function getStripe(): { stripe: Stripe; webhookSecret: string } {
+function getStripe(): { stripe: Stripe; webhookSecrets: string[] } {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secretKey || !webhookSecret) {
     throw new Error("STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are required.");
   }
 
+  // Each delivery is verified against EVERY configured secret; the first that
+  // validates wins. This supports (a) a parallel test-mode endpoint for
+  // end-to-end checkout validation against prod and (b) zero-downtime secret
+  // rotation. Test-mode events stay isolated by Stripe's own mode — a test
+  // event simply won't match the live secret, and a live event won't match the
+  // test secret. constructEvent is pure HMAC, so this is key/mode-agnostic.
+  const extraSecret = process.env.STRIPE_WEBHOOK_SECRET_TEST;
+  const webhookSecrets = extraSecret ? [webhookSecret, extraSecret] : [webhookSecret];
+
   // apiVersion is intentionally unpinned: the package-lock pins the stripe SDK,
   // which pins both the TypeScript event shapes and the default API version
   // together — so they cannot drift apart without a deliberate dependency bump.
   return {
     stripe: new Stripe(secretKey, { typescript: true }),
-    webhookSecret,
+    webhookSecrets,
   };
 }
 
@@ -675,10 +684,10 @@ async function handleEvent(
 
 export async function POST(request: Request) {
   let stripe: Stripe;
-  let webhookSecret: string;
+  let webhookSecrets: string[];
   let siteOrigin: string;
   try {
-    ({ stripe, webhookSecret } = getStripe());
+    ({ stripe, webhookSecrets } = getStripe());
     siteOrigin = getSiteOrigin();
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Stripe is not configured.", 500);
@@ -688,10 +697,16 @@ export async function POST(request: Request) {
   if (!signature) return jsonError("Missing stripe-signature header.");
 
   const body = await request.text();
-  let event: Stripe.Event;
-  try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-  } catch {
+  let event: Stripe.Event | null = null;
+  for (const secret of webhookSecrets) {
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, secret);
+      break;
+    } catch {
+      // Signature didn't match this secret; try the next configured one.
+    }
+  }
+  if (!event) {
     return jsonError("Webhook signature verification failed.");
   }
 
