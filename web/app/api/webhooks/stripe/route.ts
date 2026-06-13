@@ -456,7 +456,7 @@ async function sendWelcomeEmail(params: {
                   </td>
                   <td valign="middle">
                     <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; color:#e9e7dc;">Prompt&nbsp;Goblin</div>
-                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; color:#a3e635; margin-top:3px;">Get found by robots. Stay usable by humans.</div>
+                    <div style="font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; color:#a7ee39; margin-top:3px;">Get found by robots. Stay usable by humans.</div>
                   </td>
                 </tr>
               </table>
@@ -464,7 +464,7 @@ async function sendWelcomeEmail(params: {
           </tr>
           <tr>
             <td style="padding:26px 28px 6px 28px; font-family:'JetBrains Mono',Consolas,Menlo,monospace; color:#e9e7dc; font-size:15px; line-height:1.6;">
-              Your <strong style="color:#a3e635;">${planLabel}</strong> dashboard for <strong style="color:#a3e635;">${safeDomain}</strong> is ready.
+              Your <strong style="color:#a7ee39;">${planLabel}</strong> dashboard for <strong style="color:#a7ee39;">${safeDomain}</strong> is ready.
             </td>
           </tr>
           <tr>
@@ -493,9 +493,9 @@ async function sendWelcomeEmail(params: {
           <tr>
             <td style="padding:18px 28px 24px 28px; border-top:1px solid #2a2d26; font-family:'JetBrains Mono',Consolas,Menlo,monospace; font-size:11px; line-height:1.7; color:#6f6f66;">
               Prompt Goblin &middot; Chicago, IL<br />
-              <a href="https://promptgoblin.io" style="color:#a3e635; text-decoration:none;">promptgoblin.io</a>
+              <a href="https://promptgoblin.io" style="color:#a7ee39; text-decoration:none;">promptgoblin.io</a>
               &nbsp;&middot;&nbsp;
-              <a href="mailto:goblins@promptgoblin.io" style="color:#a3e635; text-decoration:none;">goblins@promptgoblin.io</a>
+              <a href="mailto:goblins@promptgoblin.io" style="color:#a7ee39; text-decoration:none;">goblins@promptgoblin.io</a>
             </td>
           </tr>
         </table>
