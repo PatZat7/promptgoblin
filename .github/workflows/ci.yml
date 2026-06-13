@@ -93,3 +93,39 @@ jobs:
             web/playwright-report
           retention-days: 14
           if-no-files-found: warn
+
+  # ---------------------------------------------------------------------------
+  # GATED DEPLOY — the site no longer auto-deploys on push (.do/app.yaml has
+  # deploy_on_push:false). This job ships the site to DigitalOcean App Platform
+  # ONLY after the blocking test jobs pass, and ONLY on a push to main.
+  #
+  # `needs:` is the gate: if `functions` or `web-unit` fails, this job is skipped
+  # and nothing deploys. (web-lint / web-ui are advisory and intentionally NOT in
+  # needs.) The 17 behavioral Stripe webhook tests run inside `web-unit`.
+  #
+  # PREREQS before this can work (see docs/stripe-cicd-gate-design.md):
+  #   1. Apply the deploy_on_push:false flip:
+  #        doctl apps update b2fc9d71-4cf8-41b0-ad84-696043cd2def --spec .do/app.yaml
+  #      (until applied, DO ALSO auto-deploys → double deploy; harmless but noisy.)
+  #   2. Confirm secrets.DIGITALOCEAN_ACCESS_TOKEN has Apps read+write scope
+  #      (the functions deploy may only have Serverless scope).
+  # To switch to fully-manual instead, change the trigger to workflow_dispatch
+  # with a typed "deploy" confirm (mirror deploy.yml).
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy site (gated)
+    needs: [functions, web-unit]
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Official DO action. Preferred over `doctl apps create-deployment --wait`,
+      # which returns exit 0 even when the deploy fails (doctl #1071) — useless as
+      # a CI signal. This action fails the step if the build/deploy fails.
+      - name: Deploy to DigitalOcean App Platform
+        uses: digitalocean/app_action/deploy@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          app_name: promptgoblin
+          print_build_logs: "true"
+          print_deploy_logs: "true"

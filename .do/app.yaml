@@ -21,7 +21,11 @@ services:
     github:
       repo: PatZat7/promptgoblin
       branch: main
-      deploy_on_push: true
+      # GATED DEPLOY (2026-06-13): false so a raw `git push main` no longer
+      # auto-ships. Deploys now run from GitHub Actions (.github/workflows/ci.yml
+      # `deploy` job) ONLY after the test gates pass — see docs/stripe-cicd-gate-design.md.
+      # Apply this flip once with: doctl apps update b2fc9d71-4cf8-41b0-ad84-696043cd2def --spec .do/app.yaml
+      deploy_on_push: false
     source_dir: web
     environment_slug: node-js
     build_command: npm ci --include=dev && npm run build
