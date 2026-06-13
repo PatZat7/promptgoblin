@@ -46,6 +46,30 @@ same event (`stripe events resend <evt_id>`) and confirm it returns
 > test-mode Checkout (layer 3) or pass a custom fixture
 > (`stripe trigger checkout.session.completed --add checkout_session:metadata.domain=acme.com`).
 
+## 2b. Test purchases against the deployed site (prod test endpoint)
+
+A **parallel test-mode webhook endpoint** is configured on prod
+(`https://promptgoblin.io/api/webhooks/stripe`, created 2026-06-13). The handler
+does **multi-secret verification** (`getStripe()` → `webhookSecrets[]`): it tries
+the live `STRIPE_WEBHOOK_SECRET` and the `STRIPE_WEBHOOK_SECRET_TEST` (Doppler
+`prd` + DO env), first match wins. So a test-mode Payment Link purchase on the
+live site provisions for real.
+
+⚠️ **This creates real prod rows and sends a real welcome email.** Use a domain
++ email you control. Clean up after:
+
+```sql
+-- find the test client (by the domain you entered)
+select id, owner_user_id, domain from clients where domain = '<your-test-domain>';
+-- then delete the client row + its stripe_events + the auth user (admin API)
+```
+
+⚠️ **Remove the test endpoint before/at GA** so test events can't mint prod
+accounts as a standing footgun:
+1. Delete the Stripe test endpoint: `stripe webhook_endpoints delete <we_id> --api-key <test>`
+2. Remove `STRIPE_WEBHOOK_SECRET_TEST` from DO env (doctl spec round-trip) + Doppler `prd`.
+   With the env gone, `webhookSecrets` falls back to live-only automatically.
+
 ## 3. Manual pre-launch checklist (test mode)
 
 Do a real test-mode purchase for **each plan** before going live. Use Stripe
