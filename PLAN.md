@@ -6,6 +6,16 @@
 
 `main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
 
+## ✅ Current state — 2026-06-13 (Claude session — LIVE Stripe e2e harness)
+
+**Live $0 end-to-end test, all 4 tiers PASSED + self-cleaned.** Real money path proven live without spending money or leaving artifacts.
+- **Mechanism:** ephemeral Stripe **Checkout Session via API** with the 100%-off coupon applied **server-side** + `payment_method_collection: if_required` → $0 due, **no card field**. Playwright (its own browser — Chrome MCP hard-blocks `buy.stripe.com`) completes the hosted page. Card entry is never automated (prohibited + unnecessary at $0).
+- **Per tier:** session → Playwright checkout → webhook provisions → assert `billing_plan`+legacy `tier` (watch/scout→starter, warband/warlord→retainer) + `welcome_email_status=sent` → real Gmail welcome email (workflow) → mint magic link (Supabase admin `generate_link`) → Playwright login → assert `/dashboard` tier badge (watch→TIER1, others→TIER3) → teardown (cancel sub + delete client/user/recent events).
+- **Artifacts:** `web/scripts/e2e/{stripe-checkout,magic-login,live-e2e}.mjs` (orchestrator + Playwright legs), `.claude/workflows/stripe-live-e2e.js` (Claude Workflow: parallel per-tier + Gmail assertion), `web/docs/stripe-live-e2e.md` (runbook + launch cmd). Result of full run: 4/4 PASS, 0 leftovers (Supabase clean; only an unrelated pre-existing `patzat777@gmail.com` watch sub remains — real, left untouched).
+- **Stripe config done (live+test):** all 4 links `payment_method_collection=if_required` (safe permanently) + `allow_promotion_codes=true`; created public 100%-off code **`GOBLINQA100`** (owner-requested, TEMPORARY — REMOVE before scaling).
+- **Gotchas captured (see runbook + memory):** Stripe API version MUST be pinned to `2024-06-20` for `coupon`/`discounts` (account default rejects `coupon`); Windows stripe-CLI mangles `coupon`/`/v1/` paths → use REST `fetch`; Gmail `get_thread` flaky (use `search_threads`).
+- **⚠️ Known bug:** public **promo-code entry on the Payment Links is broken** — every code (incl. pre-existing `FRIENDS1`) shows "This code is invalid." at hosted checkout despite valid coupons; server-side coupons work. `GOBLINQA100` therefore won't apply via manual code entry yet. Needs a separate investigation. Not blocking the e2e harness (which uses server-side coupons).
+
 ## ✅ Current state — 2026-06-13 (Claude session — payments testing + site UX/copy)
 
 **A. Stripe payment-gateway testing (shipped + verified).**
