@@ -19,9 +19,7 @@ export const Contact = () => (
           want to get cited for. I&apos;ll send back the gaps and the next
           useful moves. Best when you need a focused scan and a concrete next move.
           <br />
-          <em>No card, no sales call.</em> Paid work carries a{" "}
-          <em>100% money-back guarantee</em>: full refund if we don&apos;t
-          deliver or you&apos;re not happy within 14 days.{" "}<br /><br />
+          <em>No card, no sales call.</em>{" "}<br /><br />
           <a href="#contact" className={styles.demoLink} data-cursor="./demo">
             Request a demo <span className="arr">→</span>
           </a>

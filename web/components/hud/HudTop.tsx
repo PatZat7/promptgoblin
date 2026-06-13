@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GoblinHead } from "@/components/ui/GoblinHead";
 import { NAV } from "@/lib/site";
 import { HudClock } from "./HudClock";
@@ -32,10 +33,14 @@ export const HudTop = () => (
       <span className={styles.divider} />
       <ThemeToggle />
       <span className={styles.divider} />
-      <span>
+      <Link
+        href="/?demo=1#contact"
+        className={styles.bookDemoCta}
+        data-cursor="./demo"
+      >
         <span className={styles.dot} />
-        &nbsp;VISIBLE&nbsp;AF
-      </span>
+        Book&nbsp;a&nbsp;demo
+      </Link>
       <span className={styles.divider} />
       <HudClock />
     </div>

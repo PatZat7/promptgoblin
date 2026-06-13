@@ -40,7 +40,7 @@ const MethodologyPage = () => (
       <ul>
         <li><a href="/learn/technical-seo-for-ai-search">Technical SEO for AI search — the crawl and indexation floor</a></li>
         <li><a href="/learn/bing-rank-and-ai-citations">Bing rank and AI citations — why platform distribution matters</a></li>
-        <li><a href="/faq">FAQ — pricing, guarantee, and what we don&apos;t promise</a></li>
+        <li><a href="/faq">FAQ — pricing, and what we don&apos;t promise</a></li>
       </ul>
     </section>
   </div>

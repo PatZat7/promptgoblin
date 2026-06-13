@@ -744,9 +744,9 @@ const ScanEmailCta = ({
     return (
       <div className={styles.scanEmailConfirm}>
         <span className={styles.scanEmailSent}>scan sent —</span>{" "}
-        check your inbox. Want a full report with the fixes you need — observability and a dashboard to track your delta?{" "}
-        <a href="#pricing" className={styles.scanEmailPricingLink} data-cursor="./watch">
-          Goblin Watch · $99/mo <span className="arr">-&gt;</span>
+        check your inbox. Want the full report with the fixes you need?{" "}
+        <a href="#pricing" className={styles.scanEmailPricingLink} data-cursor="./summon">
+          summon a goblin <span className="arr">-&gt;</span>
         </a>
       </div>
     );

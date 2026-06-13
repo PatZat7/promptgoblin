@@ -1,101 +1,183 @@
-.confirmContainer {
+/* ---- page shell ---- */
+.confirmWrap {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  min-height: 78vh;
   padding: var(--space-8) var(--space-4);
-  text-align: center;
 }
 
-.confirmContainer h1 {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-2xl);
-  font-weight: 600;
+/* ---- terminal card (mirrors welcome.module.css .card) ---- */
+.card {
+  width: 100%;
+  max-width: 480px;
+  padding: clamp(24px, 5vw, 40px);
+  background: var(--panel);
+  border: 1px solid var(--lime);
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 1px var(--glow),
+    0 0 28px var(--glow),
+    inset 0 0 36px rgba(163, 230, 53, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- kicker / terminal prompt line ---- */
+.kicker {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  color: var(--lime);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+.kicker::before {
+  content: "$ ";
+}
+
+/* ---- heading ---- */
+.card h1 {
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+  font-weight: 700;
   color: var(--fg);
+  margin: 0;
+  line-height: 1.25;
 }
 
-.confirmContainer p {
-  margin: 0 0 var(--space-6);
+/* ---- body copy ---- */
+.card p {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
   color: var(--muted);
-  max-width: 400px;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 42ch;
 }
 
+/* ---- primary button (lime fill) ---- */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
+  font-family: var(--mono);
   font-size: var(--text-base);
-  font-weight: 500;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--line);
-  background: var(--bg);
-  color: var(--fg);
+  font-weight: 600;
+  border: 1px solid var(--lime);
+  border-radius: 4px;
+  background: var(--lime);
+  color: var(--bg);
   text-decoration: none;
   cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  align-self: flex-start;
+  min-height: 44px;
 }
 
 .button:hover:not(:disabled) {
-  background: var(--muted);
-  border-color: var(--fg);
+  background: transparent;
+  color: var(--lime);
+  box-shadow: 0 0 14px var(--glow);
 }
 
 .button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
 }
 
-.button.primary {
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg);
+/* ---- ghost / secondary button (for invalid-link state) ---- */
+.buttonGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--mono);
+  font-size: var(--text-base);
+  font-weight: 600;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  align-self: flex-start;
+  min-height: 44px;
 }
 
-.button.primary:hover:not(:disabled) {
-  background: var(--muted);
-  border-color: var(--muted);
+.buttonGhost:hover {
+  border-color: var(--lime);
+  color: var(--lime);
 }
 
-/* Error text uses --fg (the body-text color — guaranteed AA in every palette)
-   on a solid --panel surface. The red is carried by the --fire border, so the
-   error is signalled by more than color alone. The old hard-coded #dc2626 failed
-   WCAG 1.4.3 (3.7-4.1:1) in all four palettes and didn't adapt to [data-palette]. */
+.buttonGhost:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
+/* ---- error state
+   Text stays --fg for AA; --fire border carries the error identity
+   so the state is signalled by more than colour alone. ---- */
 .error {
-  margin-bottom: var(--space-4);
-  padding: var(--space-3) var(--space-4);
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--fg);
   background: var(--panel);
   border: 1px solid var(--fire);
   border-left: 3px solid var(--fire);
-  border-radius: var(--radius-md);
-  color: var(--fg);
-  font-size: var(--text-sm);
+  border-radius: 4px;
+  padding: var(--space-3) var(--space-4);
+  margin: 0;
 }
 
 .error[hidden] {
   display: none;
 }
 
+/* ---- footer / muted note ---- */
 .muted {
-  margin-top: var(--space-4);
+  font-family: var(--mono);
   font-size: var(--text-sm);
   color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-4);
 }
 
 .muted a {
-  color: var(--accent);
+  color: var(--lime);
+  text-decoration: none;
+}
+
+.muted a:hover,
+.muted a:focus-visible {
   text-decoration: underline;
 }
 
 .muted a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--lime);
   outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  border-radius: 2px;
+}
+
+/* ---- reduced-motion: kill all transitions ---- */
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .buttonGhost {
+    transition: none;
+  }
 }

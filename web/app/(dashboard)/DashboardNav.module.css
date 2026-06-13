@@ -2,24 +2,48 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   padding: 0.75rem var(--pad);
   border-bottom: 1px solid var(--line);
   background: var(--panel);
   flex-wrap: wrap;
+  /* Prevent any child from forcing horizontal scroll */
+  overflow-x: hidden;
 }
 
 .left {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  min-width: 0;
 }
 
 .right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .nav {
+    padding: 0.625rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .left {
+    gap: 1rem;
+  }
+
+  .right {
+    gap: 0.5rem;
+  }
+
+  /* Truncate the email more aggressively on small screens */
+  .userEmail {
+    max-width: 120px;
+  }
 }
 
 .wordmark {
@@ -37,9 +61,18 @@
   color: var(--muted);
   text-decoration: none;
   transition: color 0.15s;
+  /* Touch-friendly tap target */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .navLink:hover {
   color: var(--fg);
+}
+.navLink:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .userEmail {
@@ -66,6 +99,8 @@
   background: none;
   border: 1px solid var(--line);
   border-radius: 2px;
+  /* min-height 44px satisfies WCAG 2.5.5 tap-target on touch screens */
+  min-height: 44px;
   padding: 0.25rem 0.75rem;
   font-family: var(--mono);
   font-size: 0.75rem;
@@ -80,4 +115,15 @@
 .signOutBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.signOutBtn:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signOutBtn,
+  .navLink {
+    transition: none;
+  }
 }

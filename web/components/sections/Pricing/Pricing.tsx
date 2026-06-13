@@ -37,15 +37,5 @@ export const Pricing = () => (
         </div>
       ))}
     </div>
-
-    <div className={styles.enterprise}>
-      <span>
-        <b className={styles.guarantee}>✓ 100% money-back guarantee</b> on the
-        work, not the algorithm. If we don&apos;t deliver your audit, or
-        you&apos;re not happy with it within 14 days, you get every dollar back.
-        We won&apos;t promise a citation number (nobody honestly can). We
-        guarantee the work and measure the rest straight.
-      </span>
-    </div>
   </Panel>
 );

@@ -88,7 +88,7 @@ class FakeQuery {
     return Promise.resolve({ error: null });
   }
 
-  select(_cols?: string) {
+  select() {
     this.op = "select";
     return this;
   }

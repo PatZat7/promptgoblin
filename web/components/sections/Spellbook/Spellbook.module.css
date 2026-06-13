@@ -2,6 +2,16 @@
   padding: var(--pad);
 }
 
+/* On narrow viewports the 22px box-shadow glow of .spellbook can bleed past
+   the viewport edge when --pad (32px) minus glow radius is too tight. Boost
+   horizontal padding to give the shadow room to breathe. */
+@media (max-width: 480px) {
+  .section {
+    padding-left: max(20px, var(--pad));
+    padding-right: max(20px, var(--pad));
+  }
+}
+
 .spellbook {
   border: 1px solid var(--lime);
   border-radius: 8px;
@@ -11,6 +21,10 @@
     0 0 0 1px var(--glow),
     0 0 22px var(--glow),
     inset 0 0 30px rgba(163, 230, 53, 0.04);
+  /* Ensure the box never forces a horizontal scrollbar; box-shadow stays
+     visible because no ancestor sets overflow:hidden on this section. */
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .head {

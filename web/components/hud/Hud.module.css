@@ -94,6 +94,72 @@
   outline-offset: 2px;
 }
 
+/* Auth hamburger + dropdown */
+.userMenu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.hamburger {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--lime);
+  border: 1px solid var(--lime);
+  border-radius: 2px;
+  padding: 2px 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1.4;
+}
+.hamburger:hover { background: var(--lime); color: #0a0b0a; }
+.hamburger:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  min-width: 140px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+}
+.dropdownItem {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--fg);
+  padding: 8px 14px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+.dropdownItem:hover { background: var(--lime); color: #0a0b0a; }
+.dropdownItem:focus-visible { outline: 2px solid var(--lime); outline-offset: -2px; }
+
+/* Book a demo CTA in the HUD bar */
+.bookDemoCta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--fg);
+  border: 1px solid var(--line-2);
+  padding: 3px 10px;
+  border-radius: 2px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.bookDemoCta:hover { border-color: var(--lime); color: var(--lime); }
+.bookDemoCta:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+
 /* Tablet: drop the center nav. */
 @media (max-width: 980px) {
   .menu { display: none; }

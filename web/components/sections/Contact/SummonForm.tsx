@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   captureEvent,
   identifyLead,
@@ -16,6 +16,18 @@ export const SummonForm = () => {
   const [sent, setSent] = useState(false);
   const [isDemoRequest, setIsDemoRequest] = useState(false);
   const [err, setErr] = useState("");
+  // Start false so server HTML and the client's first render match, then flip
+  // to checked after mount if the URL carries ?demo=1 (the "Book a demo" entry
+  // point). A mount effect is the hydration-safe way to read the URL here.
+  const [demoChecked, setDemoChecked] = useState(false);
+  useEffect(() => {
+    // One-time client-only read of the ?demo=1 entry point. Server + first client
+    // render are both false (no hydration mismatch); we flip after mount.
+    if (new URLSearchParams(window.location.search).get("demo") === "1") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDemoChecked(true);
+    }
+  }, []);
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -175,6 +187,8 @@ export const SummonForm = () => {
           type="checkbox"
           name="demo"
           value="1"
+          checked={demoChecked}
+          onChange={(e) => setDemoChecked(e.target.checked)}
           data-cursor="./check"
         />
         <span className={styles.fieldLabel}>request a demo</span>

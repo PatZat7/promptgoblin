@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CitationTargetsInput } from "@/components/dashboard/CitationTargetsInput";
 import { SuggestedTargets } from "@/components/dashboard/SuggestedTargets";
 
@@ -51,8 +52,11 @@ export function RunScanForm({ defaultDomain, canRunScans }: RunScanFormProps) {
             borderRadius: "3px",
           }}
         >
-          This seat can view reports but cannot launch scans. Contact your Prompt
-          Goblin admin to upgrade the seat tier to tier2 or tier3.
+          This seat can view reports but cannot launch scans.{" "}
+          <Link href="/#pricing" style={{ color: "var(--lime)", textDecoration: "underline" }}>
+            Upgrade to a scan-enabled plan
+          </Link>{" "}
+          — monthly, cancel anytime — to launch your own scans.
         </p>
       ) : null}
 

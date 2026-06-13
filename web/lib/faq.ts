@@ -19,8 +19,4 @@ export const FAQ: FaqItem[] = [
     q: "How much does a Prompt Goblin audit cost?",
     a: "Goblin Scout is a monthly visibility audit at $997/mo. Warband is $3,500/mo and Warlord $9,500/mo. Monthly, cancel anytime, no credits, no meter.",
   },
-  {
-    q: "Is there a money-back guarantee?",
-    a: "Yes: a 100% money-back guarantee on the work, not on the algorithm. If we don't deliver your audit, or you're not happy with it within 14 days of delivery, you get a full refund, no argument. We can't promise a specific citation number (AI citation share is volatile and partly outside anyone's control), so we never sell one. We guarantee the work, and we measure the result honestly.",
-  },
 ];

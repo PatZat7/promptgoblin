@@ -7,7 +7,7 @@ import { FAQ } from "@/lib/faq";
 export const metadata: Metadata = {
   title: "FAQ · Prompt Goblin",
   description:
-    "Plain answers about AEO/GEO, schema, pricing, and the work guarantee.",
+    "Plain answers about AEO/GEO, schema, pricing, and how the work ships.",
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "article",
