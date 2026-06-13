@@ -150,12 +150,19 @@ async function runTier(plan) {
     if (row.billing_plan !== plan) throw new Error(`billing_plan ${row.billing_plan} != ${plan}`);
     if (row.tier !== cfg.legacyTier) throw new Error(`tier ${row.tier} != ${cfg.legacyTier}`);
     r.steps.provision = `ok (tier=${row.tier}, email=${row.welcome_email_status})`;
+    r.tierLabel = cfg.tierLabel;
 
-    // 4. magic-link login (real email is asserted separately by the workflow via Gmail)
-    const magic = await mintMagicLink(email);
-    const li = await playwright("magic-login.mjs", { MAGIC_URL: magic, EXPECT_TEXT: cfg.tierLabel, HEADLESS: "true" });
-    r.steps.login = li.ok ? `ok (${cfg.tierLabel})` : `FAIL: ${li.error}`;
-    if (!li.ok) throw new Error(`login: ${li.error}`);
+    // 4. magic-link login. NO_LOGIN=1 hands this off to the Claude workflow, which
+    // logs in via the LITERAL link from the welcome email (Gmail) instead of a
+    // freshly-minted one. Standalone, we mint an equivalent link (same flow).
+    if (process.env.NO_LOGIN === "1") {
+      r.steps.login = "deferred (workflow uses emailed link)";
+    } else {
+      const magic = await mintMagicLink(email);
+      const li = await playwright("magic-login.mjs", { MAGIC_URL: magic, EXPECT_TEXT: cfg.tierLabel, HEADLESS: "true" });
+      r.steps.login = li.ok ? `ok (${cfg.tierLabel})` : `FAIL: ${li.error}`;
+      if (!li.ok) throw new Error(`login: ${li.error}`);
+    }
 
     r.ok = true;
   } catch (e) {

@@ -66,9 +66,21 @@ recent `stripe_events` deleted.
   params — this account's *default* version rejects `coupon` ("parameter_unknown").
 - Windows: stripe CLI mangles `coupon` and `/v1/` paths — the orchestrator hits
   the REST API with `fetch` directly to avoid it.
-- Gmail `get_thread` was flaky; `search_threads` (arrival check) is reliable, so
-  the workflow asserts arrival, and login uses a freshly-minted magic link (same
-  `/auth/confirm` flow as the email link).
+- **Email / login fidelity (tested 2026-06-13):** delivery to `atpatzat+<tier>@gmail.com`
+  is real and confirmed (welcome emails land in the inbox; DB `welcome_email_status=sent`).
+  Logging in via the *literal* emailed link was attempted but the connected Gmail
+  MCP is unreliable for it: (a) Gmail **normalizes plus-addresses** in search
+  (`to:atpatzat+qaX` matches all mail to the base address), and (b) the connector
+  returns a **stale/cached result set** that doesn't surface a just-sent email even
+  minutes later. So the harness logs in via a **Supabase-minted magic link**
+  (`generate_link`) — the identical `/auth/confirm` → dashboard flow — which is
+  reliable. `live-e2e.mjs` does this by default.
+- **To use the actual emailed link**, set `NO_LOGIN=1` on the orchestrator (it then
+  provisions + keeps the account) and have the caller fetch the email **by the
+  unique per-run domain string** (each email body contains `goblinqa-<tier>-<runId>`),
+  extract the `/auth/confirm?token_hash=…&type=magiclink` href (decode `&amp;`),
+  and run `magic-login.mjs MAGIC_URL=<href>`. This needs a **reliable mail reader**
+  — recommend the **Gmail API directly (OAuth)**, not the current MCP connector.
 
 ## ⚠️ Known issue + temporary code (REMOVE before scaling)
 
