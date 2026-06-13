@@ -17,7 +17,7 @@ export const Contact = () => (
         <p className={styles.avail}>
           Want the scan in your inbox? Drop your domain, email, and what you
           want to get cited for. I&apos;ll send back the gaps and the next
-          useful moves. Best for jobs measured in <em>days</em>, not quarters.
+          useful moves. Best when you need a focused scan and a concrete next move.
           <br />
           <em>No card, no sales call.</em> Paid work carries a{" "}
           <em>100% money-back guarantee</em>: full refund if we don&apos;t

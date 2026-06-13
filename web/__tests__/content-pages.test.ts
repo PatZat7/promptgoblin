@@ -138,6 +138,7 @@ describe("public copy and scan loading states", () => {
   it("does not use the removed days-not-quarters phrase", () => {
     const files = [
       "components/sections/Hero/Hero.tsx",
+      "components/sections/Contact/Contact.tsx",
       "public/llms.txt",
       path.join("..", "llms.txt"),
     ];
