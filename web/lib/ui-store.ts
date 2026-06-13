@@ -27,6 +27,11 @@ export type UiState = UiPrefs & {
   setMotion: (motion: Motion) => void;
   setDensity: (density: Density) => void;
   setGrain: (grain: Grain) => void;
+  /** Summon / contact modal */
+  summonOpen: boolean;
+  summonDemo: boolean;
+  openSummon: (demo?: boolean) => void;
+  closeSummon: () => void;
 };
 
 /** localStorage keys — also read by the inline no-flash script. */
@@ -76,6 +81,10 @@ export const createUiStore = (init: Partial<UiPrefs> = {}) =>
       persist("grain", grain);
       set({ grain });
     },
+    summonOpen: false,
+    summonDemo: false,
+    openSummon: (demo = false) => set({ summonOpen: true, summonDemo: demo }),
+    closeSummon: () => set({ summonOpen: false, summonDemo: false }),
   }));
 
 export type UiStore = ReturnType<typeof createUiStore>;

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Panel } from "@/components/ui/Panel/Panel";
 import { Reveal } from "@/components/ui/Reveal";
 import { HeroScan } from "./HeroScan";
+import { HeroBookDemo } from "./HeroBookDemo";
 import { STRIPE_LINKS } from "@/components/sections/Pricing/pricing.data";
 import styles from "./Hero.module.css";
 
@@ -42,13 +42,7 @@ export const Hero = () => (
           >
             watch · $99/mo
           </a>
-          <Link
-            className="btn ghost"
-            href="/?demo=1#contact"
-            data-cursor="./demo"
-          >
-            book a demo →
-          </Link>
+          <HeroBookDemo />
         </div>
       </Reveal>
 

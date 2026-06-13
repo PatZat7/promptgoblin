@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { GoblinHead } from "@/components/ui/GoblinHead";
 import { NAV } from "@/lib/site";
 import { HudClock } from "./HudClock";
 import { ThemeToggle } from "./ThemeToggle";
 import { HudLoginTrigger } from "./HudLoginTrigger";
+import { BookDemoTrigger } from "./BookDemoTrigger";
 import styles from "./Hud.module.css";
 
 /** Top status bar. Server-rendered shell; only the toggle + clock hydrate. */
@@ -33,14 +33,7 @@ export const HudTop = () => (
       <span className={styles.divider} />
       <ThemeToggle />
       <span className={styles.divider} />
-      <Link
-        href="/?demo=1#contact"
-        className={styles.bookDemoCta}
-        data-cursor="./demo"
-      >
-        <span className={styles.dot} />
-        Book&nbsp;a&nbsp;demo
-      </Link>
+      <BookDemoTrigger />
       <span className={styles.divider} />
       <HudClock />
     </div>

@@ -8,14 +8,14 @@ import { FAQ_ITEMS, SOURCES } from "./llms-txt-implementation.data";
 export const metadata: Metadata = {
   title: "llms.txt Implementation Guide — What It Is and How to Write One · Prompt Goblin",
   description:
-    "llms.txt is a hygiene label, not a ranking signal. No evidence shows it influences AI citations. Here is what it is, how to write one, and the common mistakes to avoid.",
+    "llms.txt is a plain-text site summary some AI agents read in-session. Here is what it is, how to write one, and how it differs from robots.txt.",
   alternates: { canonical: "/learn/llms-txt-implementation" },
   openGraph: {
     type: "article",
     url: `${SITE.url}/learn/llms-txt-implementation`,
     title: "llms.txt Implementation Guide — What It Is and How to Write One",
     description:
-      "Honest guide to llms.txt: the proposal, the template, the comparison with robots.txt, and why it is worth doing only because it is nearly free.",
+      "What llms.txt is, the llmstxt.org spec, the template, the comparison with robots.txt, and how to keep it current.",
     images: ["/og-image.png"],
   },
 };
@@ -30,12 +30,10 @@ export default function Page() {
         <h1>llms.txt implementation guide</h1>
 
         <p style={{ marginTop: "1.2em", lineHeight: 1.7 }}>
-          llms.txt is a hygiene label, not a ranking or citation signal. No current evidence
-          shows it influences whether an answer engine cites your content. It is a voluntary
-          plain-text file proposed at{" "}
+          llms.txt is a voluntary plain-text file proposed at{" "}
           <a href="https://llmstxt.org" rel="noopener noreferrer">llmstxt.org</a>{" "}
-          as a human-readable summary some LLM tools can read in-session. Worth creating because
-          it is nearly free and harmless — not because it ranks.
+          as a human-readable summary of your site. Some AI agents read it in-session when given
+          a URL as context; some do not. It is nearly free to create and easy to keep current.
         </p>
 
         {/* ---- What it is ---- */}
@@ -63,10 +61,6 @@ export default function Page() {
         <ul style={{ marginTop: "0.6em", lineHeight: 1.8, paddingLeft: "1.4em" }}>
           <li>Not a crawl directive — it does not tell any crawler what to index or skip.</li>
           <li>Not an index submission — it does not register pages with any search engine.</li>
-          <li>
-            Not a citation lever — adding it does not raise the probability an answer engine
-            surfaces your content.
-          </li>
           <li>
             Not enforced by anyone — no tool, crawler, or engine is required to read or obey it.
           </li>
@@ -153,7 +147,7 @@ export default function Page() {
                 What happens without it
               </td>
               <td style={{ padding: "8px 12px", borderBottom: "1px solid currentColor", opacity: 0.8 }}>
-                Nothing — no penalty, no crawl change, no citation effect
+                Nothing — no penalty, no crawl change
               </td>
               <td style={{ padding: "8px 12px", borderBottom: "1px solid currentColor", opacity: 0.8 }}>
                 Crawlers assume full access (all paths allowed)
@@ -164,7 +158,7 @@ export default function Page() {
                 SEO/AEO impact
               </td>
               <td style={{ padding: "8px 12px", opacity: 0.8 }}>
-                None confirmed; hygiene label only
+                Not a crawl or ranking signal; read or not read by individual tools
               </td>
               <td style={{ padding: "8px 12px", opacity: 0.8 }}>
                 Direct impact on what gets crawled and indexed
@@ -272,11 +266,10 @@ export default function Page() {
           cause citations. Write a plain English description of what you actually do.
         </p>
 
-        <h3 style={{ marginTop: "1.4em" }}>Expecting rank or citation changes after adding it</h3>
+        <h3 style={{ marginTop: "1.4em" }}>Treating it as a ranking or retrieval signal</h3>
         <p style={{ marginTop: "0.6em", lineHeight: 1.7 }}>
-          llms.txt is hygiene, not a lever. If you add the file and monitor Bing impressions or
-          ChatGPT mentions hoping to see an uptick, you will be measuring noise. The real levers
-          are covered in{" "}
+          llms.txt is a site-summary file, not a crawl or ranking signal. The real levers for
+          AI citation probability are covered in{" "}
           <a href="/learn/how-to-show-up-in-chatgpt">
             How to show up in ChatGPT
           </a>
@@ -323,34 +316,16 @@ export default function Page() {
         </ul>
         <p style={{ marginTop: "0.8em", lineHeight: 1.7 }}>
           All other claims on this page are qualitative observations about the llms.txt
-          specification and the absence of evidence for citation effects. No statistics are
-          cited because none are asserted. &ldquo;No current evidence&rdquo; reflects the
-          state of published documentation as of the date of this page.
+          specification. No statistics are cited because none are asserted.
         </p>
 
         {/* ---- Guarantee ---- */}
         <h2 style={{ marginTop: "2.4em" }}>What this does not guarantee</h2>
-        <ul style={{ marginTop: "0.8em", lineHeight: 1.8, paddingLeft: "1.4em" }}>
-          <li>
-            llms.txt is a hygiene label, not a citation lever. No action described on this
-            page promises a citation by any answer engine.
-          </li>
-          <li>
-            Schema markup, llms.txt, FAQPage JSON-LD, and IndexNow submissions are all
-            structural hygiene steps. None of them, individually or combined, guarantees a
-            specific citation count, rank position, or AI-response outcome.
-          </li>
-          <li>
-            Implementing the template above removes a minor gap in your canonical
-            self-description. It does not move the real levers — brand mentions, Bing rank,
-            and crawlable answer-shaped content.
-          </li>
-          <li>
-            Where Prompt Goblin engagement is mentioned: the refund covers the delivered
-            work — audits, technical fixes, copy, measurement loop. It never covers a citation
-            number or ranking position.
-          </li>
-        </ul>
+        <p style={{ marginTop: "0.8em", lineHeight: 1.7 }}>
+          Nothing on this page promises a citation by any answer engine. Where Prompt Goblin
+          engagement is mentioned: the refund covers the delivered work — audits, technical
+          fixes, copy, measurement loop — never a citation number or ranking position.
+        </p>
 
         {/* ---- Scan CTA ---- */}
         <p style={{ marginTop: "2.4em", lineHeight: 1.7 }}>

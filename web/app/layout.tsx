@@ -10,6 +10,7 @@ import { Loader } from "@/components/system/Loader";
 import { Grain } from "@/components/system/Grain";
 import { JsonLd } from "@/components/system/JsonLd";
 import { ThemeScript } from "@/components/system/ThemeScript";
+import { SummonModal } from "@/components/sections/Contact/SummonModal";
 import { structuredData } from "@/lib/structured-data";
 import { SITE } from "@/lib/site";
 
@@ -79,6 +80,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         <HudTop />
         <main>{children}</main>
         <HudBottom />
+        <SummonModal />
       </UiStoreProvider>
       <Grain />
       <Cursor />

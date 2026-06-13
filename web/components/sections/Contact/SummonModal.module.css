@@ -1,0 +1,99 @@
+/* SummonModal — full-screen backdrop + centered dialog panel */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pad);
+  @media (prefers-reduced-motion: no-preference) {
+    animation: backdropFadeIn 0.15s ease forwards;
+  }
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dialog {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: dialogSlideIn 0.18s ease forwards;
+  }
+}
+
+@keyframes dialogSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header row: wordmark + close button */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wordmark {
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  color: var(--lime);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 2px;
+  transition: color 0.15s, background 0.15s;
+}
+.closeBtn:hover {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+.closeBtn:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+
+.title {
+  font-family: var(--mono);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0;
+}
+
+.subtitle {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.formWrap {
+  display: flex;
+  flex-direction: column;
+}

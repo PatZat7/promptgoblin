@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Panel, PanelBar } from "@/components/ui/Panel/Panel";
 import { SummonForm } from "./SummonForm";
+import { SummonTrigger, RequestDemoTrigger } from "./ContactTriggers";
 import styles from "./Contact.module.css";
 
 export const Contact = () => (
@@ -9,10 +10,7 @@ export const Contact = () => (
     <div className={clsx("grid-lines", styles.grid)}>
       <div className={styles.main}>
         <div className={styles.big}>
-          <a href="#contact" data-cursor="./summon">
-            Summon<em className={styles.bigAccent}>.</em>
-            <span className={styles.arrow}>→</span>
-          </a>
+          <SummonTrigger />
         </div>
         <p className={styles.avail}>
           Want the scan in your inbox? Drop your domain, email, and what you
@@ -20,9 +18,7 @@ export const Contact = () => (
           useful moves. Best when you need a focused scan and a concrete next move.
           <br />
           <em>No card, no sales call.</em>{" "}<br /><br />
-          <a href="#contact" className={styles.demoLink} data-cursor="./demo">
-            Request a demo <span className="arr">→</span>
-          </a>
+          <RequestDemoTrigger />
         </p>
         <SummonForm />
       </div>

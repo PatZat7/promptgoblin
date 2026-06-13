@@ -522,7 +522,7 @@ export const llmsTxtImplementationJsonLd = (): object[] => [
     "@type": "Article",
     headline: "llms.txt Implementation Guide - What It Is and How to Write One",
     description:
-      "llms.txt is a hygiene label, not a ranking or citation signal. No current evidence shows it influences whether an answer engine cites your content; it is useful because it is a low-cost canonical summary.",
+      "llms.txt is a plain-text site summary some AI agents read in-session. This guide covers the llmstxt.org spec, how to write one, and how it differs from robots.txt.",
     author: { "@type": "Organization", name: SITE.name, url: SITE.url },
     publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
     isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },

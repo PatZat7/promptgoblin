@@ -7,11 +7,18 @@ import {
   leadDomain,
   submitWeb3Form,
 } from "@/lib/analytics";
-import { STRIPE_LINKS } from "@/components/sections/Pricing/pricing.data";
 import { isValidDomain, isValidEmail } from "@/lib/validate";
+import { useUiStore } from "@/components/providers/UiStoreProvider";
 import styles from "./Contact.module.css";
 
-export const SummonForm = () => {
+type SummonFormProps = {
+  /** When true the demo checkbox starts checked (modal entry point). */
+  forceDemo?: boolean;
+};
+
+export const SummonForm = ({ forceDemo }: SummonFormProps = {}) => {
+  const summonDemo = useUiStore((s) => s.summonDemo);
+  const summonOpen = useUiStore((s) => s.summonOpen);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [isDemoRequest, setIsDemoRequest] = useState(false);
@@ -21,12 +28,19 @@ export const SummonForm = () => {
   // point). A mount effect is the hydration-safe way to read the URL here.
   const [demoChecked, setDemoChecked] = useState(false);
   useEffect(() => {
+    // When rendered inside the modal, derive the demo flag from the store.
+    // For inline/direct use, fall back to the ?demo=1 query param.
+    if (forceDemo || (summonOpen && summonDemo)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDemoChecked(true);
+      return;
+    }
     // One-time client-only read of the ?demo=1 entry point. Server + first client
     // render are both false (no hydration mismatch); we flip after mount.
     if (new URLSearchParams(window.location.search).get("demo") === "1") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDemoChecked(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -208,16 +222,9 @@ export const SummonForm = () => {
           disabled={sending}
           data-cursor="./summon"
         >
-          {sending ? "casting…" : "run my free scan"}{" "}
+          {sending ? "casting…" : "summon a goblin"}{" "}
           <span className="arr">→</span>
         </button>
-        <a
-          className="btn ghost"
-          href={STRIPE_LINKS.scout}
-          data-cursor="./summon"
-        >
-          summon a goblin
-        </a>
       </div>
       {err && <div className={styles.error}>⚠ {err}</div>}
     </form>

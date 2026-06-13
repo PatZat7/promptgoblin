@@ -3,7 +3,7 @@ export type FaqItem = { q: string; a: string };
 export const FAQ_ITEMS: FaqItem[] = [
   {
     q: "Does adding llms.txt improve my chances of being cited by ChatGPT or Perplexity?",
-    a: "No. llms.txt is a hygiene label, not a ranking or retrieval signal. No current evidence shows it influences whether an answer engine cites your content. The real levers remain brand mentions on authoritative sources, Bing rank, and crawlable answer-shaped content.",
+    a: "llms.txt is a site-summary file, not a ranking or retrieval signal. Some AI agents read it when given a URL as context; many tools do not. The real levers for citation probability are brand mentions on authoritative sources, Bing rank, and crawlable answer-shaped content.",
   },
   {
     q: "Is llms.txt similar to robots.txt?",
@@ -15,7 +15,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     q: "What happens if I never create a llms.txt?",
-    a: "Nothing consequential. No penalty from any search engine, no crawl block, no reduction in citation probability. It is a low-effort hygiene step worth doing because it is nearly free — not because anything breaks without it.",
+    a: "Nothing consequential. No penalty from any search engine, no crawl block. It is a low-effort hygiene step worth doing because it is nearly free — not because anything breaks without it.",
   },
 ];
 
@@ -26,10 +26,5 @@ export const SOURCES: SourceItem[] = [
     label: "llmstxt.org — the llms.txt proposal",
     url: "https://llmstxt.org",
     note: "The original specification and rationale for the llms.txt file format.",
-  },
-  {
-    label: "Google Search Central — robots.txt documentation",
-    url: "https://developers.google.com/search/docs/crawling-indexing/robots/intro",
-    note: "Official Google documentation confirming robots.txt as a crawl directive, distinct from any LLM-session file.",
   },
 ];

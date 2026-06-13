@@ -27,7 +27,7 @@
 - [You rank, but AI Overviews don't cite you](https://promptgoblin.io/learn/rank-but-not-cited): The rank-vs-citation gap — why a well-ranked page can still lose the AI citation, with a diagnostic and fixes mapped to each cause.
 - [E-E-A-T for AI search](https://promptgoblin.io/learn/eeat-for-ai-search): Implementation guide for visible author signals and Article-to-author-to-Person JSON-LD, framed as extraction hygiene rather than a citation lever.
 - [Entity clarity for AI search](https://promptgoblin.io/learn/entity-clarity-for-ai): SMB-focused guide to disambiguating a brand entity with consistent naming, sameAs profile hygiene, and crawlable co-occurrence.
-- [llms.txt implementation guide](https://promptgoblin.io/learn/llms-txt-implementation): Practical template for writing and maintaining llms.txt as a low-cost hygiene label, not a ranking or citation signal.
+- [llms.txt implementation guide](https://promptgoblin.io/learn/llms-txt-implementation): Practical template for writing and maintaining an llms.txt file — the optional plain-text summary some AI agents read in-session.
 - [FAQ schema vs HowTo schema](https://promptgoblin.io/learn/faq-schema-vs-howto-schema): Google deprecated HowTo rich results in 2023 and restricted FAQ rich results to government/health sites — what each type still does and when to use which.
 - [Site structure for AI citations](https://promptgoblin.io/learn/site-structure-ai-citations): Hub-and-spoke internal linking, sub-question mapping, and how structurally isolated pages get excluded from passage retrieval even when technically crawlable.
 - [Section 508 and AEO](https://promptgoblin.io/learn/wcag-aeo-overlap): Which Section 508 criteria a federal contractor already maintains also carry AI-search parseability weight — and what 508 conformance does not do for citations.
@@ -40,7 +40,7 @@
 - Goblin Warlord — multi-brand retainer (~$9,500/mo): up to 8 domains, custom agentic workflows, human-reviewed posting queues, dedicated retrieval mesh.
 
 ## Honest broker
-- Schema and llms.txt are hygiene, not citation magic. The real levers are brand mentions and Bing / Bing-overlap ranking — we work all of it, and every change is human-reviewed.
+- The real levers are brand mentions and Bing / Bing-overlap ranking — we work all of it, and every change is human-reviewed.
 
 ## Contact
 - Email: goblins@promptgoblin.io

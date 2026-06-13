@@ -22,8 +22,28 @@
   display: inline-block;
   transition: transform 0.3s;
 }
-.big a:hover .arrow {
+.big a:hover .arrow,
+.bigBtn:hover .arrow {
   transform: translate(0.12em, -0.12em);
+}
+
+/* Button reset for the Summon headline CTA (replaces the old <a>). */
+.bigBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  display: inline;
+}
+.bigBtn:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 4px;
 }
 .avail {
   font-family: var(--mono);
@@ -265,7 +285,18 @@
   color: var(--lime);
   text-decoration: none;
   font-style: normal;
+  /* Reset for <button> usage */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
 }
 .demoLink:hover {
   text-decoration: underline;
+}
+.demoLink:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
 }

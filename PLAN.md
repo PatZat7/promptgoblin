@@ -1,10 +1,31 @@
 # Prompt Goblin — PLAN (living)
 
-> The orchestration doc. The main thread keeps this current; subagents are dispatched from here. This is the "planner" — there is no planner subagent. Last touched: 2026-06-06.
+> The orchestration doc. The main thread keeps this current; subagents are dispatched from here. This is the "planner" — there is no planner subagent. Last touched: 2026-06-13.
 
 ## ⚠️ Deploy note
 
 `main` is **deploy-on-push** — pushing `main` rebuilds + ships the **live `web/` Next.js site**. **As of 2026-06-08 the DO app is a Node/SSR Web Service** (converted from `static_sites`; spec in `.do/app.yaml`, `npm run start`, http_port 8080) — the dashboard cutover is **DONE + LIVE**. Marketing routes still prerender to static HTML inside the Node app; `/dashboard`, `/runs*`, `/login`, `/auth/*` are dynamic. **Do NOT re-add `output:'export'`** (breaks the dashboard + deploy). Heads-up: under unified deploy-on-push, even a doc-only push to `main` triggers a full rebuild. Gate every merge (tests + build + required reviewers) before pushing.
+
+## ✅ Current state — 2026-06-13 (Claude session — payments testing + site UX/copy)
+
+**A. Stripe payment-gateway testing (shipped + verified).**
+- **Behavioral webhook suite** `web/__tests__/stripe-webhook.behavior.test.ts` (17 tests): executes the real `POST` handler with genuinely Stripe-signed payloads + an in-memory Supabase fake — signature reject (missing/wrong-secret/tampered), paid/unpaid checkout, idempotency (dup + in-flight 409), Resend best-effort, cross-tenant refusal, subscription lifecycle, secondary-secret fallback. (Prior "tests" were source-string greps only.)
+- **Multi-secret webhook verification** in `route.ts` (`getStripe()` → `webhookSecrets[]`, first match wins) — enables a parallel test-mode endpoint + zero-downtime secret rotation. Inert unless `STRIPE_WEBHOOK_SECRET_TEST` is set.
+- **Runbook** `web/docs/stripe-testing.md` (CI behavioral · Stripe CLI local e2e · manual pre-launch checklist).
+- **Live Payment Links fixed:** scout/warband/warlord (live + test) were missing the required `domain` custom field + `plan` metadata → silent provisioning failure. All 8 links now collect `domain` + carry `plan`, and redirect to `/welcome` on completion. **Metadata→session propagation confirmed; zero real purchases had completed, so no customer was hit.** See memory `promptgoblin-stripe-links-config`.
+- **All 4 plans validated** end-to-end via `stripe listen` (correct plan→tier mapping; test users cleaned up). A standing prod test-mode endpoint was created, used, then **torn down (GA teardown done)** — prod verifies live-secret only.
+
+**B. Site UX/copy batch (shipped + verified, 2 deploys: `e057e43` + this push).**
+- **Demo flow:** `VISIBLE AF` badge → **Book a demo** CTA; Summon/Book-a-demo CTAs now open the **SummonForm in an accessible modal** (Zustand `openSummon(demo?)`, focus-trap/Esc/backdrop, `SummonModal`); demo entry pre-checks the demo box. Inline Contact form kept as no-JS fallback.
+- **Summon form:** single submit button **"summon a goblin"** (removed the separate "run my free scan" + Stripe ghost link).
+- **Auth-aware header:** logged-in shows a hamburger (Dashboard + Sign out); logged-out keeps the login modal (client-side check — marketing stays SSG).
+- **Post-purchase `/welcome` page** (branded; set as success_url on all 8 Stripe links).
+- **Money-back guarantee removed** (Pricing, Contact, FAQ + 2 stale metadata refs) per owner.
+- **Dashboard upgrade copy** → links to pricing, "monthly, cancel anytime" (proration claim rejected by integrity — Payment Links create a NEW sub, no auto-proration; a real prorated upgrade flow is a separate TODO).
+- **llms.txt neutralized** (file + `/learn/llms-txt-implementation` + JSON-LD): dropped the "no-evidence / not-a-lever / Google-dismissal" editorializing → neutral "some AI agents read it in-session, many ignore it." Honest-broker intact (no citation-lever claim). integrity APPROVE.
+- **Responsive:** hero scan fully in-viewport on <4K laptops (1366×768 + 1440×900 verified); Spellbook mobile border clip fixed; dashboard nav mobile-safe (≥44px targets); `/auth/confirm` restyled to the terminal/HUD aesthetic.
+- **Gates:** web lint 0; vitest green (incl. 17 behavioral + content-pages); integrity-reviewer APPROVE ×3 (copy, prorate fix, llms.txt). LiveScan isn't on the homepage (the "scan" is the Hero scan).
+- **TODO (owner):** eyeball logged-in hamburger + dashboard mobile + `/auth/confirm` on real sessions; decide on a true prorated in-app upgrade flow; the demo "within one working day" promise is a hard commitment (soften if needed).
 
 ## ✅ Current state — 2026-06-12 (Claude session — own-site visibility)
 
