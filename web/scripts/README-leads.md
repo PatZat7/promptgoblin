@@ -1,13 +1,15 @@
 # Leads pipeline (Track 2 — local, compliant, manual-send)
 
 A zero-budget, **honest-broker-clean** outbound pipeline. No browser scraping, no
-ESP cold-blast. You generate the lead list by hand; these scripts ingest it, run a
-**real** Tier-1 hygiene scan on each domain, and write a LinkedIn DM **draft** you
-review and send **manually**.
+ESP cold-blast. You generate or export the lead list from permitted sources; these
+scripts ingest it, run a **real** Tier-1 hygiene scan on each domain, and write a
+LinkedIn connect note / DM **draft** you review and send **manually**.
 
 ## What this is NOT
 
 - ❌ No LinkedIn automation. No headless browser drives any platform.
+- ❌ No "rotate keywords to dodge limits" scraping. Scale comes from permitted
+  JSON/CSV/Apollo exports, referrals, manual research, or other licensed sources.
 - ❌ No Resend / ESP sending. Nothing here fires an email.
 - ❌ No fabricated "AI visibility score". Tier-1 measures **hygiene** (parse/crawl
   health) — table stakes, not a citation guarantee. A site we can't read is a
@@ -97,10 +99,33 @@ node scripts/process-leads.mjs --rescan               # retry transient scan_fai
 
 Run via Doppler instead of `.env.local` if you prefer: `doppler run -- node scripts/process-leads.mjs`.
 
+## Scaling to 200+ permitted leads
+
+Use a local JSON array or Apollo CSV export and let the importer do the boring
+parts: normalize domains, tolerate same-company contacts, skip duplicates, and
+leave existing scanned/drafted rows untouched. People dedupe prefers Apollo person
+ID, then LinkedIn URL, then email, then domain+contact fallback.
+
+```bash
+# Preview a large local JSON import without writing anything.
+node scripts/import-local-leads.mjs path/to/pending_leads.json --dry-run
+
+# Insert only new people. Existing rows are never clobbered.
+node scripts/import-local-leads.mjs path/to/pending_leads.json
+
+# Process in batches so the live scan function is treated gently.
+node scripts/process-leads.mjs --limit 25
+```
+
+For 200+ rows, run `process-leads.mjs --limit 25` repeatedly until the queue is
+clear, or pick a limit that matches the available runtime. Failed scans remain
+`scan_failed` with a NULL hygiene score; retry transient failures with `--rescan`.
+
 ## Input shape
 
 Array of objects (or `{ "leads": [...] }`). Required: `company_name`, `domain`.
-Optional: `contact_name`, `contact_title`, `linkedin_url`, `competitor`, `icp_segment`, `source`.
+Optional: `contact_name`, `contact_title`, `linkedin_url`, `email`, `phone`,
+`headline`, `location`, `apollo_person_id`, `competitor`, `icp_segment`, `source`.
 See `pending_leads.example.json`.
 
 ## Sending (manual, by you)
