@@ -159,7 +159,7 @@ function mapApolloCsvRow(o) {
   return {
     apollo_contact_id: col(o, ["Apollo Contact Id", "Contact Id"]),
     apollo_person_id: col(o, ["Apollo Person Id", "Person Id"]),
-    company_name: col(o, ["Company", "Company Name for Emails", "Account Name", "Employer"]),
+    company_name: col(o, ["Company Name", "Company", "Company Name for Emails", "Account Name", "Employer"]),
     domain,
     contact_name: name,
     contact_title: col(o, ["Title", "Job Title"]),

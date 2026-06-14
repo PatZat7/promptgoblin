@@ -84,3 +84,6 @@ pending_leads.json
 pending_apollo.json
 **/pending_leads.json
 **/pending_apollo.json
+# Apollo CSV exports (contact PII)
+apollo*.csv
+**/apollo*.csv
