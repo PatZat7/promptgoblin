@@ -29,6 +29,112 @@ export const STRIPE_LINKS = {
   warlord: "https://buy.stripe.com/eVqaEYabQ1tg7756nJ2go08",
 } as const;
 
+// ---------------------------------------------------------------------------
+// Feature comparison matrix — rendered as a semantic <table> below the cards.
+// HONEST-BROKER: do NOT modify these cells without owner review. If a value
+// seems wrong, add a comment here and leave the cell as-is.
+// Columns map to TIERS keys: watch | scout | warband | warlord
+// ---------------------------------------------------------------------------
+
+export type ComparisonCell = boolean | string;
+export type ComparisonRow = {
+  label: string;
+  watch: ComparisonCell;
+  scout: ComparisonCell;
+  warband: ComparisonCell;
+  warlord: ComparisonCell;
+};
+
+export const COMPARISON: ComparisonRow[] = [
+  {
+    label: "Weekly citation-visibility tracking",
+    watch: true,
+    scout: true,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Answer engines tracked",
+    watch: "4 + Bing",
+    scout: "4 + Bing",
+    warband: "4 + Bing",
+    warlord: "4 + Bing",
+  },
+  {
+    label: "Full LLM citation audit + competitor leaderboard",
+    watch: false,
+    scout: true,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Engineer-reviewed fix queue (scored impact × effort)",
+    watch: false,
+    scout: true,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Done-for-you content refactor (your brand voice)",
+    watch: false,
+    scout: true,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Schema + content PRs to your repo / CMS",
+    watch: false,
+    scout: false,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Pipeline runs",
+    // NOTE: watch has no pipeline runs listed in bullets; "—" means not applicable
+    watch: "—",
+    scout: "1 / day",
+    warband: "on-demand",
+    warlord: "on-demand",
+  },
+  {
+    label: "Live visibility dashboard",
+    watch: false,
+    scout: false,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Citation-earning outreach (we run it)",
+    watch: false,
+    // NOTE: scout has "spots where" — pipeline identifies locations but does
+    // not run the outreach itself; leave exactly as specified.
+    scout: "spots where",
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Direct Slack · <24h SLA",
+    watch: false,
+    scout: false,
+    warband: true,
+    warlord: true,
+  },
+  {
+    label: "Domains / brands",
+    watch: "1",
+    scout: "1",
+    warband: "1",
+    warlord: "up to 8",
+  },
+  {
+    label: "Custom agentic workflows · white-label",
+    watch: false,
+    scout: false,
+    warband: false,
+    warlord: true,
+  },
+];
+
 export const TIERS: Tier[] = [
   {
     key: "watch",
@@ -55,7 +161,7 @@ export const TIERS: Tier[] = [
     interval: "/ mo",
     link: STRIPE_LINKS.scout,
     cta: "Hire a Scout",
-    desc: "One daily pipeline run. Citation gaps, schema holes, and stack-specific fix code — delivered as a living report your team's AI can act on immediately.",
+    desc: "Month one is your AI Search Visibility Diagnostic: citation gaps, who's getting cited instead of you, and a ranked, engineer-reviewed fix queue — delivered as a living report your team can act on immediately. Then we work the fixes.",
     bullets: [
       "Full LLM citation audit · 4 engines + Bing rank",
       "Schema + entity gap report",

@@ -4,7 +4,7 @@ export const SITE = {
   url: "https://promptgoblin.io",
   email: "goblins@promptgoblin.io",
   description:
-    "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene.",
+    "Prompt Goblin is an AI-search-visibility (AEO/GEO) and technical-SEO shop that fixes why ChatGPT, Perplexity, Gemini, and Claude cite your competitors instead of you — by measuring brand mentions, Bing rank, and content extractability, then shipping engineer-reviewed schema, crawl, and content fixes.",
   tagline: "Get found by robots. Stay usable by humans.",
   locality: "Chicago",
   region: "IL",

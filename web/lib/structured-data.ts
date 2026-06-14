@@ -44,7 +44,7 @@ export const structuredData: object[] = [
     url: SITE.url,
     email: SITE.email,
     description:
-      "Agentic AI-search visibility and technical SEO. Prompt Goblin improves how ChatGPT, Claude, Gemini, and Perplexity see your brand through citation acquisition, technical SEO, and answer-engine hygiene. Every change human-reviewed.",
+      "Prompt Goblin is an AI-search-visibility (AEO/GEO) and technical-SEO shop that fixes why ChatGPT, Perplexity, Gemini, and Claude cite your competitors instead of you — by measuring brand mentions, Bing rank, and content extractability, then shipping engineer-reviewed schema, crawl, and content fixes. Every change human-reviewed.",
     areaServed: "Worldwide",
     knowsAbout: [
       "Generative Engine Optimization",
@@ -66,7 +66,7 @@ export const structuredData: object[] = [
     url: SITE.url,
     email: SITE.email,
     slogan: SITE.tagline,
-    description: "A one-goblin AI-search-visibility (AEO/GEO) and technical-SEO shop in Chicago.",
+    description: "Prompt Goblin is a one-goblin AI-search-visibility (AEO/GEO) and technical-SEO shop in Chicago that fixes why ChatGPT, Perplexity, Gemini, and Claude cite your competitors instead of you.",
     areaServed: "Worldwide",
     address,
   },
