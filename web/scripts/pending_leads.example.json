@@ -1,0 +1,22 @@
+[
+  {
+    "company_name": "Acme Analytics",
+    "domain": "acmeanalytics.com",
+    "contact_name": "Jordan Rivera",
+    "contact_title": "Head of Growth",
+    "linkedin_url": "https://www.linkedin.com/in/EXAMPLE-jordan-rivera",
+    "competitor": "rival-bi.com",
+    "icp_segment": "B2B SaaS · ~$8M ARR · marketing-led",
+    "source": "manual list (you generated this)"
+  },
+  {
+    "company_name": "Beacon HR",
+    "domain": "beaconhr.io",
+    "contact_name": "Sam Okafor",
+    "contact_title": "VP Marketing",
+    "linkedin_url": "https://www.linkedin.com/in/EXAMPLE-sam-okafor",
+    "competitor": "peoplestack.com",
+    "icp_segment": "B2B SaaS · ~$15M ARR · 60 employees",
+    "source": "manual list (you generated this)"
+  }
+]

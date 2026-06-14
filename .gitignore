@@ -77,3 +77,10 @@ pg-local-dev.err
 
 # Local asset-generation scratch (logo/social templates + heavy generated gif)
 assetgen/
+
+# Local lead data — contains contact PII (emails / phones). NEVER commit.
+# (The *.example.json templates are intentionally NOT matched and stay tracked.)
+pending_leads.json
+pending_apollo.json
+**/pending_leads.json
+**/pending_apollo.json

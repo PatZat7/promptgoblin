@@ -33,6 +33,11 @@ export function DashboardNav({ userEmail, seatLabel, canReview }: DashboardNavPr
           Runs
         </Link>
         {canReview && (
+          <Link href="/crm" className={styles.navLink}>
+            CRM
+          </Link>
+        )}
+        {canReview && (
           <Link href="/approvals" className={styles.navLink}>
             Approvals
           </Link>
